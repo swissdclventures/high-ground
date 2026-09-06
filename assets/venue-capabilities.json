@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "venueId": "Punch Machine Championship",
+  "generatedAt": "2026-09-06T10:52:31.154Z",
+  "coordinateSpace": "composer-local-meters",
+  "capabilities": [
+    {
+      "id": "punch_audience_zone",
+      "kind": "zone",
+      "name": "Audience ring",
+      "position": {
+        "x": 352,
+        "z": 352,
+        "floorIndex": -1
+      },
+      "shape": {
+        "kind": "circle",
+        "centerX": 352,
+        "centerZ": 352,
+        "radius": 4.6
+      },
+      "actions": [
+        "detect-presence"
+      ]
+    },
+    {
+      "id": "punch_queue_zone",
+      "kind": "zone",
+      "name": "Competition queue",
+      "position": {
+        "x": 352,
+        "z": 354.25,
+        "floorIndex": -1
+      },
+      "shape": {
+        "kind": "rect",
+        "centerX": 352,
+        "centerZ": 354.25,
+        "width": 2.5,
+        "depth": 5.3
+      },
+      "actions": [
+        "detect-presence"
+      ]
+    },
+    {
+      "id": "punch_strike_zone",
+      "kind": "zone",
+      "name": "Strike circle",
+      "position": {
+        "x": 352,
+        "z": 348.65,
+        "floorIndex": -1
+      },
+      "shape": {
+        "kind": "circle",
+        "centerX": 352,
+        "centerZ": 348.65,
+        "radius": 1.3
+      },
+      "actions": [
+        "detect-presence"
+      ]
+    }
+  ]
+}

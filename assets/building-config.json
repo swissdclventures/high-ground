@@ -1,0 +1,1325 @@
+{
+  "syncedAt": "2026-09-06T10:52:31.154Z",
+  "worldName": "highground.dcl.eth",
+  "sceneBase": "-38,104",
+  "destination": "world",
+  "productKind": "builder",
+  "buildingName": "Punch Machine Championship",
+  "scene": {
+    "cols": 45,
+    "rows": 45
+  },
+  "building": {
+    "floors": 2,
+    "roofTerrace": true,
+    "buildingSpan": "single",
+    "rampCell": {
+      "col": 1,
+      "row": 1
+    },
+    "rampType": "spiral",
+    "entrySide": "south",
+    "entryCell": {
+      "col": 2,
+      "row": 0
+    },
+    "wallNorth": "glass",
+    "wallSouth": "sliding_entry",
+    "wallEast": "glass",
+    "wallWest": "glass",
+    "roofGuard": "glass",
+    "spawnPreset": "entrance",
+    "storyHeight": 3.2,
+    "columnLayout": {
+      "cornerColumns": true,
+      "intermediateColumnsPerSide": {
+        "front": 3,
+        "back": 3,
+        "left": 3,
+        "right": 3
+      },
+      "columnProfile": "rectangular",
+      "columnWidth": 0.3,
+      "columnDepth": 0.3,
+      "columnHeightMode": "per_floor",
+      "dedupeCornerColumns": true,
+      "debug": false
+    },
+    "emptyLot": true,
+    "siteGround": {
+      "surface": "none",
+      "color": "#dff5ff"
+    },
+    "customSpawn": {
+      "col": 22,
+      "row": 22,
+      "level": "ground",
+      "x": 360,
+      "z": 364.4,
+      "y": 100.25
+    },
+    "circulationMode": "launch",
+    "circulationStairs": false,
+    "glassTube": false,
+    "traversalPreset": "catapult",
+    "footprintM": {
+      "width": 16,
+      "depth": 16
+    },
+    "siteAnchor": "sw",
+    "ceilingLight": 0,
+    "ceilingColor": "#e9e7e2",
+    "ceilingTexture": "flat",
+    "surfaceFinish": "matte"
+  },
+  "builtFootprint": {
+    "cells": [
+      "0,0"
+    ],
+    "source": "placement"
+  },
+  "buildingOutlines": [],
+  "spawn": {
+    "x": 360,
+    "y": 100.25,
+    "z": 364.4,
+    "preset": "custom",
+    "cameraTarget": {
+      "x": 357.1891949637553,
+      "y": 101.75,
+      "z": 361.55405990080226
+    }
+  },
+  "ramp": {
+    "x": 8,
+    "z": 8
+  },
+  "floors": [
+    {
+      "floor": 0,
+      "y": 0.24000000000000002,
+      "x": 8,
+      "z": 8
+    },
+    {
+      "floor": 1,
+      "y": 3.4400000000000004,
+      "x": 8,
+      "z": 8
+    },
+    {
+      "floor": 2,
+      "y": 6.640000000000001,
+      "x": 8,
+      "z": 8
+    }
+  ],
+  "modelFile": "models/building.20260906105231154.glb",
+  "modelOrigin": {
+    "x": 8,
+    "y": 0.04,
+    "z": 8
+  },
+  "smartEntities": [
+    {
+      "id": "punch_machine_championship",
+      "type": "punch_machine",
+      "modelFile": "models/smart/punch_machine_championship.20260906105231154.glb",
+      "behavior": "punch_machine",
+      "movement": {
+        "mode": "static",
+        "startFloor": 0,
+        "endFloor": 0,
+        "currentFloor": 0,
+        "speedMps": 0,
+        "dwellSeconds": 0
+      },
+      "anchors": [],
+      "spec": {
+        "centerX": 352,
+        "centerZ": 352,
+        "floorIndex": -1,
+        "width": 2.145,
+        "depth": 3.681,
+        "height": 4.067,
+        "rotationY": 0,
+        "scope": "site",
+        "centerY": 100,
+        "skyIsland": true,
+        "bigScreen": true,
+        "runtimeOriginYOffset": 0
+      }
+    }
+  ],
+  "social": {
+    "version": 1,
+    "venueId": null,
+    "enabled": true,
+    "event": {
+      "name": "Punch Machine Championship",
+      "adminWallets": [
+        "0x23be90335e79d3245615985d91f69814f98a0fab"
+      ],
+      "announceOnEnter": "Enter the queue. On your turn, click and hold the bag, then release when full power crosses the gold timing target.",
+      "crowdEmotes": [
+        "robot",
+        "clap",
+        "dance"
+      ],
+      "rewardClaimUrlTemplate": null,
+      "rewardNft": null,
+      "timeOfDay": "club",
+      "dimVenueLights": false
+    },
+    "gates": [
+      {
+        "id": "gate_building_main",
+        "mode": "allowlist",
+        "chain": "polygon",
+        "contract": null,
+        "contracts": null,
+        "tokenIds": null,
+        "wearableUrns": null,
+        "allowedAddresses": [],
+        "match": "any",
+        "deniedMessage": "Access denied"
+      }
+    ],
+    "buildingGateRuleId": "gate_building_main",
+    "floorGates": [],
+    "zoneRoles": [],
+    "media": {
+      "screenSmartObjectId": null,
+      "audioSmartObjectId": null,
+      "defaultVideoUrl": null,
+      "defaultAudioUrl": null,
+      "audioSpatial": true,
+      "videoPlayingOnLoad": true,
+      "arrivalMedia": "none"
+    },
+    "ambient": {
+      "enabled": false,
+      "tracks": [],
+      "sampleIds": [],
+      "libraryTrackIds": [],
+      "mode": "shuffle",
+      "volume": 0.35,
+      "autoplay": true,
+      "guestSwitch": true,
+      "duckLevel": 0,
+      "fadeS": 1.2
+    },
+    "permissions": {
+      "useWeb3Api": true,
+      "allowTriggerAvatarEmote": true,
+      "allowMovePlayerInsideScene": true,
+      "useFetch": false
+    },
+    "apps": {
+      "gate": {
+        "enabled": true
+      },
+      "worldMap": {
+        "enabled": true,
+        "defaultLevel": "world"
+      },
+      "hostConsole": {
+        "enabled": false,
+        "modules": [
+          "announcements",
+          "guests",
+          "access",
+          "video",
+          "audio",
+          "breakdance",
+          "rewards"
+        ]
+      },
+      "landing": {
+        "enabled": true,
+        "mode": "cover",
+        "title": "PUNCH MACHINE",
+        "subtitle": "",
+        "minHoldS": 1.5,
+        "maxWaitS": 20,
+        "fadeOutS": 0.9,
+        "musicFadeInS": 2.2
+      },
+      "video": {
+        "enabled": false,
+        "source": "none",
+        "screens": []
+      },
+      "audio": {
+        "enabled": false,
+        "source": "none",
+        "playlist": {
+          "mode": "shuffle",
+          "tracks": [],
+          "selectedTrackIds": null
+        },
+        "emitters": []
+      },
+      "audioStream": {
+        "enabled": false,
+        "url": "",
+        "savedUrls": []
+      },
+      "emoteLibrary": {
+        "enabled": false,
+        "entitlement": {
+          "mode": "open",
+          "chain": "polygon",
+          "contract": null,
+          "contracts": null,
+          "tokenIds": null,
+          "wearableUrns": null,
+          "allowedAddresses": null,
+          "match": "any"
+        },
+        "includeHouse": true,
+        "includeOwned": true,
+        "allowSequences": true,
+        "worldEmotes": [],
+        "assignments": {
+          "danceBug": [],
+          "breakdance": [],
+          "npcs": []
+        }
+      },
+      "speakeasy": {
+        "version": 1,
+        "enabled": false,
+        "showCircle": true,
+        "circleRadius": 4,
+        "arrivalNote": "Voice here is proximity-based — stand close to be heard, step outside to leave the conversation.",
+        "worldGateRuleId": null,
+        "vending": {
+          "enabled": false,
+          "itemName": "Dance Bug",
+          "priceMana": null
+        }
+      },
+      "gallery": {
+        "version": 1,
+        "enabled": false,
+        "galleryId": null,
+        "title": "Gallery",
+        "live": null,
+        "library": [],
+        "pieces": [],
+        "spaces": []
+      },
+      "lights": {
+        "enabled": false,
+        "pictureLights": {
+          "enabled": true,
+          "level": 1,
+          "color": null
+        }
+      },
+      "retailShop": {
+        "version": 2,
+        "enabled": false,
+        "title": "Shop",
+        "library": [],
+        "pedestals": [],
+        "shops": [
+          {
+            "id": "shop_default",
+            "title": "Shop",
+            "buildingId": null,
+            "floorIndex": 0,
+            "sellEnabled": true,
+            "buyEnabled": false,
+            "wallet": "0x23be90335e79d3245615985d91f69814f98a0fab",
+            "inventoryStockIds": []
+          }
+        ],
+        "bodyShape": "urn:decentraland:off-chain:base-avatars:BaseMale"
+      },
+      "l1Museum": {
+        "version": 1,
+        "enabled": false,
+        "title": "L1 Tower",
+        "buildingId": null,
+        "startFloor": 0,
+        "capacityPerFloor": 0,
+        "pairSmallCollections": true,
+        "includeCollections": [],
+        "streamRadiusFloors": 0,
+        "floorSigns": true,
+        "ghostColor": "#3dc7ff",
+        "display": "auto"
+      },
+      "scrap": {
+        "enabled": false,
+        "grantNpcAsTarget": true,
+        "npcCanInitiate": true,
+        "playerCanInitiate": true,
+        "npcApproachEverySeconds": 90,
+        "maxConcurrent": 1,
+        "guestCooldownSeconds": 180,
+        "npcCooldownSeconds": 120,
+        "approachRadiusM": 8,
+        "playerInitiateRadiusM": 3,
+        "intensity": "bully",
+        "playerWinBias": 0.85,
+        "mechanic": "aim",
+        "maxBackers": 0,
+        "fightMusic": "",
+        "shovePushM": 0.7,
+        "skillByGroup": {},
+        "humanEdition": false
+      },
+      "scrapHuman": {
+        "enabled": false
+      },
+      "vehicles": {
+        "enabled": true,
+        "parked": false,
+        "neonGlider": false,
+        "accessScope": "world"
+      },
+      "exchange": {
+        "enabled": false,
+        "vendor": {
+          "enabled": true,
+          "name": "Ve",
+          "wallet": "0x23be90335e79d3245615985d91f69814f98a0fab",
+          "station": "vending",
+          "bodyShape": "urn:decentraland:off-chain:base-avatars:BaseMale",
+          "wearables": [
+            "urn:decentraland:off-chain:base-avatars:eyes_00",
+            "urn:decentraland:off-chain:base-avatars:eyebrows_00",
+            "urn:decentraland:off-chain:base-avatars:mouth_00",
+            "urn:decentraland:off-chain:base-avatars:casual_hair_01",
+            "urn:decentraland:off-chain:base-avatars:blue_star_sweater",
+            "urn:decentraland:off-chain:base-avatars:brown_pants",
+            "urn:decentraland:off-chain:base-avatars:sport_black_shoes"
+          ],
+          "sell": [
+            {
+              "id": "dance-bug",
+              "name": "Dance Bug",
+              "kind": "collection_mint",
+              "urn": "urn:decentraland:matic:collections-v2:0x33824a49caaccc4f3bfcb1a53497f386e4ad7522:0"
+            }
+          ],
+          "buy": [
+            {
+              "id": "dance-bug",
+              "name": "Dance Bug",
+              "contract": "0x33824a49caaccc4f3bfcb1a53497f386e4ad7522",
+              "buybackBps": 5000
+            }
+          ],
+          "accept": [
+            "wearable",
+            "emote",
+            "mana",
+            "eth",
+            "land"
+          ]
+        }
+      },
+      "vendor": {
+        "enabled": false,
+        "npc": {
+          "enabled": true,
+          "name": "Vendor",
+          "wallet": "0x23be90335e79d3245615985d91f69814f98a0fab",
+          "station": "vending",
+          "zoneId": "vendor_stall",
+          "bodyShape": "urn:decentraland:off-chain:base-avatars:BaseMale",
+          "wearables": [
+            "urn:decentraland:off-chain:base-avatars:eyes_00",
+            "urn:decentraland:off-chain:base-avatars:eyebrows_00",
+            "urn:decentraland:off-chain:base-avatars:mouth_00",
+            "urn:decentraland:off-chain:base-avatars:casual_hair_01",
+            "urn:decentraland:off-chain:base-avatars:green_hoodie",
+            "urn:decentraland:off-chain:base-avatars:brown_pants",
+            "urn:decentraland:off-chain:base-avatars:sport_black_shoes"
+          ],
+          "sell": [
+            {
+              "id": "dance-bug",
+              "name": "Dance Bug",
+              "kind": "collection_mint",
+              "urn": "urn:decentraland:matic:collections-v2:0x33824a49caaccc4f3bfcb1a53497f386e4ad7522:0"
+            }
+          ],
+          "buy": [
+            {
+              "id": "dance-bug",
+              "name": "Dance Bug",
+              "contract": "0x33824a49caaccc4f3bfcb1a53497f386e4ad7522",
+              "buybackBps": 5000
+            }
+          ],
+          "accept": [
+            "wearable",
+            "emote",
+            "mana",
+            "eth",
+            "land"
+          ]
+        }
+      },
+      "fxLab": {
+        "enabled": false
+      },
+      "weather": {
+        "enabled": false,
+        "cycle": "manual"
+      },
+      "skybox": {
+        "enabled": false,
+        "preset": "city-night",
+        "scope": "world",
+        "libraryId": "",
+        "customBaseUrl": "",
+        "hideLandscape": true
+      },
+      "border": {
+        "version": 2,
+        "enabled": false,
+        "autoManaged": true,
+        "managed": true,
+        "atlasApiBase": "https://builder.swissverse.org",
+        "stripWidthM": 3,
+        "landingInsetM": 8,
+        "north": {
+          "strip": false,
+          "destinationWorld": ""
+        },
+        "east": {
+          "strip": false,
+          "destinationWorld": ""
+        },
+        "south": {
+          "strip": false,
+          "destinationWorld": ""
+        },
+        "west": {
+          "strip": false,
+          "destinationWorld": ""
+        }
+      },
+      "objectStudio": {
+        "enabled": true
+      },
+      "traversal": {
+        "enabled": false
+      },
+      "bubbleBash": {
+        "enabled": false,
+        "botEnabled": true,
+        "labMode": false,
+        "knockbackM": 9,
+        "liftM": 1.6,
+        "hitCooldownMs": 750,
+        "chargeHoldMs": 800,
+        "dashM": 10,
+        "match": {
+          "format": "2v2",
+          "slots": [
+            {
+              "team": "A",
+              "kind": "human",
+              "behaviour": "dummy"
+            },
+            {
+              "team": "A",
+              "kind": "npc",
+              "behaviour": "support"
+            },
+            {
+              "team": "B",
+              "kind": "npc",
+              "behaviour": "aggressive"
+            },
+            {
+              "team": "B",
+              "kind": "npc",
+              "behaviour": "dummy"
+            },
+            {
+              "team": "A",
+              "kind": "empty",
+              "behaviour": "dummy"
+            },
+            {
+              "team": "B",
+              "kind": "empty",
+              "behaviour": "dummy"
+            }
+          ],
+          "arenaPreset": "medium",
+          "wallMode": "soft",
+          "wallRestitution": 0.85,
+          "bubbleDiameterM": 2.3,
+          "accelMps2": 48,
+          "maxSpeedMps": 20,
+          "decelMps2": 14,
+          "turnRateDegS": 360,
+          "highSpeedTurnScale": 0.45,
+          "dragPerS": 0.6,
+          "massKg": 80,
+          "boostEnabled": true,
+          "boostMode": "charge",
+          "boostImpulseMps": 14,
+          "chargeMaxMs": 800,
+          "chargeCurve": "ease",
+          "boostDurationMs": 220,
+          "boostCooldownMs": 900,
+          "knockMultiplier": 1,
+          "speedScaling01": 1,
+          "speedCurve": "linear",
+          "angleScaling01": 0.7,
+          "angleProfile": {
+            "frontal": 1,
+            "side": 1.4,
+            "rear": 1.8
+          },
+          "freshImpactMultiplier": 1.35,
+          "sustainedContactForce": 0.1,
+          "separationM": 2.6,
+          "impactResetMs": 420,
+          "attackerRecoveryMs": 180,
+          "victimRecoveryMs": 420,
+          "recoverySteer01": 0.25,
+          "recoveryLocksBoost": true,
+          "comboWindowMs": 420,
+          "comboMult2": 2.5,
+          "comboMult3": 5,
+          "launchTeammateMult": 1.8,
+          "projectileMs": 1400,
+          "projectileImpactMult": 1.6,
+          "projectileMaxSpeedMps": 22,
+          "projectileSteer01": 0.2,
+          "projectileCancelsOnHit": true,
+          "passMultipliers": [
+            2,
+            3,
+            5
+          ],
+          "resolver": "hybrid",
+          "launchSampling": "arc",
+          "trajectory": "arc",
+          "launchLiftM": 1.6,
+          "launchDurationMs": 480,
+          "launchDamping": 0.35,
+          "launchSteer01": 0.15,
+          "gameMode": "ball",
+          "scoreLimit": 3,
+          "respawnMs": 1400,
+          "pauseAfterScore": false,
+          "resetAfterScore": false,
+          "hotTargetBonus": 2,
+          "hotTargetMs": 8000,
+          "hotTargetEveryMs": 12000,
+          "ballMassKg": 12,
+          "ballRestitution": 0.92,
+          "ballDragPerS": 0.35,
+          "debugHud": true,
+          "debugVectors": false,
+          "soundOn": true,
+          "driveWalk": true,
+          "hopEnabled": true,
+          "hopLiftM": 1.8,
+          "hopForwardM": 1.4,
+          "hopDurationMs": 420,
+          "hopCooldownMs": 800
+        }
+      },
+      "punchMachine": {
+        "gameProfile": {
+          "id": "streak-rush",
+          "title": "Streak Rush",
+          "multipliers": [
+            1,
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64
+          ],
+          "maxAttempts": 12,
+          "speedStep": 0.04,
+          "speedMax": 1.3,
+          "varianceStep": 0.12,
+          "difficultyGain": 7,
+          "difficultyMax": 16,
+          "earlyBonus": 0.1,
+          "musicEnabled": true,
+          "musicStartStreak": 4,
+          "musicVolume": 0.35,
+          "musicTracks": [
+            "rush",
+            "hot"
+          ],
+          "goldenBallEnabled": true,
+          "saveEarnPoints": 36,
+          "savesEnabled": true,
+          "crowdGain": 1,
+          "fastRevealMs": 900,
+          "voices": 1,
+          "bubbles": 1,
+          "celebrationEmote": "handsair",
+          "impactStyle": "bass",
+          "disabledCards": [],
+          "disabledAudio": [],
+          "effects": {
+            "impactAudio": {
+              "enabled": true,
+              "intensity": 100,
+              "minScore": 0,
+              "minStreak": 0,
+              "chance": 100,
+              "cooldown": 0
+            },
+            "cabinetAudio": {
+              "enabled": true,
+              "intensity": 65,
+              "minScore": 0,
+              "minStreak": 0,
+              "chance": 100,
+              "cooldown": 0
+            },
+            "crowdVoice": {
+              "enabled": true,
+              "intensity": 80,
+              "minScore": 700,
+              "minStreak": 2,
+              "chance": 85,
+              "cooldown": 1
+            },
+            "crowdText": {
+              "enabled": true,
+              "intensity": 100,
+              "minScore": 650,
+              "minStreak": 2,
+              "chance": 85,
+              "cooldown": 1
+            },
+            "crowdBody": {
+              "enabled": true,
+              "intensity": 80,
+              "minScore": 700,
+              "minStreak": 2,
+              "chance": 100,
+              "cooldown": 0
+            },
+            "particles": {
+              "enabled": true,
+              "intensity": 70,
+              "minScore": 750,
+              "minStreak": 2,
+              "chance": 100,
+              "cooldown": 0
+            },
+            "fire": {
+              "enabled": true,
+              "intensity": 100,
+              "minScore": 860,
+              "minStreak": 4,
+              "chance": 100,
+              "cooldown": 2
+            },
+            "cabinetMotion": {
+              "enabled": true,
+              "intensity": 100,
+              "minScore": 0,
+              "minStreak": 0,
+              "chance": 100,
+              "cooldown": 0
+            },
+            "islandMotion": {
+              "enabled": true,
+              "intensity": 75,
+              "minScore": 900,
+              "minStreak": 5,
+              "chance": 100,
+              "cooldown": 3
+            },
+            "screenMotion": {
+              "enabled": true,
+              "intensity": 70,
+              "minScore": 820,
+              "minStreak": 3,
+              "chance": 100,
+              "cooldown": 1
+            },
+            "cameraMotion": {
+              "enabled": true,
+              "intensity": 60,
+              "minScore": 900,
+              "minStreak": 4,
+              "chance": 100,
+              "cooldown": 2
+            },
+            "screenFx": {
+              "enabled": true,
+              "intensity": 80,
+              "minScore": 0,
+              "minStreak": 0,
+              "chance": 100,
+              "cooldown": 0
+            },
+            "worldFx": {
+              "enabled": true,
+              "intensity": 75,
+              "minScore": 860,
+              "minStreak": 3,
+              "chance": 100,
+              "cooldown": 2
+            },
+            "celebration": {
+              "enabled": true,
+              "intensity": 100,
+              "minScore": 940,
+              "minStreak": 4,
+              "chance": 100,
+              "cooldown": 2
+            },
+            "lightning": {
+              "enabled": true,
+              "intensity": 85,
+              "minScore": 960,
+              "minStreak": 6,
+              "chance": 100,
+              "cooldown": 3
+            },
+            "blizzard": {
+              "enabled": true,
+              "intensity": 65,
+              "minScore": 985,
+              "minStreak": 8,
+              "chance": 100,
+              "cooldown": 3
+            },
+            "cameraOrbit": {
+              "enabled": true,
+              "intensity": 65,
+              "minScore": 950,
+              "minStreak": 6,
+              "chance": 100,
+              "cooldown": 5
+            }
+          }
+        },
+        "enabled": true,
+        "mode": "competition",
+        "bundleProfile": "compact",
+        "idealChargeMs": 850,
+        "minScore": 120,
+        "maxScore": 999,
+        "roundCooldownMs": 2600,
+        "strikeZoneId": "punch_strike_zone",
+        "queueZoneId": "punch_queue_zone",
+        "audienceZoneId": "punch_audience_zone",
+        "audienceGroupId": "punch_audience",
+        "turnTimeoutMs": 20000,
+        "leaderboardSize": 5,
+        "celebrationScore": 900,
+        "soundsEnabled": true,
+        "skyIslandEnabled": true,
+        "islandHeightM": 100,
+        "fallPromptY": 60,
+        "bigScreenEnabled": true,
+        "bigScreenVideoUrl": "",
+        "bigScreenVolume": 0,
+        "boardStore": {
+          "url": "https://gezepzodpbdbsavgrdec.supabase.co",
+          "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVscGdkbHJlbGhwb3hndXJrdnRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTIzNTQsImV4cCI6MjA5NjIyODM1NH0.8eKTiRq2fwAF_Rh5-YrFB8CtOnQ-jMvueWS6Ck7anTA",
+          "table": "punch_board",
+          "venue": "punch-island"
+        }
+      },
+      "graveyard": {
+        "enabled": false,
+        "absenceDays": 90,
+        "seedDemo": false,
+        "censusBaseUrl": ""
+      },
+      "garden": {
+        "enabled": false,
+        "stageHours": 24,
+        "helpers": "owner",
+        "helperWallets": [],
+        "apiBaseUrl": "",
+        "wind": 55,
+        "startStage": 2
+      },
+      "train": {
+        "enabled": false,
+        "worldScene": false,
+        "axis": "auto",
+        "periodSec": 240,
+        "cars": 2,
+        "stations": true,
+        "stationAName": "West",
+        "stationBName": "East",
+        "stationAExit": null,
+        "stationBExit": null,
+        "track": true
+      }
+    },
+    "installedAppIds": [
+      "swissverse.world-map",
+      "swissverse.vehicles",
+      "swissverse.gate",
+      "swissverse.landing",
+      "swissverse.punch-machine",
+      "swissverse.object-studio"
+    ],
+    "dance": {
+      "enabled": false,
+      "autoStart": true,
+      "placement": {
+        "floorIndex": -1,
+        "centerX": 0,
+        "centerZ": 0,
+        "floorRadius": 2.4,
+        "gatherRadius": 5
+      },
+      "danceFloorZoneId": null,
+      "supportZoneId": null,
+      "clubFxZoneId": null,
+      "countdownSeconds": 3,
+      "maxIdleGapS": 10,
+      "refreshIntervalS": 30,
+      "maxRepeatCount": 5,
+      "minUniqueEmotes": 3,
+      "stageIntervalS": 30,
+      "varietyGraceS": 15,
+      "maxTurnS": 180,
+      "prepEmotes": [
+        "fistpump",
+        "tik",
+        "robot"
+      ],
+      "waitEmoteSrc": "emotes/bd_ready_3_x2_emote.glb",
+      "waitEmoteDurationMs": 4500,
+      "floorPrepEmoteSrc": "emotes/bd_uprock_new_emote.glb",
+      "npc": {
+        "enabled": true,
+        "name": "Punch Fan",
+        "emotes": [
+          "emotes/ballet_turn_loop_emote.glb",
+          "emotes/windmill_combo_emote.glb",
+          "emotes/headspin_combo_emote.glb",
+          "emotes/bd_1990_new_x4_emote.glb",
+          "emotes/bboy_uprock_emote.glb",
+          "emotes/snake_hiphop_new_emote.glb",
+          "emotes/bd_footwork_to_freeze_emote.glb",
+          "emotes/bd_uprock_to_ground_new_emote.glb",
+          "emotes/bboy_hiphop_move_new_emote.glb"
+        ],
+        "routineSeconds": 8,
+        "count": 10,
+        "turnS": 20,
+        "failEvery": 3,
+        "names": [
+          "Nina",
+          "Noah",
+          "Nadia",
+          "Nico",
+          "Nora",
+          "Nate",
+          "Naomi",
+          "Nils",
+          "Maya",
+          "Leo"
+        ],
+        "wearables": [],
+        "outfits": [],
+        "outfitLinks": [],
+        "castPack": null,
+        "castSeed": 0,
+        "groups": [
+          {
+            "id": "punch_audience",
+            "name": "Championship crowd",
+            "count": 10,
+            "role": "hangout",
+            "place": {
+              "kind": "zone",
+              "zoneId": "punch_audience_zone",
+              "floors": []
+            },
+            "emotes": [],
+            "outfits": [],
+            "outfitLinks": [],
+            "dressCode": "sport",
+            "castPack": null,
+            "castSeed": 0,
+            "energetic": false,
+            "formation": "circle",
+            "attitude": "friendly",
+            "interruptible": true
+          }
+        ],
+        "overrides": []
+      },
+      "crowd": {
+        "emotes": [
+          "clap",
+          "handsair",
+          "fistpump",
+          "handsair"
+        ],
+        "periodS": 14,
+        "handsUpEmote": "handsair",
+        "readyEmote": "emotes/bd_ready_3_x2_emote.glb",
+        "peerEmote": "dontsee",
+        "stepInEmote": "emotes/bd_uprock_new_emote.glb",
+        "aggressive": false
+      },
+      "reactions": {
+        "enabled": true,
+        "audioEnabled": false,
+        "audioVolume": 0.95,
+        "spectacleEnabled": true,
+        "maxAutomaticIntensity": 4,
+        "speechEnabled": true,
+        "positiveEmotes": [
+          "handsair",
+          "wave",
+          "shrug",
+          "handsair",
+          "wave",
+          "shrug"
+        ],
+        "negativeEmotes": [
+          "dontsee",
+          "shrug",
+          "wave"
+        ],
+        "aggressiveEmotes": [
+          "wave",
+          "handsair",
+          "emotes/bd_uprock_new_emote.glb",
+          "emotes/bboy_uprock_emote.glb"
+        ],
+        "positiveSpeech": [
+          "WOOO!",
+          "YEEAH!",
+          "AAAA!",
+          "Go!",
+          "Get it!",
+          "Ayy!",
+          "Fire!",
+          "That's it!",
+          "Let's go!",
+          "Do it!",
+          "Come on!",
+          "YES!!",
+          "WHOA!",
+          "Go off!",
+          "Ahhh!",
+          "GET IT!"
+        ],
+        "negativeSpeech": [
+          "BOOO!",
+          "Ohh…",
+          "Nah",
+          "What?",
+          "Nooo",
+          "Come on",
+          "Wack",
+          "Bruh"
+        ]
+      },
+      "failureDisplayS": 4,
+      "transitionS": 2,
+      "selectGraceS": 4,
+      "memberTimeoutS": 12,
+      "encounterMood": "friendly",
+      "obstructions": [
+        {
+          "x": -7.85,
+          "z": -7.85,
+          "r": 0.15
+        },
+        {
+          "x": 7.85,
+          "z": -7.85,
+          "r": 0.15
+        },
+        {
+          "x": -7.85,
+          "z": 7.85,
+          "r": 0.15
+        },
+        {
+          "x": 7.85,
+          "z": 7.85,
+          "r": 0.15
+        },
+        {
+          "x": -3.925,
+          "z": -7.85,
+          "r": 0.15
+        },
+        {
+          "x": 0,
+          "z": -7.85,
+          "r": 0.15
+        },
+        {
+          "x": 3.924999999999999,
+          "z": -7.85,
+          "r": 0.15
+        },
+        {
+          "x": -3.925,
+          "z": 7.85,
+          "r": 0.15
+        },
+        {
+          "x": 0,
+          "z": 7.85,
+          "r": 0.15
+        },
+        {
+          "x": 3.924999999999999,
+          "z": 7.85,
+          "r": 0.15
+        },
+        {
+          "x": -7.85,
+          "z": -3.925,
+          "r": 0.15
+        },
+        {
+          "x": -7.85,
+          "z": 0,
+          "r": 0.15
+        },
+        {
+          "x": -7.85,
+          "z": 3.924999999999999,
+          "r": 0.15
+        },
+        {
+          "x": 7.85,
+          "z": -3.925,
+          "r": 0.15
+        },
+        {
+          "x": 7.85,
+          "z": 0,
+          "r": 0.15
+        },
+        {
+          "x": 7.85,
+          "z": 3.924999999999999,
+          "r": 0.15
+        },
+        {
+          "x": -8,
+          "z": -8,
+          "x2": -1.2999999999999998,
+          "z2": -8,
+          "r": 0.5
+        },
+        {
+          "x": 1.3000000000000007,
+          "z": -8,
+          "x2": 8,
+          "z2": -8,
+          "r": 0.5
+        },
+        {
+          "x": 8,
+          "z": -8,
+          "x2": 8,
+          "z2": 8,
+          "r": 0.5
+        },
+        {
+          "x": 8,
+          "z": 8,
+          "x2": -8,
+          "z2": 8,
+          "r": 0.5
+        },
+        {
+          "x": -8,
+          "z": 8,
+          "x2": -8,
+          "z2": -8,
+          "r": 0.5
+        }
+      ],
+      "music": {
+        "mode": "shuffle",
+        "tracks": [],
+        "selectedTrackIds": null
+      },
+      "musicSpread": "venue",
+      "clubFx": {
+        "enabled": true,
+        "beatFlash": true,
+        "smokeStrength": 1,
+        "smokeAngleDeg": 0,
+        "lightHeight": 7
+      },
+      "crowdNavigation": {
+        "waypoints": [],
+        "links": [],
+        "roamZones": [],
+        "dwellMinS": 8,
+        "dwellMaxS": 22
+      },
+      "choreography": {
+        "activeRoutineId": "break-crew",
+        "formation": "chevron",
+        "performerCount": 9,
+        "leadCount": 9,
+        "backupCount": 0,
+        "moves": [
+          "emotes/bd_uprock_new_emote.glb",
+          "emotes/bboy_uprock_emote.glb",
+          "emotes/bboy_hiphop_move_new_emote.glb",
+          "emotes/bd_footwork_to_freeze_emote.glb",
+          "emotes/bd_freeze_var_3_emote.glb",
+          "emotes/bd_footwork_to_idle_2_fixed_emote.glb",
+          "emotes/bd_uprock_to_ground_new_emote.glb",
+          "emotes/snake_hiphop_new_emote.glb",
+          "emotes/bd_ending_new_2_emote.glb"
+        ],
+        "backupMoves": [],
+        "idleMoves": [],
+        "moveDurationMs": 4500,
+        "loop": true,
+        "formationSpacing": 1.35,
+        "audienceYawDeg": 180
+      }
+    },
+    "programmes": [],
+    "wardrobe": {
+      "wallet": "",
+      "items": [],
+      "looks": []
+    }
+  },
+  "vehicles": [],
+  "floorZones": [
+    {
+      "id": "punch_strike_zone",
+      "name": "Strike circle",
+      "floorIndex": -1,
+      "floorY": 100,
+      "shape": {
+        "kind": "circle",
+        "centerX": 352,
+        "centerZ": 348.65,
+        "radius": 1.3
+      }
+    },
+    {
+      "id": "punch_queue_zone",
+      "name": "Competition queue",
+      "floorIndex": -1,
+      "floorY": 100,
+      "shape": {
+        "kind": "rect",
+        "centerX": 352,
+        "centerZ": 354.25,
+        "width": 2.5,
+        "depth": 5.3
+      }
+    },
+    {
+      "id": "punch_audience_zone",
+      "name": "Audience ring",
+      "floorIndex": -1,
+      "floorY": 100,
+      "shape": {
+        "kind": "circle",
+        "centerX": 352,
+        "centerZ": 352,
+        "radius": 4.6
+      }
+    }
+  ],
+  "venueCapabilities": {
+    "schemaVersion": 1,
+    "venueId": "Punch Machine Championship",
+    "generatedAt": "2026-09-06T10:52:31.154Z",
+    "coordinateSpace": "composer-local-meters",
+    "capabilities": [
+      {
+        "id": "punch_audience_zone",
+        "kind": "zone",
+        "name": "Audience ring",
+        "position": {
+          "x": 352,
+          "z": 352,
+          "floorIndex": -1
+        },
+        "shape": {
+          "kind": "circle",
+          "centerX": 352,
+          "centerZ": 352,
+          "radius": 4.6
+        },
+        "actions": [
+          "detect-presence"
+        ]
+      },
+      {
+        "id": "punch_queue_zone",
+        "kind": "zone",
+        "name": "Competition queue",
+        "position": {
+          "x": 352,
+          "z": 354.25,
+          "floorIndex": -1
+        },
+        "shape": {
+          "kind": "rect",
+          "centerX": 352,
+          "centerZ": 354.25,
+          "width": 2.5,
+          "depth": 5.3
+        },
+        "actions": [
+          "detect-presence"
+        ]
+      },
+      {
+        "id": "punch_strike_zone",
+        "kind": "zone",
+        "name": "Strike circle",
+        "position": {
+          "x": 352,
+          "z": 348.65,
+          "floorIndex": -1
+        },
+        "shape": {
+          "kind": "circle",
+          "centerX": 352,
+          "centerZ": 348.65,
+          "radius": 1.3
+        },
+        "actions": [
+          "detect-presence"
+        ]
+      }
+    ]
+  },
+  "destinationId": "highground.dcl.eth:-38,104",
+  "projectId": "5307af6e-d694-41ff-9613-f04d75f1b70f",
+  "worldDirector": {
+    "directorId": "0e6bf218-8ba5-4590-aead-acc0240f955b",
+    "url": "https://builder.swissverse.org/api/world-director/doc/0e6bf218-8ba5-4590-aead-acc0240f955b",
+    "pollSeconds": 15
+  },
+  "models": []
+}

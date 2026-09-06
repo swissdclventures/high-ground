@@ -1,0 +1,15 @@
+{
+  "name": "high-ground",
+  "version": "1.0.0",
+  "description": "High Ground — a mobile-first multiplayer punch-machine championship in Decentraland",
+  "scripts": {
+    "start": "sdk-commands start",
+    "deploy": "sdk-commands deploy"
+  },
+  "devDependencies": {
+    "@dcl/sdk": "^7.27.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
