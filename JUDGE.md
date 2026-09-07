@@ -24,14 +24,18 @@ On a phone, held in landscape. That is the device this was built for.
    a marker sweeps a band. Power builds while you hold.
 4. **Let go on the band.** Three channels are scored: power, timing, aim.
    Your score lands on the arena screen with a verdict card, then on the board.
-5. **Watch someone else's turn.** Press E as a spectator to join the circle —
-   your taps feed the meter that multiplies the punch of whoever is up.
+5. **Watch someone else's turn.** Stay in the queue and work the meter with E:
+   you bank Focus for your OWN next punch, and if a punch of yours later falls
+   short of 900 with a streak alive, Focus lifts it back to the threshold. If a
+   rival's streak breaks, a four-second window opens and anyone NOT in the queue
+   can reach for the catch and be named for it.
 
 If you have 30 seconds more: jump on the clouds under the island, pressing jump
 again on the way down. The bounce compounds. It is how you climb back up.
 
 Three secrets are hidden in the scene, one per input channel. They are meant to
-be found by a room, not by one player, and we are not spoiling them here.
+be found by a room, not by one player — [`GAME.md`](GAME.md) keeps them behind a
+spoiler fold, and carries the full rules besides.
 
 ---
 
@@ -41,7 +45,7 @@ be found by a room, not by one player, and we are not spoiling them here.
 |---|---|---|
 | **Mobile-First Experience** | The glove, first 10 seconds | Charge-and-release is one held thumb. No typing, no precise aim, no keyboard verb anywhere in the core loop. `ARCHITECTURE.md` § Mobile-first |
 | **Mobile UX** | Bottom edge of the screen | One HUD frame derived from the Explorer's own `interactableArea` plus the device notch inset, so nothing sits under the joystick or jump cluster. Unused gamepad buttons and the duplicate crosshair are removed via `TouchScreenControls`. Both thumb controls land on one line |
-| **Social Value** | A turn with two or more people in the room | A turn is a performance, not a solo score. Spectators are mechanically load-bearing: the circle's meter multiplies the active player's punch, and a broken streak can be rescued by the crowd inside a fair, clock-corrected window |
+| **Social Value** | A turn with two or more people in the room | A turn is a performance, not a solo score. Spectators are mechanically load-bearing: a broken streak can be caught by somebody who is NOT competing, inside a fair, clock-corrected window, and they are named for it on the screen and the board. Waiting is its own game — the Focus meter banks a rescue for your own next turn. See `GAME.md` |
 | **Performance** | Anywhere | Peer-to-peer over the scene message bus, no server in the hot path. The all-time board is on a strict never-block contract — see `ARCHITECTURE.md` § The board is never a dependency |
 | **Creativity** | The arena arc and the cloud climb | A 16 m curved screen that never carries body text (it turns away from the crowd at both ends), a compounding jump-rhythm climb, and a scoring curve rebalanced against 20k simulated turns |
 | **Retention** | The board, and coming back tomorrow | Scores outlive the session and the room. The board is the async layer: you arrive alone and are still playing against everyone who was here before you |

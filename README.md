@@ -11,16 +11,19 @@ them. Snapshot taken 2026-09-06; the World is redeployed as the scene changes,
 and the content server always holds the authoritative copy.
 
 **Judges: start at [`JUDGE.md`](JUDGE.md)** — a 90-second path and where each
-criterion lives. [`ARCHITECTURE.md`](ARCHITECTURE.md) covers the multiplayer
-coordinator, the persistent board's failure contract and the mobile layout
-rules. [`docs/process/`](docs/process/) covers how it was built and tested.
+criterion lives. [`GAME.md`](GAME.md) is the rulebook — every number on the
+screen, the side games and what 900 means. [`ARCHITECTURE.md`](ARCHITECTURE.md)
+covers the multiplayer coordinator, the persistent board's failure contract and
+the mobile layout rules. [`docs/process/`](docs/process/) covers how it was built
+and tested.
 
 ## What it is
 
 Step up to the machine, charge a punch, and time the release. Everyone in the
-World shares one queue and one arena screen, so a turn is a performance: the
-crowd can boost or jinx the player who is up, a streak ladder escalates the show,
-and the scores land on a board that outlives the session.
+World shares one queue and one arena screen, so a turn is a performance: a punch
+of 900+ extends your turn and steps a multiplier ladder, the crowd can catch a
+broken streak inside a four-second window, and the scores land on a board that
+outlives the session. Full rules in [`GAME.md`](GAME.md).
 
 It is designed for Decentraland Mobile first — the controls, the readable text
 sizes and the thumb clearance are all built around a phone held in landscape,
