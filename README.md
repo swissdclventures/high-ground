@@ -5,10 +5,15 @@ sky island, built for the Decentraland Friendzone Mobile Buildathon.
 
 Play it: **[HIGHGROUND.dcl.eth](https://decentraland.org/play/?realm=HIGHGROUND.dcl.eth)**
 
-This repository is the scene exactly as deployed — byte-for-byte what the
-Decentraland Explorer loads when you visit that World, not a rebuild of it.
+This repository is a snapshot of the scene as deployed — the files the
+Decentraland Explorer actually loads when you visit that World, not a rebuild of
+them. Snapshot taken 2026-09-06; the World is redeployed as the scene changes,
+and the content server always holds the authoritative copy.
 
-Deployed entity: `bafkreiffyvyoywvqt3ybyn5kxtlizhhysuijtnes5w7unnxz7juk7huc6m`
+**Judges: start at [`JUDGE.md`](JUDGE.md)** — a 90-second path and where each
+criterion lives. [`ARCHITECTURE.md`](ARCHITECTURE.md) covers the multiplayer
+coordinator, the persistent board's failure contract and the mobile layout
+rules. [`docs/process/`](docs/process/) covers how it was built and tested.
 
 ## What it is
 
@@ -59,4 +64,4 @@ Built with **The Build** by [Swissverse](https://swissverse.org).
 
 ## License
 
-MIT
+MIT — see [`LICENSE`](LICENSE).
