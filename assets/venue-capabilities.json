@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "venueId": "Punch Machine Championship",
-  "generatedAt": "2026-09-06T10:52:31.154Z",
+  "venueId": "Punch Machine",
+  "generatedAt": "2026-09-08T21:21:13.668Z",
   "coordinateSpace": "composer-local-meters",
   "capabilities": [
     {
@@ -15,9 +15,9 @@
       },
       "shape": {
         "kind": "circle",
+        "radius": 4.6,
         "centerX": 352,
-        "centerZ": 352,
-        "radius": 4.6
+        "centerZ": 352
       },
       "actions": [
         "detect-presence"
@@ -34,10 +34,10 @@
       },
       "shape": {
         "kind": "rect",
-        "centerX": 352,
-        "centerZ": 354.25,
+        "depth": 5.3,
         "width": 2.5,
-        "depth": 5.3
+        "centerX": 352,
+        "centerZ": 354.25
       },
       "actions": [
         "detect-presence"
@@ -54,9 +54,9 @@
       },
       "shape": {
         "kind": "circle",
+        "radius": 1.3,
         "centerX": 352,
-        "centerZ": 348.65,
-        "radius": 1.3
+        "centerZ": 348.65
       },
       "actions": [
         "detect-presence"

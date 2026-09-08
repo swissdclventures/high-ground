@@ -2,7 +2,7 @@
   "ecs7": true,
   "runtimeVersion": "7",
   "display": {
-    "title": "Punch Machine Championship",
+    "title": "Punch Machine",
     "description": "Built with The Build by Swissverse.",
     "navmapThumbnail": "images/scene-thumbnail.png",
     "favicon": "favicon_asset"
@@ -87,22 +87,22 @@
       "default": false,
       "position": {
         "x": [
-          359.5,
-          360.5
+          719,
+          720
         ],
         "y": [
           100.25,
           100.75
         ],
         "z": [
-          363.9,
-          364.9
+          719,
+          720
         ]
       },
       "cameraTarget": {
-        "x": 357.1891949637553,
+        "x": 716.6715728752538,
         "y": 101.75,
-        "z": 361.55405990080226
+        "z": 716.6715728752538
       }
     },
     {
@@ -2164,11 +2164,11 @@
     "base": "-38,104"
   },
   "publication": {
-    "buildId": "49c8339d56ad.7d62ce114490",
-    "revision": "49c8339d56ad41bb",
-    "builderBuild": "7d62ce114490",
+    "buildId": "79c949e9ac12.d7ee7bc14125",
+    "revision": "79c949e9ac12a5a9",
+    "builderBuild": "d7ee7bc14125",
     "builderVersion": "0.1.10",
-    "publishedAt": "2026-09-06T10:52:31.154Z"
+    "publishedAt": "2026-09-08T21:21:13.668Z"
   },
   "worldConfiguration": {
     "name": "HIGHGROUND.dcl.eth"

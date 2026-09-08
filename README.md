@@ -7,8 +7,11 @@ Play it: **[HIGHGROUND.dcl.eth](https://decentraland.org/play/?realm=HIGHGROUND.
 
 This repository is a snapshot of the scene as deployed — the files the
 Decentraland Explorer actually loads when you visit that World, not a rebuild of
-them. Snapshot taken 2026-09-06; the World is redeployed as the scene changes,
-and the content server always holds the authoritative copy.
+them. Snapshot taken 2026-09-09, from the deployment of 2026-09-08 21:21 UTC.
+The World is redeployed as the scene changes, and the content server always
+holds the authoritative copy.
+
+Third-party asset credits are in [`CREDITS.md`](CREDITS.md).
 
 **Judges: start at [`JUDGE.md`](JUDGE.md)** — a 90-second path and where each
 criterion lives. [`GAME.md`](GAME.md) is the rulebook — every number on the

@@ -1,10 +1,10 @@
 {
-  "syncedAt": "2026-09-06T10:52:31.154Z",
+  "syncedAt": "2026-09-08T21:21:13.668Z",
   "worldName": "highground.dcl.eth",
   "sceneBase": "-38,104",
   "destination": "world",
   "productKind": "builder",
-  "buildingName": "Punch Machine Championship",
+  "buildingName": "Punch Machine",
   "scene": {
     "cols": 45,
     "rows": 45
@@ -46,31 +46,31 @@
       "debug": false
     },
     "emptyLot": true,
-    "siteGround": {
-      "surface": "none",
-      "color": "#dff5ff"
-    },
-    "customSpawn": {
-      "col": 22,
-      "row": 22,
-      "level": "ground",
-      "x": 360,
-      "z": 364.4,
-      "y": 100.25
-    },
-    "circulationMode": "launch",
-    "circulationStairs": false,
     "glassTube": false,
-    "traversalPreset": "catapult",
     "footprintM": {
       "width": 16,
       "depth": 16
     },
     "siteAnchor": "sw",
-    "ceilingLight": 0,
+    "siteGround": {
+      "color": "#dff5ff",
+      "surface": "none"
+    },
+    "customSpawn": {
+      "col": 44,
+      "row": 44,
+      "level": "ground",
+      "x": 719.5,
+      "z": 719.5,
+      "y": 100.25
+    },
     "ceilingColor": "#e9e7e2",
+    "ceilingLight": 0,
+    "surfaceFinish": "matte",
     "ceilingTexture": "flat",
-    "surfaceFinish": "matte"
+    "circulationMode": "launch",
+    "traversalPreset": "catapult",
+    "circulationStairs": false
   },
   "builtFootprint": {
     "cells": [
@@ -80,14 +80,14 @@
   },
   "buildingOutlines": [],
   "spawn": {
-    "x": 360,
+    "x": 719.5,
     "y": 100.25,
-    "z": 364.4,
+    "z": 719.5,
     "preset": "custom",
     "cameraTarget": {
-      "x": 357.1891949637553,
+      "x": 716.6715728752538,
       "y": 101.75,
-      "z": 361.55405990080226
+      "z": 716.6715728752538
     }
   },
   "ramp": {
@@ -114,7 +114,7 @@
       "z": 8
     }
   ],
-  "modelFile": "models/building.20260906105231154.glb",
+  "modelFile": "models/building.20260908212113668.glb",
   "modelOrigin": {
     "x": 8,
     "y": 0.04,
@@ -124,29 +124,29 @@
     {
       "id": "punch_machine_championship",
       "type": "punch_machine",
-      "modelFile": "models/smart/punch_machine_championship.20260906105231154.glb",
+      "modelFile": "models/smart/punch_machine_championship.20260908212113668.glb",
       "behavior": "punch_machine",
       "movement": {
         "mode": "static",
-        "startFloor": 0,
         "endFloor": 0,
-        "currentFloor": 0,
         "speedMps": 0,
+        "startFloor": 0,
+        "currentFloor": 0,
         "dwellSeconds": 0
       },
       "anchors": [],
       "spec": {
-        "centerX": 352,
-        "centerZ": 352,
-        "floorIndex": -1,
-        "width": 2.145,
         "depth": 3.681,
-        "height": 4.067,
-        "rotationY": 0,
         "scope": "site",
+        "width": 2.145,
+        "height": 4.067,
+        "centerX": 352,
         "centerY": 100,
-        "skyIsland": true,
+        "centerZ": 352,
         "bigScreen": true,
+        "rotationY": 0,
+        "skyIsland": true,
+        "floorIndex": -1,
         "runtimeOriginYOffset": 0
       }
     }
@@ -156,9 +156,10 @@
     "venueId": null,
     "enabled": true,
     "event": {
-      "name": "Punch Machine Championship",
+      "name": "Punch Machine",
       "adminWallets": [
-        "0x23be90335e79d3245615985d91f69814f98a0fab"
+        "0x23be90335e79d3245615985d91f69814f98a0fab",
+        "0x5d6e5441775aa8a14f50230faea45fe6d3e94841"
       ],
       "announceOnEnter": "Enter the queue. On your turn, click and hold the bag, then release when full power crosses the gold timing target.",
       "crowdEmotes": [
@@ -200,7 +201,9 @@
     "ambient": {
       "enabled": false,
       "tracks": [],
-      "sampleIds": [],
+      "sampleIds": [
+        "night-park"
+      ],
       "libraryTrackIds": [],
       "mode": "shuffle",
       "volume": 0.35,
@@ -225,15 +228,7 @@
       },
       "hostConsole": {
         "enabled": false,
-        "modules": [
-          "announcements",
-          "guests",
-          "access",
-          "video",
-          "audio",
-          "breakdance",
-          "rewards"
-        ]
+        "modules": []
       },
       "landing": {
         "enabled": true,
@@ -353,7 +348,7 @@
         "display": "auto"
       },
       "scrap": {
-        "enabled": false,
+        "enabled": true,
         "grantNpcAsTarget": true,
         "npcCanInitiate": true,
         "playerCanInitiate": true,
@@ -363,7 +358,7 @@
         "npcCooldownSeconds": 120,
         "approachRadiusM": 8,
         "playerInitiateRadiusM": 3,
-        "intensity": "bully",
+        "intensity": "tease",
         "playerWinBias": 0.85,
         "mechanic": "aim",
         "maxBackers": 0,
@@ -655,23 +650,43 @@
           "difficultyMax": 16,
           "earlyBonus": 0.1,
           "musicEnabled": true,
-          "musicStartStreak": 4,
+          "musicStartStreak": 3,
           "musicVolume": 0.35,
           "musicTracks": [
-            "rush",
-            "hot"
+            "breaktime",
+            "roulette"
           ],
           "goldenBallEnabled": true,
+          "goldenEveryStreak": 3,
+          "goldenMultiplier": 2,
+          "rescueFrequency": "maximum",
+          "rescueCooldownAttempts": 0,
+          "rescuePreparationMs": 1200,
+          "rescueWindowMs": 7000,
+          "rescueTapsRequired": 12,
+          "rescueLastChanceOnly": true,
+          "rescueMaxPerRound": 1,
+          "rescueSkill": "band-taps",
+          "rescueBandTapsRequired": 3,
+          "rescueBand01": 0.22,
+          "rescueFailureTell": "near-miss",
+          "focusEnabled": false,
           "saveEarnPoints": 36,
           "savesEnabled": true,
           "crowdGain": 1,
+          "karmaRingBand01": 0.06,
+          "fumbleRiskTellEnabled": true,
+          "fumbleRiskTellStyle": "physical",
           "fastRevealMs": 900,
-          "voices": 1,
-          "bubbles": 1,
+          "voices": 2,
+          "bubbles": 2,
           "celebrationEmote": "handsair",
           "impactStyle": "bass",
           "disabledCards": [],
           "disabledAudio": [],
+          "coachUserId": "",
+          "heatFloor01": 0.35,
+          "profileVersion": 4,
           "effects": {
             "impactAudio": {
               "enabled": true,
@@ -683,7 +698,7 @@
             },
             "cabinetAudio": {
               "enabled": true,
-              "intensity": 65,
+              "intensity": 100,
               "minScore": 0,
               "minStreak": 0,
               "chance": 100,
@@ -691,32 +706,32 @@
             },
             "crowdVoice": {
               "enabled": true,
-              "intensity": 80,
-              "minScore": 700,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 2,
-              "chance": 85,
-              "cooldown": 1
+              "chance": 100,
+              "cooldown": 0
             },
             "crowdText": {
               "enabled": true,
               "intensity": 100,
-              "minScore": 650,
+              "minScore": 0,
               "minStreak": 2,
-              "chance": 85,
-              "cooldown": 1
+              "chance": 100,
+              "cooldown": 0
             },
             "crowdBody": {
               "enabled": true,
-              "intensity": 80,
-              "minScore": 700,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 2,
               "chance": 100,
               "cooldown": 0
             },
             "particles": {
               "enabled": true,
-              "intensity": 70,
-              "minScore": 750,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 2,
               "chance": 100,
               "cooldown": 0
@@ -724,10 +739,10 @@
             "fire": {
               "enabled": true,
               "intensity": 100,
-              "minScore": 860,
+              "minScore": 0,
               "minStreak": 4,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "cabinetMotion": {
               "enabled": true,
@@ -739,31 +754,31 @@
             },
             "islandMotion": {
               "enabled": true,
-              "intensity": 75,
-              "minScore": 900,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 5,
               "chance": 100,
-              "cooldown": 3
+              "cooldown": 0
             },
             "screenMotion": {
               "enabled": true,
-              "intensity": 70,
-              "minScore": 820,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 3,
               "chance": 100,
-              "cooldown": 1
+              "cooldown": 0
             },
             "cameraMotion": {
               "enabled": true,
-              "intensity": 60,
-              "minScore": 900,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 4,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "screenFx": {
-              "enabled": true,
-              "intensity": 80,
+              "enabled": false,
+              "intensity": 100,
               "minScore": 0,
               "minStreak": 0,
               "chance": 100,
@@ -771,43 +786,35 @@
             },
             "worldFx": {
               "enabled": true,
-              "intensity": 75,
-              "minScore": 860,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 3,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "celebration": {
               "enabled": true,
               "intensity": 100,
-              "minScore": 940,
+              "minScore": 0,
               "minStreak": 4,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "lightning": {
               "enabled": true,
-              "intensity": 85,
-              "minScore": 960,
-              "minStreak": 6,
+              "intensity": 100,
+              "minScore": 0,
+              "minStreak": 5,
               "chance": 100,
-              "cooldown": 3
+              "cooldown": 0
             },
             "blizzard": {
               "enabled": true,
-              "intensity": 65,
-              "minScore": 985,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 8,
               "chance": 100,
-              "cooldown": 3
-            },
-            "cameraOrbit": {
-              "enabled": true,
-              "intensity": 65,
-              "minScore": 950,
-              "minStreak": 6,
-              "chance": 100,
-              "cooldown": 5
+              "cooldown": 0
             }
           }
         },
@@ -834,7 +841,7 @@
         "bigScreenVolume": 0,
         "boardStore": {
           "url": "https://gezepzodpbdbsavgrdec.supabase.co",
-          "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVscGdkbHJlbGhwb3hndXJrdnRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTIzNTQsImV4cCI6MjA5NjIyODM1NH0.8eKTiRq2fwAF_Rh5-YrFB8CtOnQ-jMvueWS6Ck7anTA",
+          "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlemVwem9kcGJkYnNhdmdyZGVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3OTk0MDcsImV4cCI6MjA4MjM3NTQwN30.zTuaMls3HDYTdWtPiMz0seKKj4sYpRUgWLZMPjGILSE",
           "table": "punch_board",
           "venue": "punch-island"
         }
@@ -852,7 +859,26 @@
         "helperWallets": [],
         "apiBaseUrl": "",
         "wind": 55,
-        "startStage": 2
+        "startStage": 2,
+        "groundCoverDensity": "normal",
+        "groundCoverSpecies": [
+          "clover",
+          "dandelion",
+          "daisy",
+          "fern",
+          "meadow"
+        ]
+      },
+      "water": {
+        "enabled": false,
+        "levelM": 0.02,
+        "defaultKind": "lake",
+        "waves": 60,
+        "flow": 70,
+        "shoreM": -1,
+        "foam": true,
+        "reflective": true,
+        "maxParcelPercent": 100
       },
       "train": {
         "enabled": false,
@@ -874,7 +900,8 @@
       "swissverse.gate",
       "swissverse.landing",
       "swissverse.punch-machine",
-      "swissverse.object-studio"
+      "swissverse.object-studio",
+      "swissverse.scrap"
     ],
     "dance": {
       "enabled": false,
@@ -914,10 +941,10 @@
           "emotes/headspin_combo_emote.glb",
           "emotes/bd_1990_new_x4_emote.glb",
           "emotes/bboy_uprock_emote.glb",
-          "emotes/snake_hiphop_new_emote.glb",
-          "emotes/bd_footwork_to_freeze_emote.glb",
           "emotes/bd_uprock_to_ground_new_emote.glb",
-          "emotes/bboy_hiphop_move_new_emote.glb"
+          "emotes/bboy_hiphop_move_new_emote.glb",
+          "emotes/snake_hiphop_new_emote.glb",
+          "emotes/bd_footwork_to_freeze_emote.glb"
         ],
         "routineSeconds": 8,
         "count": 10,
@@ -954,12 +981,12 @@
             "emotes": [],
             "outfits": [],
             "outfitLinks": [],
-            "dressCode": "sport",
+            "dressCode": null,
             "castPack": null,
             "castSeed": 0,
             "energetic": false,
             "formation": "circle",
-            "attitude": "friendly",
+            "attitude": null,
             "interruptible": true
           }
         ],
@@ -982,7 +1009,7 @@
       "reactions": {
         "enabled": true,
         "audioEnabled": false,
-        "audioVolume": 0.95,
+        "audioVolume": 0,
         "spectacleEnabled": true,
         "maxAutomaticIntensity": 4,
         "speechEnabled": true,
@@ -1217,9 +1244,9 @@
       "floorY": 100,
       "shape": {
         "kind": "circle",
+        "radius": 1.3,
         "centerX": 352,
-        "centerZ": 348.65,
-        "radius": 1.3
+        "centerZ": 348.65
       }
     },
     {
@@ -1229,10 +1256,10 @@
       "floorY": 100,
       "shape": {
         "kind": "rect",
-        "centerX": 352,
-        "centerZ": 354.25,
+        "depth": 5.3,
         "width": 2.5,
-        "depth": 5.3
+        "centerX": 352,
+        "centerZ": 354.25
       }
     },
     {
@@ -1242,16 +1269,16 @@
       "floorY": 100,
       "shape": {
         "kind": "circle",
+        "radius": 4.6,
         "centerX": 352,
-        "centerZ": 352,
-        "radius": 4.6
+        "centerZ": 352
       }
     }
   ],
   "venueCapabilities": {
     "schemaVersion": 1,
-    "venueId": "Punch Machine Championship",
-    "generatedAt": "2026-09-06T10:52:31.154Z",
+    "venueId": "Punch Machine",
+    "generatedAt": "2026-09-08T21:21:13.668Z",
     "coordinateSpace": "composer-local-meters",
     "capabilities": [
       {
@@ -1265,9 +1292,9 @@
         },
         "shape": {
           "kind": "circle",
+          "radius": 4.6,
           "centerX": 352,
-          "centerZ": 352,
-          "radius": 4.6
+          "centerZ": 352
         },
         "actions": [
           "detect-presence"
@@ -1284,10 +1311,10 @@
         },
         "shape": {
           "kind": "rect",
-          "centerX": 352,
-          "centerZ": 354.25,
+          "depth": 5.3,
           "width": 2.5,
-          "depth": 5.3
+          "centerX": 352,
+          "centerZ": 354.25
         },
         "actions": [
           "detect-presence"
@@ -1304,9 +1331,9 @@
         },
         "shape": {
           "kind": "circle",
+          "radius": 1.3,
           "centerX": 352,
-          "centerZ": 348.65,
-          "radius": 1.3
+          "centerZ": 348.65
         },
         "actions": [
           "detect-presence"
@@ -1315,7 +1342,7 @@
     ]
   },
   "destinationId": "highground.dcl.eth:-38,104",
-  "projectId": "5307af6e-d694-41ff-9613-f04d75f1b70f",
+  "projectId": "7fa76005-1486-469d-ae60-f3cb88e7cb58",
   "worldDirector": {
     "directorId": "0e6bf218-8ba5-4590-aead-acc0240f955b",
     "url": "https://builder.swissverse.org/api/world-director/doc/0e6bf218-8ba5-4590-aead-acc0240f955b",

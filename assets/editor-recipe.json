@@ -1,456 +1,128 @@
 {
-  "version": "2.0",
+  "version": "3.0",
   "siteSpawn": {
-    "col": 22,
-    "row": 22,
-    "level": "ground",
-    "x": 360,
-    "z": 364.4,
-    "y": 100.25
+    "x": 719.5,
+    "y": 100.25,
+    "z": 719.5,
+    "col": 44,
+    "row": 44,
+    "level": "ground"
   },
   "productKind": "builder",
-  "name": "Punch Machine Championship",
+  "name": "Punch Machine",
   "scene": {
     "cols": 45,
     "rows": 45
   },
-  "building": {
-    "floors": 2,
-    "roofTerrace": true,
-    "buildingSpan": "single",
-    "storyHeight": 3.2,
-    "rampCell": {
-      "col": 1,
-      "row": 1
-    },
-    "rampType": "spiral",
-    "entrySide": "south",
-    "entryCell": {
-      "col": 2,
-      "row": 0
-    },
-    "wallNorth": "glass",
-    "wallSouth": "sliding_entry",
-    "wallEast": "glass",
-    "wallWest": "glass",
-    "roofGuard": "glass",
-    "spawnPreset": "entrance",
-    "columnLayout": {
-      "cornerColumns": true,
-      "intermediateColumnsPerSide": {
-        "front": 3,
-        "back": 3,
-        "left": 3,
-        "right": 3
-      },
-      "columnProfile": "rectangular",
-      "columnHeightMode": "full_building",
-      "dedupeCornerColumns": true,
-      "debug": false
-    },
-    "emptyLot": true,
-    "siteGround": {
-      "surface": "none",
-      "color": "#dff5ff"
-    },
-    "customSpawn": {
-      "col": 22,
-      "row": 22,
-      "level": "ground",
-      "x": 360,
-      "z": 364.4,
-      "y": 100.25
-    },
-    "circulationMode": "launch",
-    "circulationStairs": false,
-    "glassTube": false,
-    "traversalPreset": "catapult",
-    "footprintM": {
-      "width": 16,
-      "depth": 16
-    },
-    "siteAnchor": "sw",
-    "ceilingLight": 0,
-    "ceilingColor": "#e9e7e2",
-    "ceilingTexture": "flat",
-    "surfaceFinish": "matte"
-  },
-  "buildings": [
-    {
-      "id": "b1",
-      "config": {
-        "floors": 2,
-        "roofTerrace": true,
-        "buildingSpan": "single",
-        "storyHeight": 3.2,
-        "rampCell": {
-          "col": 1,
-          "row": 1
-        },
-        "rampType": "spiral",
-        "entrySide": "south",
-        "entryCell": {
-          "col": 2,
-          "row": 0
-        },
-        "wallNorth": "glass",
-        "wallSouth": "sliding_entry",
-        "wallEast": "glass",
-        "wallWest": "glass",
-        "roofGuard": "glass",
-        "spawnPreset": "entrance",
-        "columnLayout": {
-          "cornerColumns": true,
-          "intermediateColumnsPerSide": {
-            "front": 3,
-            "back": 3,
-            "left": 3,
-            "right": 3
-          },
-          "columnProfile": "rectangular",
-          "columnHeightMode": "full_building",
-          "dedupeCornerColumns": true,
-          "debug": false
-        },
-        "emptyLot": true,
-        "siteGround": {
-          "surface": "none",
-          "color": "#dff5ff"
-        },
-        "customSpawn": {
-          "col": 22,
-          "row": 22,
-          "level": "ground",
-          "x": 360,
-          "z": 364.4,
-          "y": 100.25
-        },
-        "circulationMode": "launch",
-        "circulationStairs": false,
-        "glassTube": false,
-        "traversalPreset": "catapult",
-        "footprintM": {
-          "width": 16,
-          "depth": 16
-        },
-        "siteAnchor": "sw",
-        "ceilingLight": 0,
-        "ceilingColor": "#e9e7e2",
-        "ceilingTexture": "flat",
-        "surfaceFinish": "matte"
-      },
-      "appearance": {
-        "materials": {
-          "concrete_main": "#232a30",
-          "floor_main": "#161a1e",
-          "column_main": "#fafafa",
-          "glass_main": "#c8dce8",
-          "metal_dark": "#101418",
-          "guard_main": "#e0e0e4",
-          "ramp_main": "#d4d4d8",
-          "decor_wood": "#8a6a45",
-          "decor_dark": "#1d1d22",
-          "decor_accent": "#f5a623",
-          "decor_plant": "#3f7d3a"
-        },
-        "glass": {
-          "color": "#c8dce8",
-          "opacity": 0.25,
-          "roughness": 0.1,
-          "metalness": 0
-        },
-        "emissive": {},
-        "floorTexture": "flat"
-      },
-      "components": [
-        {
-          "id": "punch_strike_zone",
-          "type": "floor_zone",
-          "parentId": null,
-          "name": "Strike circle",
-          "materialToken": "concrete_light",
-          "locked": false,
-          "approved": false,
-          "anchors": [],
-          "connectionTargets": [],
-          "render": {
-            "visible": true
-          },
-          "collider": {
-            "enabled": false,
-            "type": "none"
-          },
-          "validationRules": [
-            "decorative_no_collider",
-            "site_zone_within_plot"
-          ],
-          "spec": {
-            "floorIndex": -1,
-            "scope": "site",
-            "coordFrame": "composer",
-            "shape": {
-              "kind": "circle",
-              "centerX": 0,
-              "centerZ": -3.35,
-              "radius": 1.3
-            },
-            "floorY": 100
-          }
-        },
-        {
-          "id": "punch_queue_zone",
-          "type": "floor_zone",
-          "parentId": null,
-          "name": "Competition queue",
-          "materialToken": "concrete_light",
-          "locked": false,
-          "approved": false,
-          "anchors": [],
-          "connectionTargets": [],
-          "render": {
-            "visible": true
-          },
-          "collider": {
-            "enabled": false,
-            "type": "none"
-          },
-          "validationRules": [
-            "decorative_no_collider",
-            "site_zone_within_plot"
-          ],
-          "spec": {
-            "floorIndex": -1,
-            "scope": "site",
-            "coordFrame": "composer",
-            "shape": {
-              "kind": "rect",
-              "centerX": 0,
-              "centerZ": 2.25,
-              "width": 2.5,
-              "depth": 5.3
-            },
-            "floorY": 100
-          }
-        },
-        {
-          "id": "punch_audience_zone",
-          "type": "floor_zone",
-          "parentId": null,
-          "name": "Audience ring",
-          "materialToken": "concrete_light",
-          "locked": false,
-          "approved": false,
-          "anchors": [],
-          "connectionTargets": [],
-          "render": {
-            "visible": true
-          },
-          "collider": {
-            "enabled": false,
-            "type": "none"
-          },
-          "validationRules": [
-            "decorative_no_collider",
-            "site_zone_within_plot"
-          ],
-          "spec": {
-            "floorIndex": -1,
-            "scope": "site",
-            "coordFrame": "composer",
-            "shape": {
-              "kind": "circle",
-              "centerX": 0,
-              "centerZ": 0,
-              "radius": 4.6
-            },
-            "floorY": 100
-          }
-        }
-      ],
-      "smartObjects": [
-        {
-          "id": "punch_machine_championship",
-          "type": "punch_machine",
-          "name": "Arcade punch machine",
-          "materialToken": "frame_black",
-          "locked": false,
-          "approved": false,
-          "anchors": [],
-          "render": {
-            "visible": true
-          },
-          "collider": {
-            "enabled": true,
-            "type": "box"
-          },
-          "spec": {
-            "centerX": 352,
-            "centerZ": 352,
-            "floorIndex": -1,
-            "width": 2.145,
-            "depth": 3.681,
-            "height": 4.067,
-            "rotationY": 0,
-            "scope": "site",
-            "centerY": 100,
-            "skyIsland": true,
-            "bigScreen": true
-          },
-          "behavior": "punch_machine",
-          "movement": {
-            "mode": "static",
-            "startFloor": 0,
-            "endFloor": 0,
-            "currentFloor": 0,
-            "speedMps": 0,
-            "dwellSeconds": 0
-          }
-        }
-      ]
-    }
-  ],
-  "materials": {
-    "floor_main": "#161a1e",
-    "column_main": "#fafafa",
-    "concrete_main": "#232a30",
-    "glass_main": "#c8dce8",
-    "metal_dark": "#101418",
-    "guard_main": "#e0e0e4",
-    "ramp_main": "#d4d4d8",
-    "decor_wood": "#8a6a45",
-    "decor_dark": "#1d1d22",
-    "decor_accent": "#f5a623",
-    "decor_plant": "#3f7d3a"
-  },
-  "glass": {
-    "color": "#c8dce8",
-    "opacity": 0.25,
-    "roughness": 0.1,
-    "metalness": 0
-  },
-  "emissive": {},
-  "floorTexture": "flat",
   "components": [
     {
       "id": "punch_strike_zone",
-      "type": "floor_zone",
-      "parentId": null,
       "name": "Strike circle",
-      "materialToken": "concrete_light",
+      "spec": {
+        "scope": "site",
+        "shape": {
+          "kind": "circle",
+          "radius": 1.3,
+          "centerX": 0,
+          "centerZ": -3.35
+        },
+        "floorY": 100,
+        "coordFrame": "composer",
+        "floorIndex": -1
+      },
+      "type": "floor_zone",
       "locked": false,
-      "approved": false,
-      "anchors": [],
-      "connectionTargets": [],
       "render": {
         "visible": true
       },
+      "anchors": [],
+      "approved": false,
       "collider": {
-        "enabled": false,
-        "type": "none"
+        "type": "none",
+        "enabled": false
       },
+      "parentId": null,
+      "materialToken": "concrete_light",
       "validationRules": [
         "decorative_no_collider",
         "site_zone_within_plot"
       ],
-      "spec": {
-        "floorIndex": -1,
-        "scope": "site",
-        "coordFrame": "composer",
-        "shape": {
-          "kind": "circle",
-          "centerX": 0,
-          "centerZ": -3.35,
-          "radius": 1.3
-        },
-        "floorY": 100
-      }
+      "connectionTargets": []
     },
     {
       "id": "punch_queue_zone",
-      "type": "floor_zone",
-      "parentId": null,
       "name": "Competition queue",
-      "materialToken": "concrete_light",
+      "spec": {
+        "scope": "site",
+        "shape": {
+          "kind": "rect",
+          "depth": 5.3,
+          "width": 2.5,
+          "centerX": 0,
+          "centerZ": 2.25
+        },
+        "floorY": 100,
+        "coordFrame": "composer",
+        "floorIndex": -1
+      },
+      "type": "floor_zone",
       "locked": false,
-      "approved": false,
-      "anchors": [],
-      "connectionTargets": [],
       "render": {
         "visible": true
       },
+      "anchors": [],
+      "approved": false,
       "collider": {
-        "enabled": false,
-        "type": "none"
+        "type": "none",
+        "enabled": false
       },
+      "parentId": null,
+      "materialToken": "concrete_light",
       "validationRules": [
         "decorative_no_collider",
         "site_zone_within_plot"
       ],
-      "spec": {
-        "floorIndex": -1,
-        "scope": "site",
-        "coordFrame": "composer",
-        "shape": {
-          "kind": "rect",
-          "centerX": 0,
-          "centerZ": 2.25,
-          "width": 2.5,
-          "depth": 5.3
-        },
-        "floorY": 100
-      }
+      "connectionTargets": []
     },
     {
       "id": "punch_audience_zone",
-      "type": "floor_zone",
-      "parentId": null,
       "name": "Audience ring",
-      "materialToken": "concrete_light",
+      "spec": {
+        "scope": "site",
+        "shape": {
+          "kind": "circle",
+          "radius": 4.6,
+          "centerX": 0,
+          "centerZ": 0
+        },
+        "floorY": 100,
+        "coordFrame": "composer",
+        "floorIndex": -1
+      },
+      "type": "floor_zone",
       "locked": false,
-      "approved": false,
-      "anchors": [],
-      "connectionTargets": [],
       "render": {
         "visible": true
       },
+      "anchors": [],
+      "approved": false,
       "collider": {
-        "enabled": false,
-        "type": "none"
+        "type": "none",
+        "enabled": false
       },
+      "parentId": null,
+      "materialToken": "concrete_light",
       "validationRules": [
         "decorative_no_collider",
         "site_zone_within_plot"
       ],
-      "spec": {
-        "floorIndex": -1,
-        "scope": "site",
-        "coordFrame": "composer",
-        "shape": {
-          "kind": "circle",
-          "centerX": 0,
-          "centerZ": 0,
-          "radius": 4.6
-        },
-        "floorY": 100
-      }
+      "connectionTargets": []
     }
   ],
-  "materialTokens": {
-    "frame_black": "metal_dark",
-    "glass_dark": "glass_main",
-    "concrete_light": "concrete_main",
-    "concrete_dark": "concrete_main",
-    "floor_light": "concrete_main",
-    "collider_debug": "collider_debug",
-    "transparent_debug": "collider_debug",
-    "safety_rail_black": "metal_dark"
-  },
-  "editMode": "modify_selected",
   "sceneDebug": false,
-  "noEmissive": true,
   "deploy": {
     "base": "-38,104",
-    "title": "Punch Machine Championship",
+    "title": "Punch Machine",
     "target": "world",
     "worldName": "HIGHGROUND.dcl.eth",
     "description": "A standalone synchronized arcade punching competition with queue, leaderboard and cheering crowd.",
@@ -2491,45 +2163,50 @@
       "6,148"
     ]
   },
+  "card": {
+    "dataUrl": "data:image/jpeg;base64,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",
+    "fileName": "island.png",
+    "updatedAt": "2026-09-08T14:29:15.853Z"
+  },
   "smartObjects": [
     {
       "id": "punch_machine_championship",
-      "type": "punch_machine",
       "name": "Arcade punch machine",
-      "materialToken": "frame_black",
+      "spec": {
+        "depth": 3.681,
+        "scope": "site",
+        "width": 2.145,
+        "height": 4.067,
+        "centerX": 352,
+        "centerY": 100,
+        "centerZ": 352,
+        "bigScreen": true,
+        "rotationY": 0,
+        "skyIsland": true,
+        "floorIndex": -1,
+        "runtimeOriginYOffset": 0
+      },
+      "type": "punch_machine",
       "locked": false,
-      "approved": false,
-      "anchors": [],
       "render": {
         "visible": true
       },
-      "collider": {
-        "enabled": true,
-        "type": "box"
-      },
-      "spec": {
-        "centerX": 352,
-        "centerZ": 352,
-        "floorIndex": -1,
-        "width": 2.145,
-        "depth": 3.681,
-        "height": 4.067,
-        "rotationY": 0,
-        "scope": "site",
-        "centerY": 100,
-        "skyIsland": true,
-        "bigScreen": true,
-        "runtimeOriginYOffset": 0
-      },
+      "anchors": [],
+      "approved": false,
       "behavior": "punch_machine",
+      "collider": {
+        "type": "box",
+        "enabled": true
+      },
       "movement": {
         "mode": "static",
-        "startFloor": 0,
         "endFloor": 0,
-        "currentFloor": 0,
         "speedMps": 0,
+        "startFloor": 0,
+        "currentFloor": 0,
         "dwellSeconds": 0
-      }
+      },
+      "materialToken": "frame_black"
     }
   ],
   "social": {
@@ -2537,9 +2214,10 @@
     "venueId": null,
     "enabled": true,
     "event": {
-      "name": "Punch Machine Championship",
+      "name": "Punch Machine",
       "adminWallets": [
-        "0x23be90335e79d3245615985d91f69814f98a0fab"
+        "0x23be90335e79d3245615985d91f69814f98a0fab",
+        "0x5d6e5441775aa8a14f50230faea45fe6d3e94841"
       ],
       "announceOnEnter": "Enter the queue. On your turn, click and hold the bag, then release when full power crosses the gold timing target.",
       "crowdEmotes": [
@@ -2576,12 +2254,14 @@
       "defaultAudioUrl": null,
       "audioSpatial": true,
       "videoPlayingOnLoad": false,
-      "arrivalMedia": "music"
+      "arrivalMedia": "none"
     },
     "ambient": {
       "enabled": false,
       "tracks": [],
-      "sampleIds": [],
+      "sampleIds": [
+        "night-park"
+      ],
       "libraryTrackIds": [],
       "mode": "shuffle",
       "volume": 0.35,
@@ -2606,15 +2286,7 @@
       },
       "hostConsole": {
         "enabled": false,
-        "modules": [
-          "announcements",
-          "guests",
-          "access",
-          "video",
-          "audio",
-          "breakdance",
-          "rewards"
-        ]
+        "modules": []
       },
       "landing": {
         "enabled": true,
@@ -2734,7 +2406,7 @@
         "display": "auto"
       },
       "scrap": {
-        "enabled": false,
+        "enabled": true,
         "grantNpcAsTarget": true,
         "npcCanInitiate": true,
         "playerCanInitiate": true,
@@ -2744,7 +2416,7 @@
         "npcCooldownSeconds": 120,
         "approachRadiusM": 8,
         "playerInitiateRadiusM": 3,
-        "intensity": "bully",
+        "intensity": "tease",
         "playerWinBias": 0.85,
         "mechanic": "aim",
         "maxBackers": 0,
@@ -3036,23 +2708,43 @@
           "difficultyMax": 16,
           "earlyBonus": 0.1,
           "musicEnabled": true,
-          "musicStartStreak": 4,
+          "musicStartStreak": 3,
           "musicVolume": 0.35,
           "musicTracks": [
-            "rush",
-            "hot"
+            "breaktime",
+            "roulette"
           ],
           "goldenBallEnabled": true,
+          "goldenEveryStreak": 3,
+          "goldenMultiplier": 2,
+          "rescueFrequency": "maximum",
+          "rescueCooldownAttempts": 0,
+          "rescuePreparationMs": 1200,
+          "rescueWindowMs": 7000,
+          "rescueTapsRequired": 12,
+          "rescueLastChanceOnly": true,
+          "rescueMaxPerRound": 1,
+          "rescueSkill": "band-taps",
+          "rescueBandTapsRequired": 3,
+          "rescueBand01": 0.22,
+          "rescueFailureTell": "near-miss",
+          "focusEnabled": false,
           "saveEarnPoints": 36,
           "savesEnabled": true,
           "crowdGain": 1,
+          "karmaRingBand01": 0.06,
+          "fumbleRiskTellEnabled": true,
+          "fumbleRiskTellStyle": "physical",
           "fastRevealMs": 900,
-          "voices": 1,
-          "bubbles": 1,
+          "voices": 2,
+          "bubbles": 2,
           "celebrationEmote": "handsair",
           "impactStyle": "bass",
           "disabledCards": [],
           "disabledAudio": [],
+          "coachUserId": "",
+          "heatFloor01": 0.35,
+          "profileVersion": 4,
           "effects": {
             "impactAudio": {
               "enabled": true,
@@ -3064,7 +2756,7 @@
             },
             "cabinetAudio": {
               "enabled": true,
-              "intensity": 65,
+              "intensity": 100,
               "minScore": 0,
               "minStreak": 0,
               "chance": 100,
@@ -3072,32 +2764,32 @@
             },
             "crowdVoice": {
               "enabled": true,
-              "intensity": 80,
-              "minScore": 700,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 2,
-              "chance": 85,
-              "cooldown": 1
+              "chance": 100,
+              "cooldown": 0
             },
             "crowdText": {
               "enabled": true,
               "intensity": 100,
-              "minScore": 650,
+              "minScore": 0,
               "minStreak": 2,
-              "chance": 85,
-              "cooldown": 1
+              "chance": 100,
+              "cooldown": 0
             },
             "crowdBody": {
               "enabled": true,
-              "intensity": 80,
-              "minScore": 700,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 2,
               "chance": 100,
               "cooldown": 0
             },
             "particles": {
               "enabled": true,
-              "intensity": 70,
-              "minScore": 750,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 2,
               "chance": 100,
               "cooldown": 0
@@ -3105,10 +2797,10 @@
             "fire": {
               "enabled": true,
               "intensity": 100,
-              "minScore": 860,
+              "minScore": 0,
               "minStreak": 4,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "cabinetMotion": {
               "enabled": true,
@@ -3120,31 +2812,31 @@
             },
             "islandMotion": {
               "enabled": true,
-              "intensity": 75,
-              "minScore": 900,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 5,
               "chance": 100,
-              "cooldown": 3
+              "cooldown": 0
             },
             "screenMotion": {
               "enabled": true,
-              "intensity": 70,
-              "minScore": 820,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 3,
               "chance": 100,
-              "cooldown": 1
+              "cooldown": 0
             },
             "cameraMotion": {
               "enabled": true,
-              "intensity": 60,
-              "minScore": 900,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 4,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "screenFx": {
-              "enabled": true,
-              "intensity": 80,
+              "enabled": false,
+              "intensity": 100,
               "minScore": 0,
               "minStreak": 0,
               "chance": 100,
@@ -3152,43 +2844,35 @@
             },
             "worldFx": {
               "enabled": true,
-              "intensity": 75,
-              "minScore": 860,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 3,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "celebration": {
               "enabled": true,
               "intensity": 100,
-              "minScore": 940,
+              "minScore": 0,
               "minStreak": 4,
               "chance": 100,
-              "cooldown": 2
+              "cooldown": 0
             },
             "lightning": {
               "enabled": true,
-              "intensity": 85,
-              "minScore": 960,
-              "minStreak": 6,
+              "intensity": 100,
+              "minScore": 0,
+              "minStreak": 5,
               "chance": 100,
-              "cooldown": 3
+              "cooldown": 0
             },
             "blizzard": {
               "enabled": true,
-              "intensity": 65,
-              "minScore": 985,
+              "intensity": 100,
+              "minScore": 0,
               "minStreak": 8,
               "chance": 100,
-              "cooldown": 3
-            },
-            "cameraOrbit": {
-              "enabled": true,
-              "intensity": 65,
-              "minScore": 950,
-              "minStreak": 6,
-              "chance": 100,
-              "cooldown": 5
+              "cooldown": 0
             }
           }
         },
@@ -3233,7 +2917,26 @@
         "helperWallets": [],
         "apiBaseUrl": "",
         "wind": 55,
-        "startStage": 2
+        "startStage": 2,
+        "groundCoverDensity": "normal",
+        "groundCoverSpecies": [
+          "clover",
+          "dandelion",
+          "daisy",
+          "fern",
+          "meadow"
+        ]
+      },
+      "water": {
+        "enabled": false,
+        "levelM": 0.02,
+        "defaultKind": "lake",
+        "waves": 60,
+        "flow": 70,
+        "shoreM": -1,
+        "foam": true,
+        "reflective": true,
+        "maxParcelPercent": 100
       },
       "train": {
         "enabled": false,
@@ -3255,7 +2958,8 @@
       "swissverse.gate",
       "swissverse.landing",
       "swissverse.punch-machine",
-      "swissverse.object-studio"
+      "swissverse.object-studio",
+      "swissverse.scrap"
     ],
     "dance": {
       "enabled": false,
@@ -3295,10 +2999,10 @@
           "emotes/headspin_combo_emote.glb",
           "emotes/bd_1990_new_x4_emote.glb",
           "emotes/bboy_uprock_emote.glb",
-          "emotes/snake_hiphop_new_emote.glb",
-          "emotes/bd_footwork_to_freeze_emote.glb",
           "emotes/bd_uprock_to_ground_new_emote.glb",
-          "emotes/bboy_hiphop_move_new_emote.glb"
+          "emotes/bboy_hiphop_move_new_emote.glb",
+          "emotes/snake_hiphop_new_emote.glb",
+          "emotes/bd_footwork_to_freeze_emote.glb"
         ],
         "routineSeconds": 8,
         "count": 10,
@@ -3335,12 +3039,12 @@
             "emotes": [],
             "outfits": [],
             "outfitLinks": [],
-            "dressCode": "sport",
+            "dressCode": null,
             "castPack": null,
             "castSeed": 0,
             "energetic": false,
             "formation": "circle",
-            "attitude": "friendly",
+            "attitude": null,
             "interruptible": true
           }
         ],
@@ -3363,7 +3067,7 @@
       "reactions": {
         "enabled": true,
         "audioEnabled": false,
-        "audioVolume": 0.95,
+        "audioVolume": 0,
         "spectacleEnabled": true,
         "maxAutomaticIntensity": 4,
         "speechEnabled": true,
@@ -3473,7 +3177,574 @@
     }
   },
   "vehicles": [],
-  "workflow": {
-    "phase": "scaffold"
+  "appState": {
+    "swissverse.building": {
+      "version": 1,
+      "state": {
+        "building": {
+          "floors": 2,
+          "roofTerrace": true,
+          "buildingSpan": "single",
+          "storyHeight": 3.2,
+          "rampCell": {
+            "col": 1,
+            "row": 1
+          },
+          "rampType": "spiral",
+          "entrySide": "south",
+          "entryCell": {
+            "col": 2,
+            "row": 0
+          },
+          "wallNorth": "glass",
+          "wallSouth": "sliding_entry",
+          "wallEast": "glass",
+          "wallWest": "glass",
+          "roofGuard": "glass",
+          "spawnPreset": "entrance",
+          "columnLayout": {
+            "cornerColumns": true,
+            "intermediateColumnsPerSide": {
+              "front": 3,
+              "back": 3,
+              "left": 3,
+              "right": 3
+            },
+            "columnProfile": "rectangular",
+            "columnHeightMode": "full_building",
+            "dedupeCornerColumns": true,
+            "debug": false
+          },
+          "emptyLot": true,
+          "glassTube": false,
+          "footprintM": {
+            "width": 16,
+            "depth": 16
+          },
+          "siteAnchor": "sw",
+          "siteGround": {
+            "color": "#dff5ff",
+            "surface": "none"
+          },
+          "customSpawn": {
+            "x": 719.5,
+            "y": 100.25,
+            "z": 719.5,
+            "col": 44,
+            "row": 44,
+            "level": "ground"
+          },
+          "ceilingColor": "#e9e7e2",
+          "ceilingLight": 0,
+          "surfaceFinish": "matte",
+          "ceilingTexture": "flat",
+          "circulationMode": "launch",
+          "traversalPreset": "catapult",
+          "circulationStairs": false
+        },
+        "buildings": [
+          {
+            "id": "b1",
+            "config": {
+              "floors": 2,
+              "roofTerrace": true,
+              "buildingSpan": "single",
+              "storyHeight": 3.2,
+              "rampCell": {
+                "col": 1,
+                "row": 1
+              },
+              "rampType": "spiral",
+              "entrySide": "south",
+              "entryCell": {
+                "col": 2,
+                "row": 0
+              },
+              "wallNorth": "glass",
+              "wallSouth": "sliding_entry",
+              "wallEast": "glass",
+              "wallWest": "glass",
+              "roofGuard": "glass",
+              "spawnPreset": "entrance",
+              "columnLayout": {
+                "cornerColumns": true,
+                "intermediateColumnsPerSide": {
+                  "front": 3,
+                  "back": 3,
+                  "left": 3,
+                  "right": 3
+                },
+                "columnProfile": "rectangular",
+                "columnHeightMode": "full_building",
+                "dedupeCornerColumns": true,
+                "debug": false
+              },
+              "emptyLot": true,
+              "glassTube": false,
+              "footprintM": {
+                "width": 16,
+                "depth": 16
+              },
+              "siteAnchor": "sw",
+              "siteGround": {
+                "color": "#dff5ff",
+                "surface": "none"
+              },
+              "customSpawn": {
+                "x": 719.5,
+                "y": 100.25,
+                "z": 719.5,
+                "col": 44,
+                "row": 44,
+                "level": "ground"
+              },
+              "ceilingColor": "#e9e7e2",
+              "ceilingLight": 0,
+              "surfaceFinish": "matte",
+              "ceilingTexture": "flat",
+              "circulationMode": "launch",
+              "traversalPreset": "catapult",
+              "circulationStairs": false
+            },
+            "appearance": {
+              "materials": {
+                "concrete_main": "#232a30",
+                "floor_main": "#161a1e",
+                "column_main": "#fafafa",
+                "glass_main": "#c8dce8",
+                "metal_dark": "#101418",
+                "guard_main": "#e0e0e4",
+                "ramp_main": "#d4d4d8",
+                "decor_wood": "#8a6a45",
+                "decor_dark": "#1d1d22",
+                "decor_accent": "#f5a623",
+                "decor_plant": "#3f7d3a"
+              },
+              "glass": {
+                "color": "#c8dce8",
+                "opacity": 0.25,
+                "roughness": 0.1,
+                "metalness": 0
+              },
+              "emissive": {},
+              "floorTexture": "flat"
+            },
+            "components": [
+              {
+                "id": "punch_strike_zone",
+                "name": "Strike circle",
+                "spec": {
+                  "scope": "site",
+                  "shape": {
+                    "kind": "circle",
+                    "radius": 1.3,
+                    "centerX": 0,
+                    "centerZ": -3.35
+                  },
+                  "floorY": 100,
+                  "coordFrame": "composer",
+                  "floorIndex": -1
+                },
+                "type": "floor_zone",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "collider": {
+                  "type": "none",
+                  "enabled": false
+                },
+                "parentId": null,
+                "materialToken": "concrete_light",
+                "validationRules": [
+                  "decorative_no_collider",
+                  "site_zone_within_plot"
+                ],
+                "connectionTargets": []
+              },
+              {
+                "id": "punch_queue_zone",
+                "name": "Competition queue",
+                "spec": {
+                  "scope": "site",
+                  "shape": {
+                    "kind": "rect",
+                    "depth": 5.3,
+                    "width": 2.5,
+                    "centerX": 0,
+                    "centerZ": 2.25
+                  },
+                  "floorY": 100,
+                  "coordFrame": "composer",
+                  "floorIndex": -1
+                },
+                "type": "floor_zone",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "collider": {
+                  "type": "none",
+                  "enabled": false
+                },
+                "parentId": null,
+                "materialToken": "concrete_light",
+                "validationRules": [
+                  "decorative_no_collider",
+                  "site_zone_within_plot"
+                ],
+                "connectionTargets": []
+              },
+              {
+                "id": "punch_audience_zone",
+                "name": "Audience ring",
+                "spec": {
+                  "scope": "site",
+                  "shape": {
+                    "kind": "circle",
+                    "radius": 4.6,
+                    "centerX": 0,
+                    "centerZ": 0
+                  },
+                  "floorY": 100,
+                  "coordFrame": "composer",
+                  "floorIndex": -1
+                },
+                "type": "floor_zone",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "collider": {
+                  "type": "none",
+                  "enabled": false
+                },
+                "parentId": null,
+                "materialToken": "concrete_light",
+                "validationRules": [
+                  "decorative_no_collider",
+                  "site_zone_within_plot"
+                ],
+                "connectionTargets": []
+              }
+            ],
+            "smartObjects": [
+              {
+                "id": "punch_machine_championship",
+                "name": "Arcade punch machine",
+                "spec": {
+                  "depth": 3.681,
+                  "scope": "site",
+                  "width": 2.145,
+                  "height": 4.067,
+                  "centerX": 352,
+                  "centerY": 100,
+                  "centerZ": 352,
+                  "bigScreen": true,
+                  "rotationY": 0,
+                  "skyIsland": true,
+                  "floorIndex": -1,
+                  "runtimeOriginYOffset": 0
+                },
+                "type": "punch_machine",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "behavior": "punch_machine",
+                "collider": {
+                  "type": "box",
+                  "enabled": true
+                },
+                "movement": {
+                  "mode": "static",
+                  "endFloor": 0,
+                  "speedMps": 0,
+                  "startFloor": 0,
+                  "currentFloor": 0,
+                  "dwellSeconds": 0
+                },
+                "materialToken": "frame_black"
+              }
+            ]
+          }
+        ],
+        "materials": {
+          "floor_main": "#161a1e",
+          "column_main": "#fafafa",
+          "concrete_main": "#232a30",
+          "glass_main": "#c8dce8",
+          "metal_dark": "#101418",
+          "guard_main": "#e0e0e4",
+          "ramp_main": "#d4d4d8",
+          "decor_wood": "#8a6a45",
+          "decor_dark": "#1d1d22",
+          "decor_accent": "#f5a623",
+          "decor_plant": "#3f7d3a"
+        },
+        "glass": {
+          "color": "#c8dce8",
+          "opacity": 0.25,
+          "roughness": 0.1,
+          "metalness": 0
+        },
+        "emissive": {},
+        "noEmissive": true,
+        "floorTexture": "flat",
+        "materialTokens": {
+          "glass_dark": "glass_main",
+          "floor_light": "concrete_main",
+          "frame_black": "metal_dark",
+          "concrete_dark": "concrete_main",
+          "collider_debug": "collider_debug",
+          "concrete_light": "concrete_main",
+          "safety_rail_black": "metal_dark",
+          "transparent_debug": "collider_debug"
+        },
+        "editMode": "modify_selected",
+        "workflow": {
+          "phase": "detail",
+          "scaffoldSnapshot": {
+            "lockedAt": "2026-09-08T07:35:03.238Z",
+            "building": {
+              "floors": 2,
+              "roofTerrace": true,
+              "buildingSpan": "single",
+              "storyHeight": 3.2,
+              "rampCell": {
+                "col": 1,
+                "row": 1
+              },
+              "rampType": "spiral",
+              "entrySide": "south",
+              "entryCell": {
+                "col": 2,
+                "row": 0
+              },
+              "wallNorth": "glass",
+              "wallSouth": "sliding_entry",
+              "wallEast": "glass",
+              "wallWest": "glass",
+              "roofGuard": "glass",
+              "spawnPreset": "entrance",
+              "columnLayout": {
+                "cornerColumns": true,
+                "intermediateColumnsPerSide": {
+                  "front": 3,
+                  "back": 3,
+                  "left": 3,
+                  "right": 3
+                },
+                "columnProfile": "rectangular",
+                "columnWidth": 0.3,
+                "columnDepth": 0.3,
+                "columnHeightMode": "full_building",
+                "dedupeCornerColumns": true,
+                "debug": false
+              },
+              "emptyLot": true,
+              "glassTube": false,
+              "footprintM": {
+                "width": 16,
+                "depth": 16
+              },
+              "siteAnchor": "sw",
+              "siteGround": {
+                "surface": "none",
+                "color": "#dff5ff"
+              },
+              "customSpawn": {
+                "col": 44,
+                "row": 44,
+                "level": "ground",
+                "x": 719.5,
+                "z": 719.5,
+                "y": 100.25
+              },
+              "ceilingColor": "#e9e7e2",
+              "ceilingLight": 0,
+              "surfaceFinish": "matte",
+              "ceilingTexture": "flat",
+              "circulationMode": "launch",
+              "traversalPreset": "catapult",
+              "circulationStairs": false
+            },
+            "scene": {
+              "cols": 45,
+              "rows": 45
+            },
+            "materialTokens": {
+              "glass_dark": "glass_main",
+              "floor_light": "concrete_main",
+              "frame_black": "metal_dark",
+              "concrete_dark": "concrete_main",
+              "collider_debug": "collider_debug",
+              "concrete_light": "concrete_main",
+              "safety_rail_black": "metal_dark",
+              "transparent_debug": "collider_debug"
+            },
+            "components": [
+              {
+                "id": "punch_strike_zone",
+                "name": "Strike circle",
+                "spec": {
+                  "scope": "site",
+                  "shape": {
+                    "kind": "circle",
+                    "radius": 1.3,
+                    "centerX": 0,
+                    "centerZ": -3.35
+                  },
+                  "floorY": 100,
+                  "coordFrame": "composer",
+                  "floorIndex": -1
+                },
+                "type": "floor_zone",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "collider": {
+                  "type": "none",
+                  "enabled": false
+                },
+                "parentId": null,
+                "materialToken": "concrete_light",
+                "validationRules": [
+                  "decorative_no_collider",
+                  "site_zone_within_plot"
+                ],
+                "connectionTargets": []
+              },
+              {
+                "id": "punch_queue_zone",
+                "name": "Competition queue",
+                "spec": {
+                  "scope": "site",
+                  "shape": {
+                    "kind": "rect",
+                    "depth": 5.3,
+                    "width": 2.5,
+                    "centerX": 0,
+                    "centerZ": 2.25
+                  },
+                  "floorY": 100,
+                  "coordFrame": "composer",
+                  "floorIndex": -1
+                },
+                "type": "floor_zone",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "collider": {
+                  "type": "none",
+                  "enabled": false
+                },
+                "parentId": null,
+                "materialToken": "concrete_light",
+                "validationRules": [
+                  "decorative_no_collider",
+                  "site_zone_within_plot"
+                ],
+                "connectionTargets": []
+              },
+              {
+                "id": "punch_audience_zone",
+                "name": "Audience ring",
+                "spec": {
+                  "scope": "site",
+                  "shape": {
+                    "kind": "circle",
+                    "radius": 4.6,
+                    "centerX": 0,
+                    "centerZ": 0
+                  },
+                  "floorY": 100,
+                  "coordFrame": "composer",
+                  "floorIndex": -1
+                },
+                "type": "floor_zone",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "collider": {
+                  "type": "none",
+                  "enabled": false
+                },
+                "parentId": null,
+                "materialToken": "concrete_light",
+                "validationRules": [
+                  "decorative_no_collider",
+                  "site_zone_within_plot"
+                ],
+                "connectionTargets": []
+              }
+            ],
+            "smartObjects": [
+              {
+                "id": "punch_machine_championship",
+                "name": "Arcade punch machine",
+                "spec": {
+                  "depth": 3.681,
+                  "scope": "site",
+                  "width": 2.145,
+                  "height": 4.067,
+                  "centerX": 352,
+                  "centerY": 100,
+                  "centerZ": 352,
+                  "bigScreen": true,
+                  "rotationY": 0,
+                  "skyIsland": true,
+                  "floorIndex": -1,
+                  "runtimeOriginYOffset": 0
+                },
+                "type": "punch_machine",
+                "locked": false,
+                "render": {
+                  "visible": true
+                },
+                "anchors": [],
+                "approved": false,
+                "behavior": "punch_machine",
+                "collider": {
+                  "type": "box",
+                  "enabled": true
+                },
+                "movement": {
+                  "mode": "static",
+                  "endFloor": 0,
+                  "speedMps": 0,
+                  "startFloor": 0,
+                  "currentFloor": 0,
+                  "dwellSeconds": 0
+                },
+                "materialToken": "frame_black"
+              }
+            ]
+          },
+          "detailView": {
+            "focusedFloors": [],
+            "displayMode": "normal",
+            "includeRoof": false
+          }
+        }
+      }
+    }
   }
 }
