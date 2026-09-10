@@ -1,13 +1,13 @@
 {
-  "syncedAt": "2026-09-08T21:21:13.668Z",
+  "syncedAt": "2026-09-10T15:26:30.711Z",
   "worldName": "highground.dcl.eth",
-  "sceneBase": "-38,104",
+  "sceneBase": "-3,4",
   "destination": "world",
   "productKind": "builder",
-  "buildingName": "Punch Machine",
+  "buildingName": "Punch Machine Championship",
   "scene": {
-    "cols": 45,
-    "rows": 45
+    "cols": 7,
+    "rows": 7
   },
   "building": {
     "floors": 2,
@@ -53,16 +53,17 @@
     },
     "siteAnchor": "sw",
     "siteGround": {
-      "color": "#dff5ff",
+      "color": "#DFF5FF",
+      "finish": "matte",
       "surface": "none"
     },
     "customSpawn": {
-      "col": 44,
-      "row": 44,
+      "col": 3,
+      "row": 3,
       "level": "ground",
-      "x": 719.5,
-      "z": 719.5,
-      "y": 100.25
+      "x": 56,
+      "z": 60.4,
+      "y": 80.25
     },
     "ceilingColor": "#e9e7e2",
     "ceilingLight": 0,
@@ -80,14 +81,14 @@
   },
   "buildingOutlines": [],
   "spawn": {
-    "x": 719.5,
-    "y": 100.25,
-    "z": 719.5,
+    "x": 56,
+    "y": 80.25,
+    "z": 60.4,
     "preset": "custom",
     "cameraTarget": {
-      "x": 716.6715728752538,
-      "y": 101.75,
-      "z": 716.6715728752538
+      "x": 53.29812122441284,
+      "y": 81.75,
+      "z": 57.450449003317345
     }
   },
   "ramp": {
@@ -114,7 +115,7 @@
       "z": 8
     }
   ],
-  "modelFile": "models/building.20260908212113668.glb",
+  "modelFile": "models/building.20260910152630711.glb",
   "modelOrigin": {
     "x": 8,
     "y": 0.04,
@@ -124,7 +125,7 @@
     {
       "id": "punch_machine_championship",
       "type": "punch_machine",
-      "modelFile": "models/smart/punch_machine_championship.20260908212113668.glb",
+      "modelFile": "models/smart/punch_machine_championship.20260910152630711.glb",
       "behavior": "punch_machine",
       "movement": {
         "mode": "static",
@@ -140,9 +141,9 @@
         "scope": "site",
         "width": 2.145,
         "height": 4.067,
-        "centerX": 352,
-        "centerY": 100,
-        "centerZ": 352,
+        "centerX": 48,
+        "centerY": 80,
+        "centerZ": 48,
         "bigScreen": true,
         "rotationY": 0,
         "skyIsland": true,
@@ -156,10 +157,9 @@
     "venueId": null,
     "enabled": true,
     "event": {
-      "name": "Punch Machine",
+      "name": "Punch Machine Championship",
       "adminWallets": [
-        "0x23be90335e79d3245615985d91f69814f98a0fab",
-        "0x5d6e5441775aa8a14f50230faea45fe6d3e94841"
+        "0x23be90335e79d3245615985d91f69814f98a0fab"
       ],
       "announceOnEnter": "Enter the queue. On your turn, click and hold the bag, then release when full power crosses the gold timing target.",
       "crowdEmotes": [
@@ -169,24 +169,11 @@
       ],
       "rewardClaimUrlTemplate": null,
       "rewardNft": null,
-      "timeOfDay": "club",
+      "timeOfDay": "night",
       "dimVenueLights": false
     },
-    "gates": [
-      {
-        "id": "gate_building_main",
-        "mode": "allowlist",
-        "chain": "polygon",
-        "contract": null,
-        "contracts": null,
-        "tokenIds": null,
-        "wearableUrns": null,
-        "allowedAddresses": [],
-        "match": "any",
-        "deniedMessage": "Access denied"
-      }
-    ],
-    "buildingGateRuleId": "gate_building_main",
+    "gates": [],
+    "buildingGateRuleId": null,
     "floorGates": [],
     "zoneRoles": [],
     "media": {
@@ -201,9 +188,7 @@
     "ambient": {
       "enabled": false,
       "tracks": [],
-      "sampleIds": [
-        "night-park"
-      ],
+      "sampleIds": [],
       "libraryTrackIds": [],
       "mode": "shuffle",
       "volume": 0.35,
@@ -213,7 +198,7 @@
       "fadeS": 1.2
     },
     "permissions": {
-      "useWeb3Api": true,
+      "useWeb3Api": false,
       "allowTriggerAvatarEmote": true,
       "allowMovePlayerInsideScene": true,
       "useFetch": false
@@ -228,12 +213,20 @@
       },
       "hostConsole": {
         "enabled": false,
-        "modules": []
+        "modules": [
+          "announcements",
+          "guests",
+          "access",
+          "video",
+          "audio",
+          "breakdance",
+          "rewards"
+        ]
       },
       "landing": {
         "enabled": true,
         "mode": "cover",
-        "title": "PUNCH MACHINE",
+        "title": "HIGH GROUND",
         "subtitle": "",
         "minHoldS": 1.5,
         "maxWaitS": 20,
@@ -348,7 +341,7 @@
         "display": "auto"
       },
       "scrap": {
-        "enabled": true,
+        "enabled": false,
         "grantNpcAsTarget": true,
         "npcCanInitiate": true,
         "playerCanInitiate": true,
@@ -358,7 +351,7 @@
         "npcCooldownSeconds": 120,
         "approachRadiusM": 8,
         "playerInitiateRadiusM": 3,
-        "intensity": "tease",
+        "intensity": "bully",
         "playerWinBias": 0.85,
         "mechanic": "aim",
         "maxBackers": 0,
@@ -648,10 +641,10 @@
           "varianceStep": 0.12,
           "difficultyGain": 7,
           "difficultyMax": 16,
-          "earlyBonus": 0.1,
+          "earlyBonus": 0,
           "musicEnabled": true,
           "musicStartStreak": 3,
-          "musicVolume": 0.35,
+          "musicVolume": 0.75,
           "musicTracks": [
             "breaktime",
             "roulette"
@@ -662,31 +655,40 @@
           "rescueFrequency": "maximum",
           "rescueCooldownAttempts": 0,
           "rescuePreparationMs": 1200,
-          "rescueWindowMs": 7000,
+          "rescueWindowMs": 10000,
           "rescueTapsRequired": 12,
           "rescueLastChanceOnly": true,
-          "rescueMaxPerRound": 1,
-          "rescueSkill": "band-taps",
+          "rescueMaxPerRound": 3,
+          "rescueSkill": "push",
           "rescueBandTapsRequired": 3,
           "rescueBand01": 0.22,
+          "rescuePushFull": 24,
+          "rescuePushPerSec": 52,
+          "rescuePushBleedPerSec": 8,
+          "rescuePushAskMs": 3000,
           "rescueFailureTell": "near-miss",
+          "adminIds": "",
+          "adminToolsEnabled": true,
           "focusEnabled": false,
+          "boostEnabled": false,
+          "karmaEnabled": false,
           "saveEarnPoints": 36,
           "savesEnabled": true,
           "crowdGain": 1,
-          "karmaRingBand01": 0.06,
+          "karmaRingBand01": 0.04,
           "fumbleRiskTellEnabled": true,
           "fumbleRiskTellStyle": "physical",
           "fastRevealMs": 900,
           "voices": 2,
           "bubbles": 2,
           "celebrationEmote": "handsair",
+          "reactionMovesEnabled": true,
           "impactStyle": "bass",
           "disabledCards": [],
           "disabledAudio": [],
           "coachUserId": "",
-          "heatFloor01": 0.35,
-          "profileVersion": 4,
+          "heatFloor01": 0.6,
+          "profileVersion": 6,
           "effects": {
             "impactAudio": {
               "enabled": true,
@@ -777,7 +779,7 @@
               "cooldown": 0
             },
             "screenFx": {
-              "enabled": false,
+              "enabled": true,
               "intensity": 100,
               "minScore": 0,
               "minStreak": 0,
@@ -834,11 +836,13 @@
         "celebrationScore": 900,
         "soundsEnabled": true,
         "skyIslandEnabled": true,
-        "islandHeightM": 100,
+        "islandHeightM": 80,
         "fallPromptY": 60,
         "bigScreenEnabled": true,
         "bigScreenVideoUrl": "",
         "bigScreenVolume": 0,
+        "cabinetEnabled": true,
+        "cloudLayout": "championship",
         "boardStore": {
           "url": "https://gezepzodpbdbsavgrdec.supabase.co",
           "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlemVwem9kcGJkYnNhdmdyZGVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3OTk0MDcsImV4cCI6MjA4MjM3NTQwN30.zTuaMls3HDYTdWtPiMz0seKKj4sYpRUgWLZMPjGILSE",
@@ -895,13 +899,12 @@
       }
     },
     "installedAppIds": [
+      "swissverse.gate",
       "swissverse.world-map",
       "swissverse.vehicles",
-      "swissverse.gate",
       "swissverse.landing",
       "swissverse.punch-machine",
-      "swissverse.object-studio",
-      "swissverse.scrap"
+      "swissverse.object-studio"
     ],
     "dance": {
       "enabled": false,
@@ -941,26 +944,20 @@
           "emotes/headspin_combo_emote.glb",
           "emotes/bd_1990_new_x4_emote.glb",
           "emotes/bboy_uprock_emote.glb",
-          "emotes/bd_uprock_to_ground_new_emote.glb",
-          "emotes/bboy_hiphop_move_new_emote.glb",
           "emotes/snake_hiphop_new_emote.glb",
-          "emotes/bd_footwork_to_freeze_emote.glb"
+          "emotes/bd_footwork_to_freeze_emote.glb",
+          "emotes/bd_uprock_to_ground_new_emote.glb",
+          "emotes/bboy_hiphop_move_new_emote.glb"
         ],
         "routineSeconds": 8,
-        "count": 10,
+        "count": 4,
         "turnS": 20,
         "failEvery": 3,
         "names": [
           "Nina",
           "Noah",
           "Nadia",
-          "Nico",
-          "Nora",
-          "Nate",
-          "Naomi",
-          "Nils",
-          "Maya",
-          "Leo"
+          "Nico"
         ],
         "wearables": [],
         "outfits": [],
@@ -971,7 +968,7 @@
           {
             "id": "punch_audience",
             "name": "Championship crowd",
-            "count": 10,
+            "count": 4,
             "role": "hangout",
             "place": {
               "kind": "zone",
@@ -981,12 +978,12 @@
             "emotes": [],
             "outfits": [],
             "outfitLinks": [],
-            "dressCode": null,
+            "dressCode": "sport",
             "castPack": null,
             "castSeed": 0,
             "energetic": false,
             "formation": "circle",
-            "attitude": null,
+            "attitude": "friendly",
             "interruptible": true
           }
         ],
@@ -1009,7 +1006,7 @@
       "reactions": {
         "enabled": true,
         "audioEnabled": false,
-        "audioVolume": 0,
+        "audioVolume": 0.95,
         "spectacleEnabled": true,
         "maxAutomaticIntensity": 4,
         "speechEnabled": true,
@@ -1241,44 +1238,44 @@
       "id": "punch_strike_zone",
       "name": "Strike circle",
       "floorIndex": -1,
-      "floorY": 100,
+      "floorY": 80,
       "shape": {
         "kind": "circle",
         "radius": 1.3,
-        "centerX": 352,
-        "centerZ": 348.65
+        "centerX": 48,
+        "centerZ": 44.65
       }
     },
     {
       "id": "punch_queue_zone",
       "name": "Competition queue",
       "floorIndex": -1,
-      "floorY": 100,
+      "floorY": 80,
       "shape": {
         "kind": "rect",
         "depth": 5.3,
         "width": 2.5,
-        "centerX": 352,
-        "centerZ": 354.25
+        "centerX": 48,
+        "centerZ": 50.25
       }
     },
     {
       "id": "punch_audience_zone",
       "name": "Audience ring",
       "floorIndex": -1,
-      "floorY": 100,
+      "floorY": 80,
       "shape": {
         "kind": "circle",
         "radius": 4.6,
-        "centerX": 352,
-        "centerZ": 352
+        "centerX": 48,
+        "centerZ": 48
       }
     }
   ],
   "venueCapabilities": {
     "schemaVersion": 1,
-    "venueId": "Punch Machine",
-    "generatedAt": "2026-09-08T21:21:13.668Z",
+    "venueId": "Punch Machine Championship",
+    "generatedAt": "2026-09-10T15:26:30.711Z",
     "coordinateSpace": "composer-local-meters",
     "capabilities": [
       {
@@ -1286,15 +1283,15 @@
         "kind": "zone",
         "name": "Audience ring",
         "position": {
-          "x": 352,
-          "z": 352,
+          "x": 48,
+          "z": 48,
           "floorIndex": -1
         },
         "shape": {
           "kind": "circle",
           "radius": 4.6,
-          "centerX": 352,
-          "centerZ": 352
+          "centerX": 48,
+          "centerZ": 48
         },
         "actions": [
           "detect-presence"
@@ -1305,16 +1302,16 @@
         "kind": "zone",
         "name": "Competition queue",
         "position": {
-          "x": 352,
-          "z": 354.25,
+          "x": 48,
+          "z": 50.25,
           "floorIndex": -1
         },
         "shape": {
           "kind": "rect",
           "depth": 5.3,
           "width": 2.5,
-          "centerX": 352,
-          "centerZ": 354.25
+          "centerX": 48,
+          "centerZ": 50.25
         },
         "actions": [
           "detect-presence"
@@ -1325,15 +1322,15 @@
         "kind": "zone",
         "name": "Strike circle",
         "position": {
-          "x": 352,
-          "z": 348.65,
+          "x": 48,
+          "z": 44.65,
           "floorIndex": -1
         },
         "shape": {
           "kind": "circle",
           "radius": 1.3,
-          "centerX": 352,
-          "centerZ": 348.65
+          "centerX": 48,
+          "centerZ": 44.65
         },
         "actions": [
           "detect-presence"
@@ -1341,11 +1338,11 @@
       }
     ]
   },
-  "destinationId": "highground.dcl.eth:-38,104",
-  "projectId": "7fa76005-1486-469d-ae60-f3cb88e7cb58",
+  "destinationId": "highground.dcl.eth:-3,4",
+  "projectId": "10d2dfc4-2e8c-477b-9a44-243898f15dd9",
   "worldDirector": {
-    "directorId": "0e6bf218-8ba5-4590-aead-acc0240f955b",
-    "url": "https://builder.swissverse.org/api/world-director/doc/0e6bf218-8ba5-4590-aead-acc0240f955b",
+    "directorId": "0a455496-7664-4d75-827b-0adea5c9157d",
+    "url": "https://builder.swissverse.org/api/world-director/doc/0a455496-7664-4d75-827b-0adea5c9157d",
     "pollSeconds": 15
   },
   "models": []

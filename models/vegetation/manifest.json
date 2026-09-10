@@ -6,7 +6,7 @@
       "species": "broad",
       "variant": 0,
       "season": "spring",
-      "triangles": 136,
+      "triangles": 72,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 9.0
@@ -16,7 +16,7 @@
       "species": "broad",
       "variant": 0,
       "season": "summer",
-      "triangles": 136,
+      "triangles": 72,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 9.0
@@ -26,7 +26,7 @@
       "species": "broad",
       "variant": 0,
       "season": "autumn",
-      "triangles": 136,
+      "triangles": 72,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 9.0
@@ -46,7 +46,7 @@
       "species": "broad",
       "variant": 1,
       "season": "spring",
-      "triangles": 168,
+      "triangles": 88,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.63
@@ -56,7 +56,7 @@
       "species": "broad",
       "variant": 1,
       "season": "summer",
-      "triangles": 168,
+      "triangles": 88,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.63
@@ -66,7 +66,7 @@
       "species": "broad",
       "variant": 1,
       "season": "autumn",
-      "triangles": 168,
+      "triangles": 88,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.63
@@ -86,7 +86,7 @@
       "species": "broad",
       "variant": 2,
       "season": "spring",
-      "triangles": 136,
+      "triangles": 72,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.72
@@ -96,7 +96,7 @@
       "species": "broad",
       "variant": 2,
       "season": "summer",
-      "triangles": 136,
+      "triangles": 72,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.72
@@ -106,7 +106,7 @@
       "species": "broad",
       "variant": 2,
       "season": "autumn",
-      "triangles": 136,
+      "triangles": 72,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.72
@@ -126,7 +126,7 @@
       "species": "columnar",
       "variant": 0,
       "season": "spring",
-      "triangles": 100,
+      "triangles": 40,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.78
@@ -136,7 +136,7 @@
       "species": "columnar",
       "variant": 0,
       "season": "summer",
-      "triangles": 100,
+      "triangles": 40,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.78
@@ -146,7 +146,7 @@
       "species": "columnar",
       "variant": 0,
       "season": "autumn",
-      "triangles": 100,
+      "triangles": 40,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.78
@@ -166,7 +166,7 @@
       "species": "columnar",
       "variant": 1,
       "season": "spring",
-      "triangles": 120,
+      "triangles": 44,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 10.87
@@ -176,7 +176,7 @@
       "species": "columnar",
       "variant": 1,
       "season": "summer",
-      "triangles": 120,
+      "triangles": 44,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 10.87
@@ -186,7 +186,7 @@
       "species": "columnar",
       "variant": 1,
       "season": "autumn",
-      "triangles": 120,
+      "triangles": 44,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 10.87
@@ -206,7 +206,7 @@
       "species": "columnar",
       "variant": 2,
       "season": "spring",
-      "triangles": 100,
+      "triangles": 40,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.79
@@ -216,7 +216,7 @@
       "species": "columnar",
       "variant": 2,
       "season": "summer",
-      "triangles": 100,
+      "triangles": 40,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.79
@@ -226,7 +226,7 @@
       "species": "columnar",
       "variant": 2,
       "season": "autumn",
-      "triangles": 100,
+      "triangles": 40,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.79
@@ -246,7 +246,7 @@
       "species": "conifer",
       "variant": 0,
       "season": "spring",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.41
@@ -256,7 +256,7 @@
       "species": "conifer",
       "variant": 0,
       "season": "summer",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.41
@@ -266,7 +266,7 @@
       "species": "conifer",
       "variant": 0,
       "season": "autumn",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.41
@@ -276,7 +276,7 @@
       "species": "conifer",
       "variant": 0,
       "season": "winter",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.41
@@ -286,7 +286,7 @@
       "species": "conifer",
       "variant": 1,
       "season": "spring",
-      "triangles": 76,
+      "triangles": 74,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.53
@@ -296,7 +296,7 @@
       "species": "conifer",
       "variant": 1,
       "season": "summer",
-      "triangles": 76,
+      "triangles": 74,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.53
@@ -306,7 +306,7 @@
       "species": "conifer",
       "variant": 1,
       "season": "autumn",
-      "triangles": 76,
+      "triangles": 74,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.53
@@ -316,7 +316,7 @@
       "species": "conifer",
       "variant": 1,
       "season": "winter",
-      "triangles": 76,
+      "triangles": 74,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 12.53
@@ -326,7 +326,7 @@
       "species": "conifer",
       "variant": 2,
       "season": "spring",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 11.04
@@ -336,7 +336,7 @@
       "species": "conifer",
       "variant": 2,
       "season": "summer",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 11.04
@@ -346,7 +346,7 @@
       "species": "conifer",
       "variant": 2,
       "season": "autumn",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 11.04
@@ -356,7 +356,7 @@
       "species": "conifer",
       "variant": 2,
       "season": "winter",
-      "triangles": 62,
+      "triangles": 64,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 11.04
@@ -366,7 +366,7 @@
       "species": "palm",
       "variant": 0,
       "season": "spring",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.99
@@ -376,7 +376,7 @@
       "species": "palm",
       "variant": 0,
       "season": "summer",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.99
@@ -386,7 +386,7 @@
       "species": "palm",
       "variant": 0,
       "season": "autumn",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.99
@@ -396,7 +396,7 @@
       "species": "palm",
       "variant": 0,
       "season": "winter",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.99
@@ -406,7 +406,7 @@
       "species": "palm",
       "variant": 1,
       "season": "spring",
-      "triangles": 160,
+      "triangles": 134,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.45
@@ -416,7 +416,7 @@
       "species": "palm",
       "variant": 1,
       "season": "summer",
-      "triangles": 160,
+      "triangles": 134,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.45
@@ -426,7 +426,7 @@
       "species": "palm",
       "variant": 1,
       "season": "autumn",
-      "triangles": 160,
+      "triangles": 134,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.45
@@ -436,7 +436,7 @@
       "species": "palm",
       "variant": 1,
       "season": "winter",
-      "triangles": 160,
+      "triangles": 134,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 8.45
@@ -446,7 +446,7 @@
       "species": "palm",
       "variant": 2,
       "season": "spring",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 7.24
@@ -456,7 +456,7 @@
       "species": "palm",
       "variant": 2,
       "season": "summer",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 7.24
@@ -466,7 +466,7 @@
       "species": "palm",
       "variant": 2,
       "season": "autumn",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 7.24
@@ -476,7 +476,7 @@
       "species": "palm",
       "variant": 2,
       "season": "winter",
-      "triangles": 154,
+      "triangles": 128,
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 7.24
@@ -600,6 +600,246 @@
       "colliderTriangles": 20,
       "nodes": 2,
       "heightM": 7.75
+    },
+    {
+      "file": "shrub-v0-spring.glb",
+      "species": "shrub",
+      "variant": 0,
+      "season": "spring",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.7
+    },
+    {
+      "file": "shrub-v0-summer.glb",
+      "species": "shrub",
+      "variant": 0,
+      "season": "summer",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.7
+    },
+    {
+      "file": "shrub-v0-autumn.glb",
+      "species": "shrub",
+      "variant": 0,
+      "season": "autumn",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.7
+    },
+    {
+      "file": "shrub-v0-winter.glb",
+      "species": "shrub",
+      "variant": 0,
+      "season": "winter",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.7
+    },
+    {
+      "file": "shrub-v1-spring.glb",
+      "species": "shrub",
+      "variant": 1,
+      "season": "spring",
+      "triangles": 44,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.64
+    },
+    {
+      "file": "shrub-v1-summer.glb",
+      "species": "shrub",
+      "variant": 1,
+      "season": "summer",
+      "triangles": 44,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.64
+    },
+    {
+      "file": "shrub-v1-autumn.glb",
+      "species": "shrub",
+      "variant": 1,
+      "season": "autumn",
+      "triangles": 44,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.64
+    },
+    {
+      "file": "shrub-v1-winter.glb",
+      "species": "shrub",
+      "variant": 1,
+      "season": "winter",
+      "triangles": 44,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.64
+    },
+    {
+      "file": "shrub-v2-spring.glb",
+      "species": "shrub",
+      "variant": 2,
+      "season": "spring",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.69
+    },
+    {
+      "file": "shrub-v2-summer.glb",
+      "species": "shrub",
+      "variant": 2,
+      "season": "summer",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.69
+    },
+    {
+      "file": "shrub-v2-autumn.glb",
+      "species": "shrub",
+      "variant": 2,
+      "season": "autumn",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.69
+    },
+    {
+      "file": "shrub-v2-winter.glb",
+      "species": "shrub",
+      "variant": 2,
+      "season": "winter",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.69
+    },
+    {
+      "file": "flowering-v0-spring.glb",
+      "species": "flowering",
+      "variant": 0,
+      "season": "spring",
+      "triangles": 48,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.42
+    },
+    {
+      "file": "flowering-v0-summer.glb",
+      "species": "flowering",
+      "variant": 0,
+      "season": "summer",
+      "triangles": 48,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.42
+    },
+    {
+      "file": "flowering-v0-autumn.glb",
+      "species": "flowering",
+      "variant": 0,
+      "season": "autumn",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.42
+    },
+    {
+      "file": "flowering-v0-winter.glb",
+      "species": "flowering",
+      "variant": 0,
+      "season": "winter",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.42
+    },
+    {
+      "file": "flowering-v1-spring.glb",
+      "species": "flowering",
+      "variant": 1,
+      "season": "spring",
+      "triangles": 54,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.43
+    },
+    {
+      "file": "flowering-v1-summer.glb",
+      "species": "flowering",
+      "variant": 1,
+      "season": "summer",
+      "triangles": 54,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.43
+    },
+    {
+      "file": "flowering-v1-autumn.glb",
+      "species": "flowering",
+      "variant": 1,
+      "season": "autumn",
+      "triangles": 44,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.43
+    },
+    {
+      "file": "flowering-v1-winter.glb",
+      "species": "flowering",
+      "variant": 1,
+      "season": "winter",
+      "triangles": 44,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.43
+    },
+    {
+      "file": "flowering-v2-spring.glb",
+      "species": "flowering",
+      "variant": 2,
+      "season": "spring",
+      "triangles": 48,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.24
+    },
+    {
+      "file": "flowering-v2-summer.glb",
+      "species": "flowering",
+      "variant": 2,
+      "season": "summer",
+      "triangles": 48,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.24
+    },
+    {
+      "file": "flowering-v2-autumn.glb",
+      "species": "flowering",
+      "variant": 2,
+      "season": "autumn",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.24
+    },
+    {
+      "file": "flowering-v2-winter.glb",
+      "species": "flowering",
+      "variant": 2,
+      "season": "winter",
+      "triangles": 40,
+      "colliderTriangles": 20,
+      "nodes": 2,
+      "heightM": 1.24
     }
   ]
 }

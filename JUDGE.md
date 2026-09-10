@@ -70,18 +70,12 @@ second headset.
 
 ## Snapshot
 
-This repository was snapshotted from a live entity on **2026-09-08**. The
-**docs above describe the live World as of 2026-09-10 15:26 UTC**:
+This repository is a snapshot of the **live punch island** on
+`HIGHGROUND.dcl.eth` (published 2026-09-10 15:26 UTC, runtime commit
+`91ea5c52`). The docs describe that same game.
 
-| | This clone (`bin/`, `scene.json`) | Live punch island |
-|---|---|---|
-| When | 8 Sep 21:21 UTC | 10 Sep 15:26 UTC |
-| Plot | 2025 parcels, base `-38,104` | **49 parcels**, base **`-3,4`** |
-| Save | four-second sweep / Focus | **THE PUSH** — 3 s ask, 10 s dwell, HELP disc |
-| Runtime | commit `787da150` | commit `91ea5c52` |
-
-If the files and the docs disagree, **the live World is the game**. The content
-server is the authority for the entity id.
+If the files and the live World later disagree, **the live World is the game**.
+The content server is the authority for the entity id.
 
 ---
 

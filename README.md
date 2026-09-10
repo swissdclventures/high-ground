@@ -38,9 +38,8 @@ npm install
 npm start
 ```
 
-The `bin/` snapshot in this clone is still the 8 September deployment (see
-[`JUDGE.md`](JUDGE.md) § Snapshot). `npm start` boots that artifact. The live
-World is the 10 September punch island described in the docs.
+The `bin/` in this clone is the live punch island as of 2026-09-10 15:26 UTC
+(entity on `HIGHGROUND.dcl.eth`). `npm start` boots that artifact.
 
 ## Deploy it to a World you own
 
