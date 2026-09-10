@@ -2,40 +2,50 @@
 
 High Ground is a Decentraland SDK7 scene deployed as a persistent World at
 `HIGHGROUND.dcl.eth`. This document covers the systems a reader would want to
-evaluate: how multiplayer works without a server, how the persistent board is
-wired so it can never take the game down with it, and what "mobile-first"
-actually meant in code.
+evaluate: how the room stays one game across desktop and mobile, how the
+persistent board is wired so it can never take the game down with it, and what
+"mobile-first" actually meant in code.
 
 `bin/index.js` is prebuilt from a private monorepo, so this document is the
 readable form of the parts that matter. Every constant and rule below is the one
-that ships.
+that **ships in the live World** unless marked as snapshot-only.
 
 ---
 
 ## The shape of it
 
+Live punch island (content server, 2026-09-10 15:26 UTC):
+
 | Layer | What it is |
 |---|---|
-| `scene.json` | 2025 parcels, base `-38,104`, default spawn on the sky island at `(360, 100.5, 364.4)`. World name `HIGHGROUND.dcl.eth` |
+| `scene.json` | **49 parcels**, base **`-3,4`**, default spawn on the sky island at about `(56, 80.25, 60.4)`. World name `HIGHGROUND.dcl.eth` |
 | `main.crdt` | the authored entities — island, cabinet, arena arc, clouds — serialised from the Builder that composed the scene |
 | `bin/index.js` | the runtime: the punch machine, the coordinator, the HUD, the show |
 | `assets/editor-recipe.json` | the Builder recipe the scene was composed from |
-| `models/` `images/` `sounds/` `videos/` `emotes/` | roughly 30 MB of media |
+| `models/` `images/` `sounds/` `videos/` `emotes/` | the media |
 
-Requested permissions are exactly four, and each is load-bearing:
-`ALLOW_TO_MOVE_PLAYER_INSIDE_SCENE` (the return-to-island escape hatch),
-`USE_FETCH` (the all-time board, and nothing else), `ALLOW_TO_TRIGGER_AVATAR_EMOTE`
-(the show), `USE_WEB3_API` (identity for the board row).
+The World spawn coordinate is **`0,7`**, which sits on this punch plot. A second
+scene, Cloud Dance Floor, was published the same afternoon on the adjacent plot
+(`4,4`, 49 parcels). This repository is the punch championship.
+
+Requested permissions on the **live punch** scene are three, and each is
+load-bearing: `ALLOW_TO_MOVE_PLAYER_INSIDE_SCENE` (the return-to-island escape
+hatch), `USE_FETCH` (the all-time board **and** the HTTPS live wire),
+`ALLOW_TO_TRIGGER_AVATAR_EMOTE` (the show).
 
 `voiceChat` is enabled — the crowd is the point. `portableExperiences` is set to
 `hideUi`, so a visitor's own wearable UI cannot cover the punch controls.
 
+`authoritativeMultiplayer` is **not** set. That flag is what split desktop and
+mobile onto two different DCL scene rooms. The live island does not ask DCL's
+Multiplayer Server to host the round.
+
 ---
 
-## Multiplayer: an elected coordinator, no server
+## Multiplayer: one round, two wires, no DCL game server
 
-There is no game server. Every client runs the same simulation and one of them
-is authoritative at a time.
+There is no Decentraland Multiplayer Server in the loop. Every client still
+runs the same simulation. One of them is authoritative at a time.
 
 ### Election
 
@@ -49,12 +59,12 @@ both are deliberate:
   elects the same peer without a negotiation round trip.
 
 When the coordinator leaves, the next-oldest peer elects itself on the next
-tick. This is why the round's mutable state — the karma bank, the streak count,
-the attempt ceiling — lives in the *replicated snapshot* rather than in the
+tick. This is why the round's mutable state — the streak count, the attempt
+ceiling, the push window — lives in the *replicated snapshot* rather than in the
 coordinator's local closure. Handover happens every time somebody logs off, so
 anything held privately would be lost at the worst possible moment.
 
-### The wire
+### The Explorer bus
 
 Six channels on the Explorer's scene `MessageBus`: `HELLO`, `QUEUE`, `ACTION`,
 `FOCUS`, `RESCUE`, `STATE`. The coordinator broadcasts a full snapshot on an
@@ -64,21 +74,39 @@ predict locally between beats.
 Peers time out after 9 s, which sweeps the queue of anyone who closed their tab.
 
 Every message handler tolerates a peer running an **older build**: a snapshot
-arriving without a focus meter, a named roster, a karma bank, an attempt cap or a
-rescue window is read as "that feature is not present", never as an error. A
-World cannot force everyone to reload at once, so mixed versions are the normal
-case rather than an edge one.
+arriving without a named roster, an attempt cap or a push window is read as
+"that feature is not present", never as an error. A World cannot force everyone
+to reload at once, so mixed versions are the normal case rather than an edge one.
 
-### Clock offset — why the rescue window is fair
+### The HTTPS live wire — why we talk about a server
+
+DCL's scene room does not cross **desktop** (`fixed-adapter`) and **mobile**
+(`LiveKit`) on a single-scene World. `MessageBus` rides that same split, so two
+phones in the plaza can still be two games.
+
+The live island therefore also writes the round over **HTTPS**, against the same
+Postgres project as the all-time board: a state row and an action log, polled
+~3 times a second. Desktop and mobile `fetch` the same rows. That is the server
+in this ecosystem — a persistence API the scene already had permission to
+call — not DCL hosting the simulation.
+
+The same never-block contract as the board applies: a quiet or failing store
+does not stall a frame. The coordinator still exists so an empty store, or a
+store that has not been reached yet, is still a playable island.
+
+Trust is the board's: the anon key is in the published bundle. A client can
+inflate a round; it cannot delete the tables.
+
+### Clock offset — why the save window is fair
 
 Every peer stamps its messages in its own clock, and no two clocks in a
-Decentraland realm agree. A four-second rescue window judged in the
-coordinator's clock would be four seconds for the coordinator and something else
+Decentraland realm agree. A ten-second push window judged in the
+coordinator's clock would be ten seconds for the coordinator and something else
 for everyone else.
 
 The offset is a **running minimum of `received - sent`** per peer, which
 converges on the true difference between the two clocks. The coordinator then
-judges a rescue tap on **when it was thrown**, not when it landed. That single
+judges a tap on **when it was thrown**, not when it landed. That single
 correction is the reason a player on a phone in another country can beat someone
 standing next to the machine's host.
 
@@ -186,6 +214,9 @@ and merely abutting the jump button's edge is still a miss waiting to happen.
 Both thumb controls take their lift from **one function**, so the two sides land
 on a single line rather than drifting apart as either is edited.
 
+On a last-chance save, **HELP sits in the punch-button slot**. A phone has no E.
+The control that answers "help them" is the same thumb target as PUNCH.
+
 ### Trimming the control cluster
 
 `TouchScreenControls` (SDK 7.27+) lets the scene declare which on-screen buttons
@@ -195,7 +226,7 @@ exist. The scene hides what it does not read and keeps what it does:
 |---|---|
 | joystick | you walk to the machine |
 | jump | the clouds and the vent are jump content |
-| E / pointer | focus, and the return-to-island escape hatch |
+| E / pointer | the return-to-island escape hatch |
 | F | one of the three secrets, held through a charge |
 | 1 and 3 | another secret, the sequence 1-3-1 |
 
@@ -255,20 +286,18 @@ target is not arbitrary: it is exactly where the marker sits at an ideal charge.
 
 Spectators are mechanically load-bearing, not decoration.
 
-Pressing E as a spectator joins **the circle** — one circle, no opposing side.
-Taps feed a meter that multiplies the active player's punch. The coordinator
-broadcasts a **named roster** (capped at 8) which drives the balloons above the
-crowd, the HUD list and the arena board, so every client draws the same meter.
+On this island they do **not** add points to the player who is up. They save
+the run.
 
-A spectator's own bar is predicted locally for instant feedback, but **the number
-that pays out is the coordinator's**. Taps have a 200 ms cooldown, the meter
-bleeds exponentially, the scoring band widens per participant, and the headcount
-multiplier is geometric.
+When a last-chance punch falls short of 900, THE PUSH opens. The object is
+their score — already on every screen, with a line at 900. The control is the
+Focus meter reused as a save: stay in the green, the number climbs. Extra
+people make the band narrower. The coordinator replays every helper's pulse
+list from scratch (it does not add numbers a client asserted). Helpers with no
+pulses yet still appear in the room so the puncher can see who is in.
 
-A broken streak can be rescued by the crowd inside a window that opens on a short
-grace delay — long enough that pressing early is pressing a button the
-coordinator has not opened yet — and clock-corrected so it means the same four
-seconds on every device in the room.
+The puncher cannot play their own save. Anyone else in the plaza can, including
+late joiners.
 
 ---
 

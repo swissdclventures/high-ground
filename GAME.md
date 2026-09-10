@@ -4,23 +4,29 @@ The punch-machine championship on a sky island. One machine, one queue, one
 board. This page is the whole rulebook: what you are trying to do, what every
 number on the screen means, and what there is to do while you wait.
 
-Every figure below is read from the shipping source — `shared/punch-machine-contract.ts`,
-`shared/punch-game-profile.ts` and `shared/punch-challenge.ts`. Where a number is
-tunable by the venue owner, the default is given.
+Every figure below is read from the **live** World `HIGHGROUND.dcl.eth` (Punch
+Machine Championship, published 2026-09-10 15:26 UTC) and from the shipping
+source that built it. Where a number is tunable by the venue owner, the live
+venue value is given.
 
 ---
 
 ## The short version
 
-1. Walk to the cabinet and press **E** (or the on-screen E) to join the queue.
-2. On your turn, **hold the glove** to charge, and **let go** as the marker
-   crosses the gold band.
+1. Walk to the cabinet and tap **JOIN THE QUEUE**.
+2. On your turn, **hold the gold glove** (bottom right, under your thumb) to
+   charge, and **let go** as the marker crosses the gold band.
 3. A punch scores **120–999**. **900 or more** buys you another punch on the
    same turn and steps a **multiplier ladder**.
-4. Your turn ends the first time you fall short of 900. Your **round total** —
-   every punch, times the ladder — is what goes on the board.
-5. While you wait, work the **Focus meter**. It stores points for *your* next
-   turn, not for the player who is up.
+4. Your turn ends the first time you fall short of 900 with no last chance
+   left. Your **round total** — every punch, times the ladder — is what goes
+   on the board.
+5. If a last-chance punch falls short of 900, **THE PUSH** opens: anyone who
+   is not punching taps **HELP** and holds the green. The room shoves *their
+   score* over the line.
+
+There is no Focus meter on this island. Spectators do not boost or jinx the
+player who is up. The crowd's job is the save.
 
 ---
 
@@ -74,7 +80,7 @@ once — one number to learn, four consequences:
    people.
 
 Fall short of 900 and the streak breaks, the ladder resets to ×1, and the turn
-ends when your granted punches run out.
+ends when your granted punches run out — unless THE PUSH is still allowed (below).
 
 ---
 
@@ -88,7 +94,7 @@ what your round total collects.
 |---|---|---|---|---|---|---|---|
 | **Multiplier** | ×1 | ×2 | ×4 | ×8 | ×16 | ×32 | ×64 |
 
-*(Default profile, "streak-rush". The "classic" profile runs ×1, ×1, ×2, ×3, ×4.)*
+*(Live profile: "streak-rush".)*
 
 A ×64 rung on a 950 punch is 60,800 points from one swing — which is the point.
 The ramp below makes a long streak dramatically harder than a short one, so the
@@ -115,51 +121,44 @@ faster, arrhythmic, and it offers you a bet you may take or refuse on every punc
 
 ---
 
-## While you wait: the side games
+## THE PUSH — the crowd save
 
-### Focus — the meter (press E / tap)
+This is the live last-chance game. It replaced the four-second sweep catch and
+the Focus meter on this island.
 
-The tap meter beside the machine is the waiting game. **It never helps the player
-who is up.** It stores **Focus, 0–100**, for *your* own next turn.
+It only opens on a **last-chance** punch that fell short of 900. The venue
+allows **up to three** of these per round.
 
-- It is a **balance, not a mash**. Each tap pushes the level up by a fixed
-  impulse; the level bleeds away exponentially. Overshoot past the zone earns
-  nothing.
-- The still point **moves** — two out-of-phase drifts plus gusts, repeating only
-  after about 180 s, so no fixed tapping rhythm ever solves it. You have to keep
-  reading the bar.
-- **Green** pays **12 Focus per second**. Time in the **yellow zone** pays half.
-  Inside the **gold ring** the rate **doubles to 24/s**. A full bar is about
-  **8 seconds** of perfect green.
-- ‼️ **You must be in the queue to bank it.** Working the meter as a pure
-  spectator earns nothing, and the meter says so.
-- Focus survives **60 seconds** outside the queue — a fall, a cloud, a knock-back.
+1. **3 seconds — HELP THEM?** The screen asks. Anyone who is not the puncher
+   taps the **HELP** disc (it sits in the punch-button slot — there is no E
+   verb for this). Tapping during the ask is the yes.
+2. **10 seconds — hold the green.** The control is the same meter the room
+   already knows from Focus, reused as the save: pulse to stay in the gold /
+   green. The object is **their score** — a number already on screen, with a
+   line at 900 everybody already understands. Extra people make the band
+   *narrower*, not wider: one person can always get there; a crowd has to
+   actually play.
+3. **Named result.** If the room crosses 900, the streak continues and the
+   people who pushed are named on the card and the board. If they come up
+   short, the room is told how close it got.
 
-**What it buys:** at the moment of contact, if you have a live streak and the punch
-fell short of 900, Focus is spent automatically to lift it **exactly** to 900 —
-never in part, never on a punch that already made it, never when there is no
-streak to protect. It shows on the result card as a gold `FOCUS +28` row.
+A late hand is still a hand: someone who looks up two seconds in can still
+join. The puncher cannot play their own save. Queued players who are not up
+can.
 
-### Momentum — beat a regular
+Latency is handled the same way as the old catch: the pulse is judged on the
+elapsed **you actually saw** on your own screen, not on when the message
+arrived.
 
-With Focus **full**, beat one of the island's regulars in the boxing side-game
-(Scrap). That arms **Momentum**: your golden ball comes after your **first** 900+
-of the turn instead of the third. It is consumed by the punch it arms. No points,
-no multiplier — just earlier entry into a bonus that already exists.
+---
 
-### The fumble save — for spectators only
+## While you wait
 
-When a punch breaks a streak worth saving, a **4-second window** opens, and the
-number is already on screen so the whole room knows what is at stake. A marker
-sweeps at 1 Hz and the catch band is about **41 ms** wide. First reach wins, one
-try each, and the rescuer is **named** on the card, the marquee and the board.
+### You are not working a Focus bank
 
-‼️ Only people **not in the queue** may reach for it. A competitor cannot save a
-rival — this is the game for whoever is sitting in the plaza.
-
-Latency is handled properly: the reach is judged on the elapsed **you actually
-saw** on your own screen, not on when the message arrived, so a phone on mobile
-data races fairly against a desktop standing next to it.
+Focus, crowd boost and jinx are **in the source and switched off** on this
+island (`focusEnabled`, `boostEnabled`, `karmaEnabled` are all false). Waiting
+is watching the turn, joining THE PUSH when it opens, or climbing the clouds.
 
 ### The cloud climb
 
@@ -183,7 +182,8 @@ page if you would rather not wait.
   *rounds*, so a turn split across two visits keeps growing one row rather than
   filling the board with fragments.
 - **The all-time board** — outlives the session and the room. You arrive alone and
-  are still playing against everyone who was here before you.
+  are still playing against everyone who was here before you. Live venue key:
+  `punch-island`.
 - The all-time board is a **nice-to-have, never a dependency**: switch it off,
   misconfigure it or take it offline and the island behaves exactly the same.
   Nothing in the game loop ever waits on it.
@@ -196,13 +196,13 @@ page if you would rather not wait.
 
 Kept honest, because the source contains all three:
 
-- **Jinx** — the crowd's key to drag a rival's punch down. Dormant by owner
-  decision; the code is kept against a future rare mode.
+- **Focus** — a personal meter that used to lift *your* next punch to 900. Off.
+  THE PUSH is the save now, and it is the *room* shoving *their* number.
+- **Jinx** — the crowd's key to drag a rival's punch down. Dormant.
 - **Crowd boost / High Ground** — spectators used to add points to the player who
-  was up, which was the only route past 999 (the "High Ground" event layer above
-  1000). Replaced by Focus in September 2026, so the >999 path never fires today.
-- **Karma bank** — the earlier "boost well, punch harder" bank. Retired; the gold
-  ring is Focus's accelerator and nothing else.
+  was up, which was the only route past 999. Replaced; the >999 path never fires
+  today.
+- **Karma bank** — the earlier "boost well, punch harder" bank. Retired.
 
 ---
 

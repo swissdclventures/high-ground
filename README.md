@@ -5,28 +5,27 @@ sky island, built for the Decentraland Friendzone Mobile Buildathon.
 
 Play it: **[HIGHGROUND.dcl.eth](https://decentraland.org/play/?realm=HIGHGROUND.dcl.eth)**
 
-This repository is a snapshot of the scene as deployed — the files the
-Decentraland Explorer actually loads when you visit that World, not a rebuild of
-them. Snapshot taken 2026-09-09, from the deployment of 2026-09-08 21:21 UTC.
-The World is redeployed as the scene changes, and the content server always
-holds the authoritative copy.
+You spawn on the punch island (World spawn `0,7`). Walk to the cabinet. The same
+World also has a dance island immediately to the east; this repository is the
+punch championship.
 
 Third-party asset credits are in [`CREDITS.md`](CREDITS.md).
 
 **Judges: start at [`JUDGE.md`](JUDGE.md)** — a 90-second path and where each
-criterion lives. [`GAME.md`](GAME.md) is the rulebook — every number on the
-screen, the side games and what 900 means. [`ARCHITECTURE.md`](ARCHITECTURE.md)
-covers the multiplayer coordinator, the persistent board's failure contract and
-the mobile layout rules. [`docs/process/`](docs/process/) covers how it was built
-and tested.
+criterion lives. [`GAME.md`](GAME.md) is the rulebook. [`ARCHITECTURE.md`](ARCHITECTURE.md)
+covers how the room stays one game (coordinator + HTTPS live wire), the
+persistent board's failure contract, and the mobile layout rules.
+[`docs/process/`](docs/process/) covers how it was built and tested.
 
 ## What it is
 
-Step up to the machine, charge a punch, and time the release. Everyone in the
-World shares one queue and one arena screen, so a turn is a performance: a punch
-of 900+ extends your turn and steps a multiplier ladder, the crowd can catch a
-broken streak inside a four-second window, and the scores land on a board that
-outlives the session. Full rules in [`GAME.md`](GAME.md).
+Step up to the machine, join the queue, hold the gold glove, and time the
+release. Everyone in the World shares one queue and one arena screen, so a turn
+is a performance. A punch of 900+ extends your turn and steps a multiplier
+ladder. If a last-chance punch falls short, the room can **push the score over
+900** — a three-second ask, then ten seconds of holding the green on the same
+meter the game already taught. The people who did the work are named. Scores
+land on a board that outlives the session. Full rules in [`GAME.md`](GAME.md).
 
 It is designed for Decentraland Mobile first — the controls, the readable text
 sizes and the thumb clearance are all built around a phone held in landscape,
@@ -38,6 +37,10 @@ rather than a desktop layout shrunk down.
 npm install
 npm start
 ```
+
+The `bin/` snapshot in this clone is still the 8 September deployment (see
+[`JUDGE.md`](JUDGE.md) § Snapshot). `npm start` boots that artifact. The live
+World is the 10 September punch island described in the docs.
 
 ## Deploy it to a World you own
 

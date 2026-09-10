@@ -26,8 +26,8 @@ constants.
 
 ## Testing
 
-The scene's systems are covered by a vitest suite in the monorepo. Nineteen of
-those files are specific to this game:
+The scene's systems are covered by a vitest suite in the monorepo. The files
+specific to this game include:
 
 ```
 punch-arc-quake              punch-multiplayer
@@ -40,6 +40,7 @@ punch-focus-signals          punch-thumb-controls
 punch-hot-reload             punch-turn-clock-and-crowd
 punch-house-bot-performer    punch-score-spread (shared)
 punch-karma-ring             punch-lamp-bond-and-reveal
+punch-push                   punch-push-runtime
 ```
 
 ### The multiplayer harness
@@ -49,6 +50,11 @@ dependency on the Explorer** — the `MessageBus` import — because everything 
 comes from a shared pure contract module. That made the whole thing testable for
 three optional arguments (`bus`, `now`, `random`, all defaulting to the real
 thing) plus a vitest alias pointing `@dcl/sdk/message-bus` at a stub.
+
+THE PUSH (the live last-chance save) is covered the same way in `punch-push` and
+`punch-push-runtime`: the coordinator replays every helper's pulse list from
+scratch, an empty yes still grades, and quality is walked to *elapsed* time so a
+live bar can die when someone leaves the green.
 
 The result is a synthetic island: N clients, a known clock, replayable dice. Eight
 of the ten multiplayer scenarios we wanted to check now run in 86 ms. The other
