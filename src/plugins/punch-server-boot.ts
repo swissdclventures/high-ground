@@ -17,7 +17,8 @@
 import { engine } from '@dcl/sdk/ecs'
 import { AUTH_SERVER_PEER_ID } from '@dcl/sdk/network/message-bus-sync'
 import { normalizePunchMachineAppConfig } from '@shared/punch-machine-contract'
-import { normalizeSocialSurfaceConfig } from '@shared/social-surface-contract'
+import { normalizeSocialSurfaceConfig, isSocialAdminWallet } from '@shared/social-surface-contract'
+import { PUNCH_MAIN_ADMIN_WALLET } from '@shared/punch-game-profile'
 import type { SceneRuntimeConfig } from '@shared/scene-runtime-config'
 import { setPunchAuthority } from './punch-authority-runtime'
 import { startPunchServerPulse } from './punch-server-pulse'
@@ -88,7 +89,12 @@ export function startPunchServer(args: PunchServerBootArgs): number {
         config: punchConfig,
         authority: 'server',
         serverId,
-        bus
+        bus,
+        isSceneHost: (userId) => {
+          const id = userId.trim().toLowerCase()
+          if (id === PUNCH_MAIN_ADMIN_WALLET) return true
+          return isSocialAdminWallet(userId, social.event.adminWallets)
+        },
         // ‼️NO `houseBot`, NO `focusBots`, AND THIS IS A REAL BEHAVIOUR CHANGE.
         //
         // Both claim a scene-side NPC body by id, and there are no bodies on a

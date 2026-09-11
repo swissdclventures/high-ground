@@ -42,11 +42,13 @@ import { PUNCH_UI } from './punch-visual-theme'
  * of the same instruction. Black smoke at 0.34 m and 72% alpha was invisible
  * against a bright sky; a bright ring at 1.0 m is legible.
  *
- * POSITIONS COME FROM THE AVATARS THEMSELVES. `PlayerIdentityData` + `Transform`
- * is the only thing on the wire that knows where a remote body actually is and
- * which way it is turned — the coordinator's roster carries names and numbers,
- * never coordinates. A member whose avatar is not resolvable this frame simply
- * emits nothing, which is correct: they are out of the client's range.
+ * POSITIONS COME FROM THE AVATARS THEMSELVES. `PlayerIdentityData` + world
+ * position is the only thing that knows where a remote body actually is.
+ * Local `Transform.position` on another Explorer is often the origin, so a
+ * pulse spawned there never appears on the island. Same wallet, two devices:
+ * the helping body may be missing from this client's identity list entirely —
+ * then the pulse still leaves the strike spot, aimed at the cabinet, so the
+ * watching screen sees the flow.
  */
 import {
   Entity,
@@ -56,7 +58,9 @@ import {
   Transform,
   engine
 } from '@dcl/sdk/ecs'
+import { getWorldPosition } from '@dcl/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
+import { PUNCH_STRIKE_Z } from '@shared/punch-machine-layout'
 import type { FocusSignalMember } from './punch-focus-signals'
 
 /**
@@ -184,11 +188,34 @@ function key(member: { userId: string; mine: boolean }): string {
 /**
  * Where a channeller is standing and which way they are turned.
  *
- * The local player is read straight off `engine.PlayerEntity`, which is exact
- * and always present. Everyone else is matched by address against the avatars
- * the explorer has actually loaded — a member who is too far away to be loaded
- * has no body to emit from, and is skipped rather than guessed at.
+ * The local player is read straight off `engine.PlayerEntity`. Everyone else
+ * is matched by address against the avatars this Explorer has loaded. A
+ * missing sibling session (same wallet, two devices) still emits from the
+ * strike spot so the watching screen sees the flow.
  */
+function walletKey(id: string): string {
+  return id.trim().toLowerCase().replace(/^0x/, '')
+}
+
+function poseOf(entity: Entity): { position: Vector3; rotation: Quaternion } | null {
+  const tf = Transform.getOrNull(entity)
+  if (!tf) return null
+  const world = getWorldPosition(engine, entity)
+  return {
+    position: Vector3.create(world.x, world.y, world.z),
+    rotation: tf.rotation
+  }
+}
+
+/** Last-resort origin: the pad in front of the bag. Aimed at the cabinet. */
+function cabinetHelperPose(): { position: Vector3; rotation: Quaternion } | null {
+  if (!waveTarget) return null
+  return {
+    position: Vector3.create(waveTarget.x, waveTarget.y, waveTarget.z + PUNCH_STRIKE_Z),
+    rotation: Quaternion.Identity()
+  }
+}
+
 function bodyOf(
   userId: string,
   mine: boolean,
@@ -198,22 +225,20 @@ function bodyOf(
   // address lookup below can only ever fail for one. The entity is handed
   // straight in instead — it is the scene's own, and its transform is already
   // in the same space every wave is spawned into.
-  if (body) {
-    const tf = Transform.getOrNull(body)
-    return tf ? { position: tf.position, rotation: tf.rotation } : null
+  if (body) return poseOf(body)
+  if (mine) return poseOf(engine.PlayerEntity) ?? cabinetHelperPose()
+  const wanted = walletKey(userId)
+  if (wanted) {
+    for (const [entity, identity] of engine.getEntitiesWith(PlayerIdentityData)) {
+      // Same wallet, two Explorers: this client's PlayerEntity is the watcher.
+      // The helping body is the other avatar with that address.
+      if (entity === engine.PlayerEntity) continue
+      if (walletKey(identity.address ?? '') !== wanted) continue
+      const pose = poseOf(entity)
+      if (pose) return pose
+    }
   }
-  if (mine) {
-    const tf = Transform.getOrNull(engine.PlayerEntity)
-    return tf ? { position: tf.position, rotation: tf.rotation } : null
-  }
-  const wanted = userId.toLowerCase()
-  if (!wanted) return null
-  for (const [entity, identity] of engine.getEntitiesWith(PlayerIdentityData)) {
-    if ((identity.address ?? '').toLowerCase() !== wanted) continue
-    const tf = Transform.getOrNull(entity)
-    return tf ? { position: tf.position, rotation: tf.rotation } : null
-  }
-  return null
+  return cabinetHelperPose()
 }
 
 function claimWave(): Wave | null {
@@ -349,10 +374,6 @@ function advance(wave: Wave, now: number): void {
  */
 export function updateFocusWaves(members: FocusSignalMember[], now: number): void {
   for (const member of members) {
-    // NO QUALITY GATE. Being in the roster already means "tapping right now" —
-    // the coordinator drops anyone who has gone quiet. Gating on quality would
-    // have made the pulses vanish for exactly the person doing it badly, which
-    // is the person the feedback is for.
     const id = key(member)
     if (now - (lastEmitAt.get(id) ?? 0) < WAVE_EVERY_MS) continue
     lastEmitAt.set(id, now)

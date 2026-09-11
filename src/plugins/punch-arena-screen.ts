@@ -118,7 +118,6 @@ import {
   type ScreenMaskId
 } from '@shared/punch-show-masks'
 import {
-  GLYPH_ROW_SHIFT,
   screenIconField,
   screenIconForTier,
   screenTextField,
@@ -295,12 +294,6 @@ export interface ArenaScreen {
    */
   glyphKey: string
   glyphField: boolean[]
-  /**
-   * Whether the wash is currently lifted by `GLYPH_ROW_SHIFT` so a 7-row
-   * numeral sits in the middle of the 8-row board. Full-height marks leave
-   * this false; anything that paints the arc as a pattern must put it back.
-   */
-  glyphCentered: boolean
 }
 
 /**
@@ -729,7 +722,6 @@ export function createArenaScreen(parent: Entity): ArenaScreen {
         scale: Vector3.create(seg.width, seg.height, 0.04)
       })
       MeshRenderer.setBox(panel)
-      VisibilityComponent.create(panel, { visible: true })
       washPanels[punchWashIndex(col, row)] = panel
     }
   }
@@ -949,8 +941,7 @@ export function createArenaScreen(parent: Entity): ArenaScreen {
     verdictShown: false,
     glyphUntil: 0,
     glyphKey: '',
-    glyphField: [],
-    glyphCentered: false
+    glyphField: []
   }
   paintBacking(screen)
   return screen
@@ -1393,53 +1384,9 @@ function paintColumn(
  * every reaction.
  */
 function wash(screen: ArenaScreen, colour: Color4): void {
-  setGlyphCentered(screen, false)
   setMask(screen, 'none')
   for (let col = 0; col < PUNCH_WASH_SEGMENTS; col += 1) {
     paintColumn(screen, col, colour.r, colour.g, colour.b)
-  }
-}
-
-/**
- * A 7-row numeral has a dark spare row at the top of the field. A full-height
- * mark lights that row. Only the first kind needs the half-row lift — an icon
- * already fills the board, and lifting it would poke a row out of the bezel.
- */
-function glyphNeedsCenter(field: readonly boolean[]): boolean {
-  if (!field.some(Boolean)) return false
-  for (let col = 0; col < PUNCH_WASH_SEGMENTS; col += 1) {
-    if (field[punchWashIndex(col, PUNCH_WASH_ROWS - 1)] === true) return false
-  }
-  return true
-}
-
-/**
- * Park a 7-row numeral in the middle of the 8-row face.
- *
- * ‼️THIS USED TO BE AN INTEGER ROW. `bottom = 1` kissed the header; `bottom = 0`
- * kissed the plinth. There is no whole row in between, so the leftover row is
- * split: the bitmap stays on row 0 and the wash lifts by half a row. The spare
- * top panel would sit past the bezel after that lift, so it hides rather than
- * hanging off the frame. Patterns write `false` and the panels go home.
- */
-function setGlyphCentered(screen: ArenaScreen, centered: boolean): void {
-  if (screen.glyphCentered === centered) return
-  screen.glyphCentered = centered
-  const shift = centered ? GLYPH_ROW_SHIFT : 0
-  for (let col = 0; col < PUNCH_WASH_SEGMENTS; col += 1) {
-    for (let row = 0; row < PUNCH_WASH_ROWS; row += 1) {
-      const index = punchWashIndex(col, row)
-      const panel = screen.washPanels[index]!
-      const seg = punchWashSegment(col, row, shift)
-      const tf = Transform.getMutable(panel)
-      tf.position = Vector3.create(seg.x, seg.y, seg.z)
-      // A panel whose centre would sit on or past the top of the face after the
-      // lift is the leftover row. Hide it; showing it is a dark strip above the
-      // bezel, which is the same kiss this function exists to stop.
-      VisibilityComponent.createOrReplace(panel, {
-        visible: row + 0.5 + shift < PUNCH_WASH_ROWS
-      })
-    }
   }
 }
 
@@ -1464,7 +1411,6 @@ function paintGlyphField(
   lit: Color4,
   dark: Color4
 ): void {
-  setGlyphCentered(screen, glyphNeedsCenter(field))
   setMask(screen, 'none')
   for (let col = 0; col < PUNCH_WASH_SEGMENTS; col += 1) {
     for (let row = 0; row < PUNCH_WASH_ROWS; row += 1) {
@@ -1528,7 +1474,6 @@ function paintFrame(screen: ArenaScreen, paint: ScreenPaint, t01: number): void 
   // The mask travels with the pattern, so the charge meter, the director's
   // cards and the ambient show all pick one up without a single caller needing
   // to know this file has masks at all.
-  setGlyphCentered(screen, false)
   setMask(screen, patternMask(paint.pattern))
   // Columns, not panels. Passing the panel COUNT as the segment count is what
   // it used to do, and with rows that would compress the whole pattern into the

@@ -62,7 +62,8 @@ is slow or down, the game carries on.
 
 - One queue, one screen. Your punch is public.
 - The crowd can save a run. HELP, hold the green, get named. A late hand still
-  counts. The puncher cannot play their own save.
+  counts. The puncher cannot play their own save. Rings fire at the bag so the
+  room can see the shove — including someone watching on another device.
 - Secrets are room-sized. Three hidden techniques, one per channel.
 - A house bot plays when the room is empty, so arriving alone is still a show.
 

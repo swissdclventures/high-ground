@@ -1,6 +1,8 @@
 {
   "standaloneSource": true,
   "sdk": "7.27.1-33533530571.commit-451d001",
+  "sourceCommit": "16143f9ee6ddea24e488a4234a2f04c5ca9ae4a3",
+  "sourceAt": "2026-09-11T21:52:23Z",
   "liveWorldSnapshotAt": "2026-09-10T15:26:30.711Z",
   "liveWorldRuntimeCommit": "91ea5c52db80cc2fdaae9ec6524ecab4c48764e5"
 }

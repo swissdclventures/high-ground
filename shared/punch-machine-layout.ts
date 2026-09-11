@@ -832,7 +832,6 @@ export function punchWashGlyphGain(row: number): number {
 export function punchWashSegment(
   col: number,
   row: number,
-  rowShift = 0,
 ): {
   x: number;
   z: number;
@@ -848,12 +847,8 @@ export function punchWashSegment(
   // The band split. Rows stack bottom-up and together they still cover exactly
   // the authored 0.55..4.35 face, so the arc gains structure without losing a
   // millimetre of height — the picture must still reach the full screen.
-  //
-  // `rowShift` is how a 7-row numeral centres on this 8-row face: half a row
-  // of lift, so the leftover air splits above and below instead of kissing one
-  // bezel. Patterns and icons pass 0 and still tile the authored band.
   const rowH = (top - bottom) / PUNCH_WASH_ROWS;
-  const rowMid = bottom + rowH * (row + 0.5 + rowShift);
+  const rowMid = bottom + rowH * (row + 0.5);
   // The screen fills the BACK half — the same 180 degrees the GLB is turned to
   // cover. Walk from the right post (+X) round through the apex (-Z) to the
   // left post (-X), so every panel lands on NEGATIVE z where the arc actually

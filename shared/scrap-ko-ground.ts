@@ -301,6 +301,35 @@ export function scrapNpcNeedsDeckRescue(args: {
   return scrapNpcIsUnderDeck(args);
 }
 
+/**
+ * Feet Y for a walking NPC whose hangout target still thinks the plot is at 0.
+ *
+ * Island zones are SITE-scoped, so `floorSurfaceY` answers `PLOT_GROUND_Y` (0).
+ * The coordinator then interpolates toward that Y and walks the body through
+ * the stone; a follower only runs the under-deck rescue, so the phone stays
+ * on the deck while desktop paces under it. On the rope, stand on the deck.
+ * Off the rope (city roam, a KO over the rim) keep the given Y.
+ */
+export function scrapNpcStandY(args: {
+  x: number;
+  z: number;
+  y: number;
+  dropping?: boolean;
+  deck?: ScrapKoDeck | null;
+}): number {
+  if (args.dropping) return args.y;
+  const deck = args.deck === undefined ? cachedDeck : args.deck;
+  if (!deck || deck.radiusM <= 0) return args.y;
+  if (scrapKoPointOffDeck(args.x, args.z, deck)) return args.y;
+  if (args.y >= deck.deckY) return args.y;
+  // Plot-ground hangout (Y ≈ 0) sits farther below the island than a KO drop
+  // is allowed to fall. Lift that. A live fall uses `dropping: true` on the
+  // coordinator; followers omit the flag so the body can still go over the rim.
+  if (args.y <= deck.deckY - (SCRAP_KO_DROP_MAX_M + 1)) return deck.deckY;
+  if (args.dropping === false) return deck.deckY;
+  return args.y;
+}
+
 export function scrapKoClampToDeck(
   x: number,
   z: number,

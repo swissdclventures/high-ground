@@ -60,6 +60,21 @@ export function punchLiveActionHeadUrl(config: PunchBoardStoreConfig): string {
   return `${config.url}/rest/v1/${PUNCH_LIVE_ACTION_TABLE}?select=id&venue=eq.${venue}&order=id.desc&limit=1`;
 }
 
+/**
+ * Newest action id at this venue. Used so a late joiner jumps to live instead
+ * of replaying last night's punches 80 rows at a time.
+ */
+export function parsePunchLiveActionHeadId(payload: unknown): number {
+  if (!Array.isArray(payload)) return 0;
+  let max = 0;
+  for (const raw of payload) {
+    if (!raw || typeof raw !== "object") continue;
+    const id = Number((raw as { id?: unknown }).id);
+    if (Number.isFinite(id) && id > max) max = id;
+  }
+  return max;
+}
+
 export interface PunchLiveStateRow {
   venue: string;
   machine_id: string;

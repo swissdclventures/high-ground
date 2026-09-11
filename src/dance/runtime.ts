@@ -55,6 +55,21 @@ let config: DanceVenueConfig | null = null
 let model: DanceModel = initialDanceModel()
 let latestSnapshot: DanceStateSnapshot | null = null
 let iAmCoordinator = false
+/** Same wallet, two Explorers: the helping device must not simulate NPCs. */
+let npcSimMuted = false
+
+export function setNpcSimMuted(on: boolean): void {
+  npcSimMuted = on
+}
+
+export function isDanceCoordinator(): boolean {
+  return iAmCoordinator
+}
+
+/** Walk and publish NPCs. Off on the helping twin of the same wallet. */
+export function isNpcSimAuthority(): boolean {
+  return iAmCoordinator && !npcSimMuted
+}
 
 let presenceTimer = 0
 let heartbeatTimer = 0
@@ -82,11 +97,6 @@ export function getDanceSnapshot(): DanceStateSnapshot | null {
 
 export function getDanceConfig(): DanceVenueConfig | null {
   return config
-}
-
-/** The one client allowed to advance and publish NPC simulation state. */
-export function isDanceCoordinator(): boolean {
-  return iAmCoordinator
 }
 
 export function isLocalDancer(): boolean {

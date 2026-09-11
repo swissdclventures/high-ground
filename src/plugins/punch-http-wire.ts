@@ -8,6 +8,7 @@
 import { engine } from '@dcl/sdk/ecs'
 import type { PunchBoardStoreConfig } from '@shared/punch-board-store'
 import {
+  punchLiveActionHeadUrl,
   punchLiveActionReadUrl,
   punchLiveActionWriteUrl,
   punchLiveEnabled,
@@ -15,6 +16,7 @@ import {
   punchLiveStateReadUrl,
   punchLiveStateWriteUrl,
   punchLiveVenue,
+  parsePunchLiveActionHeadId,
   parsePunchLiveActionRows,
   parsePunchLiveStateRows
 } from '@shared/punch-live-store'
@@ -57,6 +59,9 @@ export function createPunchHttpBus(options: PunchHttpBusOptions): PunchHttpBus {
   /** This Explorer session, not the wallet. Same wallet on two devices is two sessions. */
   let sessionId = ''
   let lastActionId = 0
+  /** First pull jumps to the newest row. Replaying id=1…live is how a phone
+   *  spent two minutes behind the desktop, then overtook it. */
+  let skipHistory = true
   let pulling = false
   let framesIn = 0
   let echoes = 0
@@ -176,17 +181,28 @@ export function createPunchHttpBus(options: PunchHttpBusOptions): PunchHttpBus {
   function pull(): void {
     if (!punchLiveEnabled(config) || pulling) return
     pulling = true
+    const actionUrl = skipHistory
+      ? punchLiveActionHeadUrl(config)
+      : punchLiveActionReadUrl(config, lastActionId)
     Promise.all([
       doFetch(punchLiveStateReadUrl(config), { method: 'GET', headers: punchLiveHeaders(config) }).then((response) => {
         if (!response.ok) throw new Error(`state ${response.status}`)
         return response.json()
       }),
-      doFetch(punchLiveActionReadUrl(config, lastActionId), { method: 'GET', headers: punchLiveHeaders(config) }).then((response) => {
+      doFetch(actionUrl, { method: 'GET', headers: punchLiveHeaders(config) }).then((response) => {
         if (!response.ok) throw new Error(`action ${response.status}`)
         return response.json()
       })
     ])
       .then(([statePayload, actionPayload]) => {
+        if (skipHistory) {
+          const head = parsePunchLiveActionHeadId(actionPayload)
+          if (head > lastActionId) lastActionId = head
+          skipHistory = false
+          ingestState(statePayload)
+          lastError = ''
+          return
+        }
         // Hellos first so a late joiner elects the same host before the snapshot.
         ingestActions(actionPayload)
         ingestState(statePayload)

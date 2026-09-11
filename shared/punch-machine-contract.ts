@@ -28,6 +28,36 @@ export function punchTimingDisplayElapsedMs(heldMs: number, live: boolean): numb
   return live ? held + PUNCH_TIMING_DISPLAY_LEAD_MS : held;
 }
 
+/**
+ * Pixels the cyan ball travels for marker 0→1. This is the playable pendulum:
+ * a 590 ms leg stays on the 600 px reticle and moves at a speed a person can
+ * track. Deriving travel from a 250 px hoop (`hoop / sweetWidth` ≈ 1385) made
+ * the same leg 3× faster. Parking the leftover travel just outside the hoop
+ * then spent most of the swing frozen, so the visible part was a slam through
+ * the gold — "it accelerates when it moves over the circle".
+ *
+ * The gold glyph on screen is the 250 px hoop, independent of this travel.
+ * Deriving the glyph from `travel * sweetWidth` (~76 px) made a speck nobody
+ * could aim at. Centre of the hoop is still the scoring centre; the hoop
+ * flashes when the ball is inside the band.
+ */
+export const PUNCH_RETICLE_TRAVEL_PX = 420;
+
+/** How far from centre the scoring band sits, in pendulum pixels. */
+export function punchReticleHoopHalfPx(
+  sweetWidth01: number = PUNCH_TIMING_SWEET_WIDTH_01,
+): number {
+  return PUNCH_RETICLE_TRAVEL_PX * Math.max(0, sweetWidth01);
+}
+
+/** Linear. No clamp — a clamp is what made the hoop a racetrack. */
+export function punchReticleOffsetPx(
+  marker01: number,
+  target01: number = PUNCH_TIMING_TARGET_01,
+): number {
+  return (marker01 - target01) * PUNCH_RETICLE_TRAVEL_PX;
+}
+
 import {
   defaultPunchBoardStoreConfig,
   normalizePunchBoardStoreConfig,
@@ -2138,6 +2168,23 @@ export const PUNCH_SCORE_PHASE_MS =
  * `sincePhaseStartMs` is time since the RELEASE (the scoring phase's first
  * frame), not since the slam — the slam is an event inside this window.
  */
+/**
+ * Time since this punch's reveal started. Prefer `scorePhaseStartedAt`.
+ * `phaseEndsAt` is stretched when a last-chance save opens, and using it
+ * here held the plate at 000 for the whole help window.
+ */
+export function punchRevealElapsedMs(
+  nowMs: number,
+  scorePhaseStartedAt: number | undefined,
+  phaseEndsAt: number,
+  scorePhaseDurationMs: number | undefined,
+): number {
+  if (typeof scorePhaseStartedAt === 'number' && scorePhaseStartedAt > 0) {
+    return Math.max(0, nowMs - scorePhaseStartedAt);
+  }
+  return nowMs - (phaseEndsAt - (scorePhaseDurationMs ?? PUNCH_SCORE_PHASE_MS));
+}
+
 export function punchRevealShownScore(
   score: number,
   sincePhaseStartMs: number,

@@ -741,6 +741,10 @@ export function punchIsAdmin(profile: PunchGameProfile, userId: string): boolean
   return punchAdminIds(profile.adminIds).includes(id);
 }
 
+/** Hardcoded owner wallet — the publishing machine, not a phone Explorer. */
+export const PUNCH_MAIN_ADMIN_WALLET = '0x23be90335e79d3245615985d91f69814f98a0fab';
+
+
 /**
  * WHICH BOARD A SCORE IS FILED UNDER. THE MODE, AND NOTHING ELSE.
  *

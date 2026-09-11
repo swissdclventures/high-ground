@@ -36,6 +36,7 @@ import {
   PUNCH_FOCUS_GUST_01,
   PUNCH_FOCUS_STREAK_STEP_MS,
   PUNCH_TIMING_SWEET_WIDTH_01,
+  PUNCH_RETICLE_TRAVEL_PX,
   PUNCH_ASSIST_BAND_GAIN,
   PUNCH_PREP_FOCUS_PER_SEC,
   PUNCH_PREP_ZONE_SHARE,
@@ -51,6 +52,7 @@ import {
 } from '@shared/punch-machine-layout'
 import { punchRescueOrder, type PunchRescueOrderPhase } from '@shared/punch-challenge'
 import {
+  PUNCH_PUSH_EXTRA_SHOUT,
   punchHelpAskCopy,
   punchHelpChipSet,
   punchHelpGap,
@@ -210,28 +212,19 @@ function mix(a: Color4, b: Color4, t: number): Color4 {
 }
 
 /**
- * The timing game, writ large: a fixed gold hoop centre-screen and a cyan ball
- * that slides across it with the timing marker. Overlap = release. On overlap
- * both flash with the pulse so there is no ambiguity about the moment.
+ * The timing game: a gold hoop and a cyan ball. Overlap = release.
  *
- * TWO circles, never more. This drew six: ◎ and ◉ each paint a second circle
- * INSIDE themselves, and a translucent ◎ sat behind as an on-target glow — so
- * the moment the shot mattered most, the screen filled with concentric rings
- * and the one thing worth reading (is the ball in the hoop?) got harder to see.
- * ○ and ● draw one circle each; the flash is carried by colour and size.
+ * TWO circles, never more. ○ and ● draw one circle each; the flash is colour
+ * and size. The hoop is the 250 px playable target — sizing it to the scoring
+ * band made a ~76 px speck ("tiny little circle that's impossible to hit").
+ * The ball still walks the whole 0→1 pendulum at `PUNCH_RETICLE_TRAVEL_PX`
+ * so the 590 ms leg does not slam. The hoop going hot is the in-window tell.
  */
 const RING = 250
 const RING_HOT = 276
 const BALL = 96
 const BALL_HOT = 110
-/**
- * Pixels the ball travels for marker 0→1. Derived so the gold hoop's EDGE is
- * the scoring band's edge: |marker − target| = sweetWidth → |offset| = hoop
- * half. A hand-tuned 420 left the hoop ~3× wider than the window, so a dot
- * that looked centred-in-the-circle was already late.
- */
-const RETICLE_HALF = RING * 0.72
-const RETICLE_TRAVEL = RETICLE_HALF / PUNCH_TIMING_SWEET_WIDTH_01
+const RETICLE_TRAVEL = PUNCH_RETICLE_TRAVEL_PX
 
 /**
  * A glyph's drawn centre sits a little BELOW its line box's centre, by a fixed
@@ -329,14 +322,8 @@ function AimReticle(props: {
   const calm = bleed > 0.02 ? mix(GOLD, PUNCH_UI.danger, bleed * 0.8) : GOLD
   const ringColor = onTarget ? mix(GOLD, GOLD_HOT, beat) : alarmed ? mix(calm, PUNCH_UI.danger, beat) : calm
   const dotColor = onTarget ? mix(CYAN, GOLD_HOT, beat) : CYAN
-  // ‼️THE RING IS DRAWN AT THE WIDTH IT IS SCORED AT.
-  //
-  // `sweetWidth01` already carries the crowd's assist (see
-  // `punchTimingSweetWidth01`), so the release window genuinely widened the
-  // moment somebody in the room held their ring — but a reticle drawn at a
-  // fixed radius would have kept that a secret and the puncher would have
-  // credited a lucky release. The circle swells instead, in the player's
-  // peripheral vision, while they are still choosing when to let go.
+  // Assist still swells the hoop when the crowd buys a wider window. The hoop
+  // itself stays the 250 px glyph — shrinking it to the band was the speck.
   const widen = props.sweetWidth01 / PUNCH_TIMING_SWEET_WIDTH_01
   const ring = Math.round((onTarget ? RING + beat * (RING_HOT - RING) : RING) * widen * k)
   const ball = Math.round((onTarget ? BALL + beat * (BALL_HOT - BALL) : BALL) * k)
@@ -1467,7 +1454,7 @@ function PunchHudEvaluation(props: {
   timingMiss: number
 }) {
   const compact = isCompact()
-  const signed = props.timingMiss >= 20 ? `TIMING −${props.timingMiss}` : `TIMING ${props.timingPct}%`
+  const signed = `TIMING ${props.timingPct}%`
   const detail = compact
     ? `AIM ${props.aimPct}%`
     : `POWER ${props.powerPct}%   ·   AIM ${props.aimPct}%   ·   ${signed}`
@@ -1556,17 +1543,11 @@ const COUNTDOWN_RED = PUNCH_UI.danger
  *
  * A disc fixes it for every frame, and it costs no art: SDK7 UI gives us
  * `borderRadius`, and a SQUARE box with a radius of half its side renders a
- * true circle — the same trick the rescue pips already use.
- *
- * ‼️RED, NOT INK, AND OPAQUE. Owner, 2026-09-11, on a phone: the shot clock
- * sat on the same gold circle as the aim, over the green of the island, and
- * the number vanished. Ink at 0.86 let the world through; the gold rim then
- * read as a second copy of the reticle. Enamel red is the action colour and
- * is nothing the aim ring is allowed to be. Ivory sits on it. The gold trim
- * can keep the identity because it now trims a red plate, not an empty ring.
+ * true circle — the same trick the rescue pips already use. Ink fill for the
+ * contrast, a signature gold ring for the identity, and the ring is what BEATS
+ * (its width swells on the tick) so the digit itself can hold a steady weight.
  */
-const DIAL_FILL = PUNCH_UI.red
-const DIAL_FILL_URGENT = PUNCH_UI.redHot
+const DIAL_FILL = punchAlpha(PUNCH_UI.ink, 0.86)
 /** The hint's plate. Darker still, because it sits under the brightest thing. */
 const DIAL_HINT_FILL = punchAlpha(PUNCH_UI.ink, 0.82)
 
@@ -1587,6 +1568,8 @@ function TurnCountdown(props: { state: ReturnType<typeof punchMachineHud> }) {
   // bag, which is the thing the player is trying to look at. The compact pair
   // holds the same proportion of the screen the desktop pair does.
   const compact = isCompact()
+  const left = Math.max(0, (state.attemptsMax || 0) - (state.attempt || 0))
+  const lastPunch = left <= 1 && (state.attemptsMax || 0) > 0
   const base = compact ? (urgent ? 116 : 92) : urgent ? 168 : 132
   const restSize = Math.round(base * k)
   const size = Math.round((base + beat * (urgent ? 34 : 18) * (compact ? 0.7 : 1)) * k)
@@ -1600,7 +1583,7 @@ function TurnCountdown(props: { state: ReturnType<typeof punchMachineHud> }) {
    */
   const dial = px(compact ? 168 : 250)
   const ring = Math.round(px(compact ? 6 : 8) + beat * px(compact ? 4 : 5))
-  const edge = GOLD
+  const edge = urgent ? COUNTDOWN_RED : GOLD
   return (
     <UiEntity
       uiTransform={{
@@ -1613,11 +1596,10 @@ function TurnCountdown(props: { state: ReturnType<typeof punchMachineHud> }) {
         pointerFilter: 'none'
       }}
     >
-      {/* STATE, not an event: a badge that says whose clock this is, and never
-          animates. Gold on purpose — the red now lives in the plate, so this
-          chip can stay the "whose clock" label instead of a second alarm. */}
+      {/* One chip, not two stacked on the same gold pill. The rail's
+          "3 LEFT" sat on YOUR TURN and read as YOUR 3 LEFT (owner, 2026-09-11). */}
       <SvChip
-        label="YOUR TURN"
+        label={lastPunch ? 'YOUR TURN · LAST PUNCH' : left > 0 ? `YOUR TURN · ${left} LEFT` : 'YOUR TURN'}
         color={PUNCH_UI.ink}
         skin={{ color: GOLD, radius: UI.radius.pill }}
         fontSize={compact ? 18 : 22}
@@ -1634,13 +1616,14 @@ function TurnCountdown(props: { state: ReturnType<typeof punchMachineHud> }) {
           alignItems: 'center',
           pointerFilter: 'none'
         }}
-        uiBackground={{ color: urgent ? DIAL_FILL_URGENT : DIAL_FILL }}
+        uiBackground={{ color: DIAL_FILL }}
       >
         {/* A FIXED box, not one that grows with the font: the number swells
             inside its own row, so the badge above and the hint below hold
-            still instead of jumping a pixel every second. Ivory on red —
-            a red digit on a red plate is the invisibility bug again. */}
-        <ShadowLabel value={String(seconds)} fontSize={size} color={PUNCH_UI.ivory} height={dial} yOffset={compactDigitLift(restSize)} />
+            still instead of jumping a pixel every second. The shadow stays —
+            it is now separating the digit from its own plate rather than from
+            the sky, which is a job it can actually do. */}
+        <ShadowLabel value={String(seconds)} fontSize={size} color={urgent ? COUNTDOWN_RED : WHITE} height={dial} yOffset={compactDigitLift(restSize)} />
       </UiEntity>
       {/* WHAT TO DO, on its own plate for the same reason the number got one. */}
       <SvChip
@@ -2646,43 +2629,25 @@ function ScoreReveal(props: { state: ReturnType<typeof punchMachineHud> }) {
    * `+N MORE` WITH THEIR POINTS, so the column still adds up.
    */
   const terse = compact
-  const evaluating = (state.phase === 'scoring' || state.phase === 'cooldown') && (state.revealLanded || state.cardHeld)
   const nameRows = terse ? 2 : BOOST_ROWS_MAX
   const named = boosts.slice(0, nameRows)
   const rest = boosts.slice(nameRows)
   const restPoints = rest.reduce((sum, entry) => sum + entry.points, 0)
-  /**
-   * ‼️THE ONE LINE THAT ANSWERS "WHERE DID IT GO" — the single channel worth the
-   * most to fix, named, with what it cost.
-   *
-   * Three miss lines would be honest and useless: the card already carries up to
-   * eleven rows on a busy punch, and a player reading it in the two seconds
-   * before the next turn does not rank three numbers. One name is a decision.
-   *
-   * ‼️AND THE THREE FIGURES MAY NOT BE ADDED — see `missedPower` on the
-   * breakdown. Each is the marginal worth of fixing that channel ALONE, so
-   * `Math.max` is the only operator this card is allowed to apply to them.
-   */
-  const misses: { label: string; points: number }[] = [
-    { label: 'TIMING', points: state.focusAwardedMissedTiming },
-    { label: 'POWER', points: state.focusAwardedMissedPower },
-    { label: 'AIM', points: state.focusAwardedMissedAim }
-  ]
-  const worst = misses.reduce((top, entry) => (entry.points > top.points ? entry : top))
-  // Under ~2% of the machine's own ceiling there is nothing to coach: the punch
-  // was clean on all three and the line would read as a scolding.
-  const missed = landed && worst.points >= 20 && !compact
   const karmaClipped = landed && state.focusAwardedKarmaClipped > 0
   const stanceLost = landed && state.focusAwardedStanceLost > 0
   // Only when a PERSON was capped: the regulars' clamp produced a "-100" on
   // every good punch that nobody could read ("what does cap took mean?").
   const crowdTrimmed = landed && state.focusAwardedCrowdTrimmed > 0 && boosts.some((entry) => !entry.npc) && !compact
   const karmaSpent = landed && state.focusAwardedKarmaSpent > 0 && !compact
-  // The ledger is the card, and the card is drawn whenever there is a landed
-  // punch to account for. `focusAwardedScore` is the proof one arrived: it is
-  // zero until the authoritative attempt lands.
-  const ledger = landed && state.focusAwardedScore > 0
-  const pct = (value01: number) => `${Math.round(clamp01(value01) * 100)}%`
+  const ledgerMath =
+    karmaUsed ||
+    boosted ||
+    stanceLost ||
+    karmaClipped ||
+    (landed && (state.focusAwardedFocusUsed || 0) > 0)
+  // The left card is arithmetic. BASE 368 / TIMING COST −444 / FINAL 368 is not
+  // a calculation — it is the same punch printed twice with a fake minus.
+  const ledger = landed && state.focusAwardedScore > 0 && ledgerMath
   return (
     <UiEntity
       uiTransform={{
@@ -2742,29 +2707,6 @@ function ScoreReveal(props: { state: ReturnType<typeof punchMachineHud> }) {
           }}
           uiBackground={{ color: REVEAL_CARD_INK }}
         >
-          {/* ‼️WHERE IT CAME FROM, CHANNEL BY CHANNEL — the three readings the
-              punch was actually scored on, above the number they produced.
-              This strip is the whole reason a lone player has something to read
-              on the card: the punch is no longer one opaque figure whose only
-              explanation was other people. */}
-          {/* Three cells, not one value that wraps: "100% · 100% ·" on one line
-              and "100%" on the next was the "chaotic and cramped" the owner saw.
-              While the slot under the score is showing this receipt large, the
-              strip is the duplicate — hide it for those seconds. */}
-          {!evaluating ? (
-          <UiEntity uiTransform={{ width: '100%', height: Math.round(size * 1.5), flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', margin: { bottom: px(6) }, pointerFilter: 'none' }}>
-            {([['POWER', state.focusAwardedPower01], ['TIMING', state.focusAwardedTiming01], ['AIM', state.focusAwardedAccuracy01]] as const).map(([name, value01]) => (
-              <Label
-                key={'ch-' + name}
-                value={`${name} ${pct(value01)}`}
-                fontSize={Math.round(size * 0.78)}
-                color={REVEAL_SOFT}
-                textAlign="middle-center"
-                uiTransform={{ width: '33%', height: '100%' }}
-              />
-            ))}
-          </UiEntity>
-          ) : null}
           {/* WITH KARMA the punch shows its own two halves — what the swing
               earned, and what the nights of Boosting multiplied it by. Without
               it the card reads exactly as it always did, one line. */}
@@ -2782,19 +2724,6 @@ function ScoreReveal(props: { state: ReturnType<typeof punchMachineHud> }) {
               value={`+${state.focusAwardedFocusUsed}`}
               color={REVEAL_KARMA}
               size={size}
-            />
-          ) : null}
-          {/* ‼️WHERE IT WENT — the owner's minus, and the first one this card has
-              ever carried. It is NOT subtracted from anything above it: it is
-              what the punch would have gained had this one channel landed, which
-              is why the label names the channel rather than saying "lost". */}
-          {missed ? (
-            <RevealRow
-              label={`  ${worst.label} COST${mine ? ' YOU' : ''}`}
-              value={`-${worst.points}`}
-              color={REVEAL_SOFT}
-              size={Math.round(size * 0.86)}
-              dim
             />
           ) : null}
           {karmaUsed ? (
@@ -3312,8 +3241,13 @@ const RESCUE_PIP_DIM = Color4.create(1, 1, 1, 0.22)
  * and nothing else, so the room can see what it just did.
  */
 /**
- * Compact live chips — never a standing list. YOU stays visible; extra helpers
- * collapse into +N MORE so a crowd does not eat the world.
+ * Who is pushing and what each of them has added. Drawn LIVE during the window
+ * and again in the reconciliation, because the owner's complaint was one
+ * complaint in two halves: he could not see his own effect, and nobody outside
+ * could see that he was playing for her at all.
+ *
+ * Own row is gold and says YOU; everyone else is cyan. Sorted by the
+ * coordinator (biggest first), so the order is the same on every screen.
  */
 function PushHelperChips(props: {
   state: ReturnType<typeof punchMachineHud>
@@ -3370,14 +3304,17 @@ function PushHelperChips(props: {
   )
 }
 
-const PUSH_COL_W = 54
-const PUSH_COL_W_COMPACT = 30
+const PUSH_COL_W = 72
+const PUSH_COL_W_COMPACT = 56
 const PUSH_MET_H = 30
 const PUSH_MET_H_COMPACT = 20
+/** Phone: keep the timing bar off the HELP disc. */
+const PUSH_PHONE_BAR_ABOVE = 28
+const PUSH_PHONE_COL_INSET = 18
 const PUSH_GREEN = Color4.fromHexString('#58DB91FF')
 const PUSH_GREEN_SOFT = Color4.create(0.345, 0.859, 0.569, 0.30)
 const PUSH_AMBER = Color4.create(1, 0.82, 0.35, 0.16)
-const PUSH_COL_SEGS = 22
+const PUSH_COL_SEGS = 28
 const PUSH_COL_CYAN = Color4.fromHexString('#3EC8E8FF')
 const PUSH_COL_GOLD = Color4.fromHexString('#F2C14EFF')
 const PUSH_COL_ORANGE = Color4.fromHexString('#FF8A3DFF')
@@ -3398,27 +3335,39 @@ function pushColumnColor(t01: number): Color4 {
 
 function pushNeededColumnBox(compact: boolean, frame: ReturnType<typeof hudFrame>) {
   const colW = px(compact ? PUSH_COL_W_COMPACT : PUSH_COL_W)
-  const colH = Math.round(frame.height * (compact ? 0.34 : 0.40))
+  // ‼️LOWER-LEFT ON EVERY SCREEN. Never 50% — that is the emote. Never 18%
+  // from the top — that is the puncher's head. Compact used to follow the
+  // HELP disc; desktop used `frame.height * 0.18`. Both read as a neon slab
+  // on the body. Owner, 2026-09-11: still above the head, so the compact-only
+  // move never ran (or a handset took the desktop branch). The empty gap is
+  // between the avatar and the bottom-left control. `frame.left/bottom`
+  // already clear Explorer chrome; a 118 px disc-lift on top of that walked
+  // the column back up onto the torso.
+  const colH = Math.round(frame.height * (compact ? 0.26 : 0.28))
+  const aboveFloor = frame.bottom + px(compact ? 48 : 20)
   return {
     colW,
     colH,
-    // Left of the play area. Never 50% — that is the avatar and the emote.
-    left: compact ? frame.left + px(16) : Math.round(frame.width * 0.12),
-    top: Math.round(frame.height * (compact ? 0.16 : 0.18))
+    left: frame.left + px(compact ? PUSH_PHONE_COL_INSET : 20),
+    top: Math.max(px(16), frame.height - aboveFloor - colH)
   }
 }
 
 function pushTouchBarBox(compact: boolean, frame: ReturnType<typeof hudFrame>) {
   const glove = gloveBox()
-  const barH = px(compact ? PUSH_MET_H_COMPACT + 36 : PUSH_MET_H + 6)
-  const gap = px(20)
+  const barH = px(compact ? PUSH_MET_H_COMPACT + 20 : PUSH_MET_H + 6)
   if (compact) {
-    const width = Math.max(px(280), frame.width - frame.left - glove.right - glove.size - gap)
+    const col = pushNeededColumnBox(true, frame)
+    const left = col.left + col.colW + px(16)
+    const width = Math.max(px(280), frame.width - left - glove.right - glove.size - px(12))
     return {
       width,
       height: barH,
-      left: frame.left + px(8),
-      bottom: glove.bottom + Math.round((glove.size - barH) / 2)
+      left,
+      // Above the disc, not through it. Same idea as the reload meter: the
+      // instrument that explains the button sits on top of that button's box,
+      // never inside it.
+      bottom: glove.bottom + glove.size + px(PUSH_PHONE_BAR_ABOVE)
     }
   }
   const width = Math.min(px(700), frame.width - frame.left - frame.right - px(80))
@@ -3436,16 +3385,20 @@ function PushNeededColumn(props: {
   climbed: number
   needed: number
   raised: number
+  extra: number
 }) {
   const frame = hudFrame()
   const box = pushNeededColumnBox(props.compact, frame)
   const helping = (props.state.rescuePushers ?? []).length
   const heat = Math.min(1, helping / 4)
+  const topped = props.needed > 0 && (props.extra > 0 || props.raised >= props.needed)
+  const fill = Math.max(0, Math.min(1, props.climbed))
   const segH = Math.max(2, Math.floor(box.colH / PUSH_COL_SEGS))
   const bands = []
   for (let i = 0; i < PUSH_COL_SEGS; i += 1) {
     const t = i / (PUSH_COL_SEGS - 1)
-    const lit = props.climbed >= (i + 0.5) / PUSH_COL_SEGS
+    const lit = fill >= (i + 0.5) / PUSH_COL_SEGS
+    const cap = topped && t > 0.82
     bands.push(
       <UiEntity
         key={`push-col-${i}`}
@@ -3456,47 +3409,60 @@ function PushNeededColumn(props: {
           height: segH,
           pointerFilter: 'none'
         }}
-        uiBackground={{ color: lit ? pushColumnColor(t) : punchAlpha(PUNCH_UI.ink, 0.55) }}
+        uiBackground={{
+          color: lit
+            ? punchAlpha(cap ? GOLD_HOT : pushColumnColor(t), topped ? 0.86 : 0.70)
+            : punchAlpha(PUNCH_UI.ink, 0.18)
+        }}
       />
     )
   }
+  // Figures sit to the RIGHT of a left-side meter — never on the avatar, never
+  // on HELP. Compact used to stack them on the column because the column was
+  // parked on the puncher's head.
   const labelLeft = box.left + box.colW + px(10)
-  const labelW = px(props.compact ? 130 : 170)
+  const labelW = px(props.compact ? 150 : 170)
   return (
-    <UiEntity uiTransform={{ width: 0, height: 0, pointerFilter: 'none' }}>
+    <UiEntity uiTransform={{
+      positionType: 'absolute',
+      position: { left: 0, top: 0 },
+      width: frame.width,
+      height: frame.height,
+      pointerFilter: 'none'
+    }}>
       <UiEntity uiTransform={{
         positionType: 'absolute',
         position: { left: box.left, top: box.top },
         width: box.colW,
         height: box.colH,
-        borderRadius: px(6),
-        borderWidth: px(2 + Math.round(heat * 3)),
-        borderColor: punchAlpha(WHITE, 0.28 + heat * 0.45),
+        borderRadius: px(8),
+        borderWidth: px(topped ? 3 : 2),
+        borderColor: punchAlpha(topped ? GOLD_HOT : WHITE, topped ? 0.72 : 0.22 + heat * 0.28),
         pointerFilter: 'none'
-      }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.62) }}>
+      }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.48) }}>
         {bands}
       </UiEntity>
       <Label
-        value={`${props.raised} / ${props.needed}`}
+        value={topped && props.extra > 0 ? `+${props.extra}` : `${props.raised} / ${props.needed}`}
         fontSize={textPx(props.compact ? 18 : 26)}
         color={GOLD_HOT}
         textAlign="middle-left"
         uiTransform={{
           positionType: 'absolute',
-          position: { left: labelLeft, top: box.top + Math.round(box.colH * (1 - props.climbed)) - px(props.compact ? 14 : 20) },
+          position: { left: labelLeft, top: box.top + Math.round(box.colH * (1 - fill)) - px(props.compact ? 14 : 20) },
           width: labelW,
           height: px(props.compact ? 28 : 36),
           pointerFilter: 'none'
         }}
       />
       <Label
-        value={`${props.needed} NEEDED`}
+        value={topped ? PUNCH_PUSH_EXTRA_SHOUT : `${props.needed} NEEDED`}
         fontSize={textPx(props.compact ? 13 : 16)}
-        color={GOLD}
+        color={topped ? GOLD_HOT : GOLD}
         textAlign="middle-left"
         uiTransform={{
           positionType: 'absolute',
-          position: { left: labelLeft, top: box.top - px(props.compact ? 22 : 28) },
+          position: { left: labelLeft, top: box.top - px(28) },
           width: labelW,
           height: px(props.compact ? 20 : 26),
           pointerFilter: 'none'
@@ -3575,11 +3541,12 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
   const score = Math.max(from, state.rescuePushScore ?? from)
   const gap = punchHelpGap(from, to, score)
   const climbed = gap.needed > 0 ? gap.raised / gap.needed : 0
+  const topped = gap.needed > 0 && gap.now >= gap.goal
   const fumbler = (state.rescueRescuedName || 'THE PUNCHER').toUpperCase()
 
   if (done) {
     const keptName = fumbler
-    const copy = punchHelpResultCopy({ saved, score, from, to, keptName })
+    const copy = punchHelpResultCopy({ saved, score, from, to, keptName, spectator: !joined })
     const w = px(compact ? 300 : 380)
     const h = px(compact ? 148 : 176)
     return (
@@ -3595,7 +3562,7 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
           borderColor: saved ? GOLD : PUNCH_UI.brass,
           borderRadius: cornerRadius(UI.radius.md),
           pointerFilter: 'none'
-        }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.88) }}>
+        }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.96) }}>
           <Label value={copy.badge} fontSize={textPx(compact ? 16 : 20)} color={saved ? GOLD : WHITE}
             textAlign="middle-center"
             uiTransform={{ width: '92%', height: px(compact ? 24 : 30), pointerFilter: 'none' }} />
@@ -3604,8 +3571,8 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
           <Label value={copy.qualifier} fontSize={textPx(compact ? 14 : 16)} color={MUTED}
             textAlign="middle-center"
             uiTransform={{ width: '92%', height: px(compact ? 22 : 28), pointerFilter: 'none' }} />
-          {saved && copy.stats ? (
-            <Label value={copy.stats} fontSize={textPx(compact ? 13 : 15)} color={GOLD}
+          {copy.stats ? (
+            <Label value={copy.stats} fontSize={textPx(compact ? 13 : 15)} color={saved ? GOLD : MUTED}
               textAlign="middle-center"
               uiTransform={{ width: '92%', height: px(compact ? 20 : 24), pointerFilter: 'none' }} />
           ) : null}
@@ -3626,7 +3593,9 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
       compact,
     )
     : punchRescueOrder('fumbler')
-  const shout = playable && inGreen ? punchPushShout(Date.now()) : order
+  const shout = topped
+    ? PUNCH_PUSH_EXTRA_SHOUT
+    : playable && inGreen ? punchPushShout(Date.now()) : order
   const hot = inGreen
   const bar = pushTouchBarBox(compact, frame)
   const people = (state.rescuePushers ?? []).length
@@ -3640,7 +3609,7 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
         width: frame.width, height: frame.height, pointerFilter: 'none' }}>
         <UiEntity uiTransform={{
           positionType: 'absolute',
-          position: { left: Math.round((frame.width - w) / 2), top: frame.top + px(compact ? 16 : 24) },
+          position: { left: Math.round((frame.width - w) / 2), top: frame.top + scorePlateBox().h + px(compact ? 12 : 20) },
           width: w,
           height: h,
           flexDirection: 'column',
@@ -3650,7 +3619,7 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
           borderColor: PUNCH_UI.brass,
           borderRadius: cornerRadius(UI.radius.md),
           pointerFilter: 'block'
-        }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.84) }}>
+        }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.96) }}>
           <Label value={ask.title} fontSize={textPx(compact ? 18 : 22)} color={WHITE}
             textAlign="middle-center"
             uiTransform={{ width: '94%', height: px(compact ? 28 : 34), pointerFilter: 'none' }} />
@@ -3687,10 +3656,9 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
   return (
     <UiEntity
       uiTransform={{ positionType: 'absolute', position: { left: 0, top: 0 }, width: frame.width, height: frame.height,
-        pointerFilter: playable ? 'block' : 'none' }}
-      onMouseDown={playable ? () => punchRescuePress() : undefined}
+        pointerFilter: 'none' }}
     >
-      <PushNeededColumn state={state} compact={compact} climbed={climbed} needed={gap.needed} raised={gap.raised} />
+      <PushNeededColumn state={state} compact={compact} climbed={climbed} needed={gap.needed} raised={gap.raised} extra={gap.extra} />
       <Label value={shout} fontSize={textPx(compact ? 16 : 20)}
         color={hot ? GOLD_HOT : dead ? punchAlpha(WHITE, 0.4) : WHITE} textAlign="middle-center"
         uiTransform={{
@@ -3704,9 +3672,9 @@ function PushPanel(props: { state: ReturnType<typeof punchMachineHud> }) {
       <PushHelperChips
         state={state}
         compact={compact}
-        left={compact ? pushNeededColumnBox(compact, frame).left : bar.left}
+        left={bar.left}
         bottom={bar.bottom + bar.height + px(compact ? 34 : 40)}
-        width={compact ? px(280) : bar.width}
+        width={bar.width}
       />
       <Label value={`${state.rescueSecondsLeft ?? 0}`} fontSize={textPx(compact ? 22 : 28)}
         color={(state.rescueSecondsLeft ?? 0) <= 3 ? PUNCH_UI.danger : GOLD} textAlign="middle-center"
@@ -3737,12 +3705,12 @@ function PushWatchChip(props: { state: ReturnType<typeof punchMachineHud> }) {
   return (
     <UiEntity uiTransform={{
       positionType: 'absolute',
-      position: { left: Math.round((frame.width - w) / 2), top: frame.top + px(compact ? 10 : 16) },
+      position: { left: Math.round((frame.width - w) / 2), top: frame.top + scorePlateBox().h + px(compact ? 12 : 16) },
       width: w, height: h,
       flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
       borderWidth: px(2), borderColor: PUNCH_UI.brass, borderRadius: cornerRadius(UI.radius.md),
       pointerFilter: 'none'
-    }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.78) }}>
+    }} uiBackground={{ color: punchAlpha(PUNCH_UI.ink, 0.96) }}>
       <Label value={ask.title} fontSize={textPx(compact ? 13 : 16)} color={GOLD}
         textAlign="middle-center"
         uiTransform={{ width: '94%', height: px(compact ? 18 : 22), pointerFilter: 'none' }} />
@@ -3937,6 +3905,7 @@ function TopRail(props: {
     ? `${state.activeName.toUpperCase()} IS UP`
     : ''
   const compact = isCompact()
+  const clockUp = state.isMyTurn && turnCountdownVisible(state)
   /** One scale for the whole rail, so no chip in it can drift out of step. */
   const fs = (design: number) => Math.round(design * (compact ? 0.82 : 1))
   const rows: RailRow[] = []
@@ -3961,7 +3930,12 @@ function TopRail(props: {
      theater: same plate, same slot events. */
   if (props.showRound) {
     add('score', RAIL_MUST, scorePlateRowHeight(state), <ScorePlate state={state} />, true)
-    add('slot', RAIL_MUST, punchHudSlotHeight(), <PunchHudSlot state={state} />, true)
+    const pushBusy = !!state.rescuePushHud && state.rescuePushHud !== 'off'
+    /* ‼️THE SHOT CLOCK OWNS THE MIDDLE. Owner, 2026-09-11: YOUR TURN sat on
+       the rail's "3 LEFT" and read as YOUR 3 LEFT, with WIRE across the digit.
+       Remaining punches live on that chip (`YOUR TURN · 3 LEFT`). The slot
+       comes back the moment the clock is gone — scoring, cooldown, the rest. */
+    if (!pushBusy && !clockUp) add('slot', RAIL_MUST, punchHudSlotHeight(), <PunchHudSlot state={state} />, true)
   }
   /* ‼️THE SAVE'S SECOND SCORE LEFT THE RAIL. Owner, 2026-09-11: Swiss Mob /
      Swissverse take sat in the centre column and covered the aiming hoop.
@@ -3973,7 +3947,7 @@ function TopRail(props: {
      what makes it read as a mystery. */
   /* Diagnostic chips and server status messages are ONLY visible to the main admin.
      Regular visitors, judges, and other players see a clean arcade presentation. */
-  if (punchAdminVisible()) {
+  if (punchAdminVisible() && !clockUp) {
     if (state.serverWaking) {
       const wait = state.houseWaitLeftSec
       add('server-waking', RAIL_MUST, 36, <SvChip label={wait > 0 ? 'WAKING THE HOUSE UP  ·  ' + wait + 's' : 'WAKING THE HOUSE UP  ·  ONE MOMENT'} color={PUNCH_UI.ink} skin={{ color: UI.gold, radius: UI.radius.pill }} fontSize={fs(16)} />)
@@ -4062,7 +4036,7 @@ function TopRail(props: {
   if (props.showFocusPill) {
     add('focus-pill', RAIL_WHO, Math.round(focusPillBox().h + px(RAIL_GAP)), <FocusPill state={state} />)
   }
-  /* STEP ASIDE / STAND ON THE MARK / MISSED TURN occupy the slot under the score. The ring wait
+  /* STEP ASIDE / MISSED TURN occupy the slot under the score. The ring wait
      is standing information and stays a quiet row. */
   if (transient && !state.mustStepAside && !state.mustStandOnMark && !state.missedTurn) {
     add('transient', RAIL_WHO, 34, (
@@ -4550,6 +4524,7 @@ function RescueHelpOffChip() {
     </UiEntity>
   )
 }
+
 
 /**
  * ‼️THE SAVE TAKE IS CHROME, NOT THE SIGHT PICTURE.
@@ -5528,7 +5503,7 @@ export function PunchMachineRoot() {
         showFocusPill={showFocusPill && focusPillOnRail() && !state.scoreboardOpen}
       />
       )}
-      {scoring && (state.score > 0 || state.cardHeld) ? <ScoreReveal state={state} /> : null}
+      {scoring && (state.score > 0 || state.cardHeld) && !(state.rescuePushHud && state.rescuePushHud !== 'off') ? <ScoreReveal state={state} /> : null}
       {(aiming || charging) ? (
         <AimReticle
           marker01={state.timingMarker01}

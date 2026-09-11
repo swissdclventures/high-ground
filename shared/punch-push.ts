@@ -720,6 +720,14 @@ export type PunchPushPhase = 'ask' | 'live' | 'high' | 'perfect' | 'out' | 'won'
 
 /** Crowd shouts while the needle is in the green. Four words or fewer, no pronouns. */
 export const PUNCH_PUSH_SHOUTS = ['GO GO GO', 'HOLD IT', 'YEAH YEAH', 'STAY STAY'] as const;
+/**
+ * ‼️THE TOP OF THE CLIMB IS STILL THE GAME.
+ * Owner, 2026-09-11: once the vertical bar is full you keep bumping the ceiling
+ * and it looks like nothing is happening. Points past 900 are real — the window
+ * runs to the buzzer — so the column has to say so. Two words, same size as
+ * the other shouts.
+ */
+export const PUNCH_PUSH_EXTRA_SHOUT = 'EXTRA EXTRA';
 const PUNCH_PUSH_SHOUT_MS = 700;
 
 export function punchPushShout(nowMs: number): string {
@@ -766,6 +774,8 @@ export function punchHelpGap(from: number, to: number, score = from): {
   needed: number
   raised: number
   short: number
+  /** Points past the save line. The bar is full; this is the extra climb. */
+  extra: number
   start: number
   goal: number
   now: number
@@ -776,7 +786,8 @@ export function punchHelpGap(from: number, to: number, score = from): {
   const needed = Math.max(0, goal - start)
   const raised = Math.max(0, Math.min(needed, now - start))
   const short = Math.max(0, goal - now)
-  return { needed, raised, short, start, goal, now }
+  const extra = Math.max(0, now - goal)
+  return { needed, raised, short, extra, start, goal, now }
 }
 
 function punchHelpFirstName(raw: string): string {
@@ -832,8 +843,9 @@ export function punchHelpChipSet(
 }
 
 /**
- * One glance at the end. The missing amount is the only number on a miss;
- * a save is the word SAVED, with the filled gap as optional small type.
+ * One glance at the end. Success or fail is the badge; the number is how many
+ * points the room actually created. A watcher who never joined still has to
+ * read that, or the save is invisible to everyone except the thumbs on it.
  */
 export function punchHelpResultCopy(input: {
   saved: boolean
@@ -841,20 +853,21 @@ export function punchHelpResultCopy(input: {
   from: number
   to: number
   keptName: string
+  spectator?: boolean
 }): { badge: string; total: string; qualifier: string; stats: string } {
   const gap = punchHelpGap(input.from, input.to, input.score)
   if (input.saved) {
     return {
       badge: 'MISSION SUCCESS',
-      total: 'SAVED',
-      qualifier: 'THANKS FOR HELPING',
-      stats: `${gap.needed} / ${gap.needed}`,
+      total: `+${gap.raised}`,
+      qualifier: input.spectator ? `${punchHelpFirstName(input.keptName).toUpperCase()} KEPT GOING` : 'THANKS FOR HELPING',
+      stats: `${gap.raised} / ${gap.needed}`,
     }
   }
   return {
     badge: 'MISSION FAILED',
     total: `${gap.short} SHORT`,
-    qualifier: 'THANKS FOR TRYING',
-    stats: '',
+    qualifier: gap.raised > 0 ? `+${gap.raised} MADE` : 'NO POINTS MADE',
+    stats: `${gap.raised} / ${gap.needed}`,
   }
 }

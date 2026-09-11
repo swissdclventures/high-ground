@@ -1,4 +1,4 @@
-import { normalizePunchProfile, punchProfile, PUNCH_PROFILE_IDS, planPunchEffects, punchRoundAward, punchGoldenArmed, punchBoostLive, punchProfileBoardKey, punchProfileSpeed, punchStreakEnergy, punchIsAdmin, type PunchProfileId, type PunchGameProfile, type PunchEffectPlan, type PunchRescueSkill, type PunchFumbleRiskStyle } from '@shared/punch-game-profile'
+import { normalizePunchProfile, punchProfile, PUNCH_PROFILE_IDS, planPunchEffects, punchRoundAward, punchGoldenArmed, punchBoostLive, punchProfileBoardKey, punchProfileSpeed, punchStreakEnergy, punchIsAdmin, PUNCH_MAIN_ADMIN_WALLET, type PunchProfileId, type PunchGameProfile, type PunchEffectPlan, type PunchRescueSkill, type PunchFumbleRiskStyle } from '@shared/punch-game-profile'
 import { PUNCH_PUSH_DECAY_SCALE, PUNCH_PUSH_REVIEW_MS, PUNCH_PUSH_START_AT_TARGET, PUNCH_PUSH_TAP_COOLDOWN_MS, PUNCH_PUSH_THRESHOLD, punchPushBandHalfWidth, punchPushLatches, punchPushQuality01, punchPushReplay, punchPushTargetAt } from '@shared/punch-push'
 import { PUNCH_GOLD_MATERIAL } from '@shared/punch-visual-theme'
 import { punchArenaSpotlight } from '@shared/punch-arena-spotlight'
@@ -42,6 +42,7 @@ import {
   MeshCollider,
   MeshRenderer,
   PlayerIdentityData,
+  AvatarEmoteCommand,
   ParticleSystem,
   Physics,
   PointerEventType,
@@ -108,6 +109,7 @@ import {
   punchStreakName,
   PUNCH_ROUND_SUMMARY_MS,
   punchRevealLanded,
+  punchRevealElapsedMs,
   punchRevealShownScore,
   PUNCH_SCORE_COUNT_MS,
   PUNCH_SCORE_HOLD_MS,
@@ -129,6 +131,7 @@ import {
 } from '@shared/punch-machine-contract'
 import { triggerBreakdanceCrowdReaction } from '../dance/reactions'
 import { armBotEmotes, getTroupeBots, playBotEmote, releaseBotEmotes, setBotSceneTarget, setBotTarget, stopBotEmote, type TroupeBot } from '../dance/troupe'
+import { setNpcSimMuted } from '../dance/runtime'
 import { showNpcSpeech } from '../dance/npc-speech'
 import { runtimeZoneById } from '../dance/zones'
 import { getRuntimeContext } from '../social/runtime-context'
@@ -256,11 +259,11 @@ import {
   type FocusSignalMember
 } from './punch-focus-signals'
 import {
-  clearPushBars,
   updatePushBars,
   type PushSignalMember
 } from './punch-push-signals'
 import {
+  clearExtraPunchOverHead,
   showExtraPunchOverHead,
   updateExtraPunchOverHead
 } from './punch-extra-punch-signal'
@@ -577,6 +580,8 @@ interface PunchMachineRuntime {
   bagArmed: boolean
   /** Punch serial already performed, so one swing is thrown per punch. */
   housePunchedSerial: number
+  /** Same gate for a remote human's replicated swing. */
+  remotePunchedSerial: number
   /**
    * THE PERFORMER'S STANCE. `botStanceIndex` is whose stance is being held —
    * the house bot or the attract show's athlete — so a handover resets the
@@ -818,14 +823,15 @@ const PUSH_CHEER_EVERY_MS = 850
 const PUSH_HYPE_EVERY_MS = 1_650
 const PUSH_RATTLE_MAG = 0.07
 /**
- * Three reaction tiers: BAD (intensity 1), GOOD (2-3), TOP (4). This is the
- * IMPACT and CABINET ladder — those layers own three sets of clips and want
- * three. The SPOKEN layer has six of its own; see `voiceTier` below.
+ * Three reaction tiers for IMPACT and CABINET. Intensity 3 used to fold into
+ * `good`, so every proud punch from 753 to 899 (an 821, a near-900) played the
+ * medium clips at 82% volume — taps, not smacks. Intensity 3 is TOP now: the
+ * big library, full volume. Voice still has its own six-tier ladder.
  */
 type ReactionTier = 'bad' | 'good' | 'top'
 
 function reactionTier(intensity: number): ReactionTier {
-  return intensity >= 4 ? 'top' : intensity >= 2 ? 'good' : 'bad'
+  return intensity >= 3 ? 'top' : intensity >= 2 ? 'good' : 'bad'
 }
 
 /**
@@ -3104,20 +3110,25 @@ function tickTurnClock(machine: PunchMachineRuntime, msLeft: number): void {
 
 /**
  * The three boxes: regular, strong, massive. The massive one wraps the machine —
- * top impact plus the special rattle plus smoke off the bag, and it is loud.
+ * top impact plus the special rattle, and it is loud.
+ *
+ * ‼️A HIT HAS TO SMACK. Owner, 2026-09-11: the ball sounds were "very weak all
+ * the time… they don't smack". The gate was 900 for the big library, medium
+ * clips sat at 0.82, and top hits were pitched a fifth down into a woof. A
+ * punch you are proud of (753+, intensity 3) uses the top pool at full volume
+ * and native pitch; the cabinet rattle is the bass.
  */
 function playImpact(machine: PunchMachineRuntime, intensity: number): void {
   const tier = reactionTier(intensity)
-  const impact = pickFrom(IMPACT_POOLS[activeProfile(machine).impactStyle === 'bass' && (machine.slamScore >= 950 || (machine.slamStreak ?? 0) >= 3) ? 'top' : tier].filter(clip => !activeProfile(machine).disabledAudio.includes(clip)))
-  // ‼️THE DEDICATED SOURCE, never the pool. See `impactAudio`. Pitched DOWN on
-  // the big hits: the same take a fifth lower is the "deep bass" the owner
-  // asked for on 2026-09-06 without a second library of clips.
-  if (impact) playImpactSfx(machine, impact, tier === 'top' ? 1 : tier === 'good' ? 0.82 : 0.6, tier === 'top' ? 0.84 : tier === 'good' ? 0.93 : 1)
-  const body = pickFrom(MACHINE_POOLS[tier])
+  const wantTop = tier === 'top'
+    || (activeProfile(machine).impactStyle === 'bass' && (machine.slamScore >= 900 || (machine.slamStreak ?? 0) >= 3))
+  const impact = pickFrom(IMPACT_POOLS[wantTop ? 'top' : tier].filter(clip => !activeProfile(machine).disabledAudio.includes(clip)))
+  if (impact) playImpactSfx(machine, impact, tier === 'bad' ? 0.9 : 1, 1)
+  const body = pickFrom(MACHINE_POOLS[wantTop ? 'top' : tier])
   // ‼️THE CABINET ANSWERS A BEAT LATER. Owner: "when it hits the machine you
   // want to hear the rattle of the machine slightly delayed." Impact and rattle
   // used to fire on the same frame and read as one muddled sound.
-  if (body) pendingMachineSfx.push({ machine, clip: body, at: Date.now() + (tier === 'top' ? 140 : 110), volume: tier === 'top' ? 0.95 : tier === 'good' ? 0.5 : 0.3 })
+  if (body) pendingMachineSfx.push({ machine, clip: body, at: Date.now() + (wantTop ? 140 : 110), volume: wantTop ? 1 : tier === 'good' ? 0.85 : 0.55 })
   // Particle and fire rules own emissions; impact audio never spawns a second burst.
 }
 
@@ -3183,7 +3194,8 @@ function prewarmPunchAudio(machine: PunchMachineRuntime, parent: Entity): void {
   const clips = new Set<string>([
     ...IMPACT_POOLS.bad, ...IMPACT_POOLS.good, ...IMPACT_POOLS.top,
     ...MACHINE_POOLS.bad, ...MACHINE_POOLS.good, ...MACHINE_POOLS.top,
-    ...SCORE_POOL
+    ...SCORE_POOL,
+    ...Object.values(PUNCH_MUSIC_TRACKS)
   ])
   for (const clip of clips) {
     if (activeProfile(machine).disabledAudio.includes(clip)) continue
@@ -3874,7 +3886,12 @@ function updateHud(machine: PunchMachineRuntime, now: number): void {
       : (snapshot.attempt?.timingMarker01 ?? 0)
   hud.accuracy01 = snapshot.attempt?.accuracy01 ?? (mine ? machine.localAccuracy01 : snapshot.chargeAccuracy01)
   if (snapshot.phase === 'scoring') {
-    const since = now - (snapshot.phaseEndsAt - (snapshot.scorePhaseDurationMs ?? PUNCH_SCORE_PHASE_MS))
+    const since = punchRevealElapsedMs(
+      now,
+      snapshot.scorePhaseStartedAt,
+      snapshot.phaseEndsAt,
+      snapshot.scorePhaseDurationMs,
+    )
     const countMs = punchRevealCountMs(snapshot.score, activeProfile(machine))
     hud.score = revealShownScore(snapshot.score, since, activeProfile(machine))
     // THE CUT. On a 999 and nothing else, the count lands and then the world
@@ -4211,7 +4228,16 @@ function presentCompetitionState(machine: PunchMachineRuntime, now: number): voi
       machine.config.minScore + (machine.config.maxScore - machine.config.minScore) * Math.min(1, percent / 100)
     setText(machine.scoreText, String(percent).padStart(3, '0'))
   } else if (snapshot.phase === 'scoring' || (isMe && machine.localReleased)) {
-    shownScore = revealShownScore(snapshot.score, now - (snapshot.phaseEndsAt - (snapshot.scorePhaseDurationMs ?? PUNCH_SCORE_PHASE_MS)), activeProfile(machine))
+    shownScore = revealShownScore(
+      snapshot.score,
+      punchRevealElapsedMs(
+        now,
+        snapshot.scorePhaseStartedAt,
+        snapshot.phaseEndsAt,
+        snapshot.scorePhaseDurationMs,
+      ),
+      activeProfile(machine),
+    )
     setText(machine.scoreText, String(shownScore).padStart(3, '0'))
   } else if (snapshot.phase === 'summary') {
     // The round's total takes the big panel while the board holds it up.
@@ -4742,18 +4768,50 @@ const SFX_RESCUE_TAP = 'sounds/punch/score-tally.mp3'
  * without printing a word about it.
  */
 let rescueInput:
-  | { at: number; taps: number; net: number; claimed: boolean; lastTapAt: number; pulse: number; stamps: number[]; lastHit: boolean; heldMs: number
+  | { at: number; windowKey: string; taps: number; net: number; claimed: boolean; lastTapAt: number; pulse: number; stamps: number[]; lastHit: boolean; heldMs: number
       /** THE PUSH: this client's own copy of the focus meter, and its last grade. */
       accepted: boolean; level: number; lastStamp: number; quality01: number }
   | null = null
-const freshRescueInput = (at: number) =>
-  ({ at, taps: 0, net: 0, claimed: false, lastTapAt: 0, pulse: 0, stamps: [] as number[], lastHit: false, heldMs: 0,
+const freshRescueInput = (at: number, windowKey = '') =>
+  ({ at, windowKey, taps: 0, net: 0, claimed: false, lastTapAt: 0, pulse: 0, stamps: [] as number[], lastHit: false, heldMs: 0,
      accepted: false,
      // ★★★ OPENS IN THE GREEN, matching punchPushReplay's own first line. A
      // client that started at 0 while the payout started on target would draw a
      // marker climbing towards points it had already been given.
      level: PUNCH_PUSH_START_AT_TARGET ? punchPushTargetAt(0) : 0,
      lastStamp: 0, quality01: 0 })
+
+/**
+ * Clock align rewrites `rescue.startsAt` on every HTTP snapshot. Keying the
+ * meter on that stamp (`!==`) wiped the helper's taps ~3 times a second, so
+ * the needle never reached green and the disc went dead. The punch serial
+ * the window opened on does not move.
+ */
+function rescueWindowKey(
+  rescue: { rescuedUserId?: string; skill?: string },
+  serial?: number
+): string {
+  return `${serial ?? 0}:${(rescue.rescuedUserId ?? '').trim().toLowerCase()}:${rescue.skill ?? ''}`
+}
+
+/** Keep the live meter across a clock shift. True only when a NEW window opens. */
+function adoptRescueInputWindow(
+  rescue: { startsAt: number; rescuedUserId?: string; skill?: string },
+  serial?: number
+): boolean {
+  const key = rescueWindowKey(rescue, serial)
+  if (rescueInput && rescueInput.windowKey === key) {
+    if (rescueInput.at !== rescue.startsAt) {
+      const shift = rescue.startsAt - rescueInput.at
+      rescueInput.stamps = rescueInput.stamps.map((ms) => ms - shift)
+      rescueInput.lastStamp -= shift
+      rescueInput.at = rescue.startsAt
+    }
+    return false
+  }
+  rescueInput = freshRescueInput(rescue.startsAt, key)
+  return true
+}
 
 /**
  * ‼️ONE KEY, TWO GAMES, AND RESCUE ALWAYS WINS IT.
@@ -4768,14 +4826,32 @@ const freshRescueInput = (at: number) =>
  * ordering IS the rule and a second caller that got it backwards would be a bug
  * nobody could see — the two games look identical from the keyboard.
  */
+function queuedOnThisClient(machine: PunchMachineRuntime, round: PunchCompetitionSnapshot): boolean {
+  // Same wallet, two Explorers: only the device that pressed JOIN is the
+  // puncher. The phone watching that account is a spectator and can help.
+  if (!machine.queueOptIn) return false
+  return round.active?.userId === machine.localUserId
+    || round.queue.some(row => row.userId === machine.localUserId)
+}
+
+function sameWalletSiblingPresent(userId: string): boolean {
+  const wanted = userId.trim().toLowerCase().replace(/^0x/, '')
+  if (!wanted) return false
+  for (const [entity, identity] of engine.getEntitiesWith(PlayerIdentityData)) {
+    if (entity === engine.PlayerEntity) continue
+    const addr = (identity.address ?? '').trim().toLowerCase().replace(/^0x/, '')
+    if (addr && addr === wanted) return true
+  }
+  return false
+}
+
 export function punchPrimaryPress(): void {
   const machine = focusMachineForPlayer()
   if (!machine?.network) return
   const now = Date.now()
   const round = machine.network.snapshot()
   const rescue = round.rescue
-  const self = round.active?.userId === machine.localUserId
-    || round.queue.some(row => row.userId === machine.localUserId)
+  const self = queuedOnThisClient(machine, round)
   // The puncher does not play the save. E stays punch/focus on their turn.
   if (rescue && !self && now >= rescue.announcedAt && now <= rescue.endsAt) { punchRescuePress(); return }
   if (activeProfile(machine).focusEnabled) punchFocusPress()
@@ -4821,7 +4897,7 @@ export function punchFocusPress(): void {
  * again on the coordinator — see `handleAdmin`. An empty list, which is what
  * every scene ships with, means the chip does not exist for anyone.
  */
-const MAIN_ADMIN_WALLET = '0x23be90335e79d3245615985d91f69814f98a0fab'
+const MAIN_ADMIN_WALLET = PUNCH_MAIN_ADMIN_WALLET
 
 export function punchIsMainAdmin(userId?: string | null): boolean {
   if (!userId) return false
@@ -4833,9 +4909,9 @@ export function punchIsMainAdmin(userId?: string | null): boolean {
 }
 
 function punchSceneHost(userId: string): boolean {
+  if (punchIsMainAdmin(userId)) return true
   const hosts = getSocialConfig()?.event.adminWallets ?? []
-  const isHost = hosts.length > 0 && isSocialAdminWallet(userId, hosts)
-  return isHost && punchIsMainAdmin(userId)
+  return isSocialAdminWallet(userId, hosts)
 }
 
 export function punchAdminVisible(): boolean {
@@ -4843,7 +4919,12 @@ export function punchAdminVisible(): boolean {
   if (!machine?.network) return false
   const rules = activeProfile(machine)
   if (!rules.adminToolsEnabled) return false
-  return (punchSceneHost(machine.localUserId) || punchIsAdmin(rules, machine.localUserId)) && punchIsMainAdmin(machine.localUserId)
+  const id = machine.localUserId
+  const hosts = getSocialConfig()?.event.adminWallets ?? []
+  // Extra `adminIds` is how a second device (a phone that is not the publishing
+  // wallet) gets the FORCE RESCUE chip. Requiring the main-admin wallet as well
+  // made that field a no-op.
+  return punchIsMainAdmin(id) || punchIsAdmin(rules, id) || isSocialAdminWallet(id, hosts)
 }
 
 /** Is an arm currently standing? Read off the snapshot, so it survives a reload. */
@@ -4874,10 +4955,10 @@ export function punchRescuePress(): void {
   const now = Date.now()
   const round = machine.network.snapshot()
   const rescue = round.rescue
-  const queued = round.active?.userId === machine.localUserId || round.queue.some(row => row.userId === machine.localUserId)
+  const queued = queuedOnThisClient(machine, round)
   const skill = rescue?.skill ?? 'band-taps'
   const isPush = skill === 'push'
-  if (!rescue || queued || rescue.winner || now > rescue.endsAt) return
+  if (!rescue || (queued && !rescue.forced) || rescue.winner || now > rescue.endsAt) return
   // THE ASK IS PRESSABLE, and only for the push: the other shapes use the gap
   // before `startsAt` to say "get ready", so a press there is a mis-click. The
   // push uses it to ask the room a question, and the press is the answer.
@@ -4885,7 +4966,8 @@ export function punchRescuePress(): void {
   const alreadyIn = !!rescueInput?.accepted
     || !!(rescue.pushAccepted?.includes(machine.localUserId))
   if (isPush && punchRescuePromptsMuted() && !alreadyIn) return
-  if (!rescueInput || rescueInput.at !== rescue.startsAt) rescueInput = freshRescueInput(rescue.startsAt)
+  adoptRescueInputWindow(rescue, round.lastRescueSerial)
+  if (!rescueInput) return
   if (isPush && now < rescue.startsAt) {
     if (rescueInput.accepted) return
     rescueInput.accepted = true
@@ -4927,6 +5009,7 @@ export function punchRescuePress(): void {
       playSfx(machine, SFX_RESCUE_TAP, 0.14, 'machine', 0.48)
     }
     machine.network.rescueTap(rescueInput.stamps.length, rescueInput.stamps)
+    emitFocusWave(machine.localUserId, true)
     return
   }
   if (skill === 'closest-shot') {
@@ -5829,8 +5912,12 @@ function updatePunchMilestoneMedia(machine: PunchMachineRuntime): void {
  *
  * The rung is remembered per ROUND, so a run that climbs 3 → 4 → 5 is three
  * different celebrations and a streak broken and rebuilt to 3 does not replay
- * the same one. Global, not positional: the melody is the venue's moment, not a
- * whisper that falls off with distance.
+ * the same one.
+ *
+ * ‼️NOT `global: true`. DCL only honours global AudioSource on the desktop
+ * client. A phone plays the punch hits (`global: false`) and then silence for
+ * these two melodies, which is exactly the report. Same speaker as the cabinet
+ * SFX, on the island, so the ear still finds it.
  */
 function updatePunchEscalationMelody(
   machine: PunchMachineRuntime,
@@ -5862,10 +5949,10 @@ function updatePunchEscalationMelody(
   if (!track) return
   if (!machine.musicEntity) {
     machine.musicEntity = engine.addEntity()
-    Transform.create(machine.musicEntity, { parent: machine.root })
+    Transform.create(machine.musicEntity, { parent: machine.root, position: Vector3.create(0, 1.5, 0.25) })
   }
   AudioSource.createOrReplace(machine.musicEntity, {
-    audioClipUrl: PUNCH_MUSIC_TRACKS[track], playing: true, loop: false, volume: rules.musicVolume, global: true
+    audioClipUrl: PUNCH_MUSIC_TRACKS[track], playing: true, loop: false, volume: rules.musicVolume, global: false
   })
   machine.musicPlaying = track
   machine.musicUntil = now + (PUNCH_MUSIC_TRACK_MS[track] ?? 14_000)
@@ -7004,6 +7091,45 @@ function claimHouseBot(machine: PunchMachineRuntime): string | null {
   return AvatarShape.getOrNull(bot.entity)?.name ?? 'The Regular'
 }
 
+function houseBotNameOf(bot: TroupeBot): string {
+  return (AvatarShape.getOrNull(bot.entity)?.name ?? '').trim()
+}
+
+/**
+ * The board already carries the host's NPC name. Followers used to ignore it
+ * and keep whichever body *they* claimed while they thought they hosted, so
+ * phone and desktop showed different people hitting the same score. Bind every
+ * client to that name. Owner, 2026-09-11: numbers and voice lined up first;
+ * the bodies caught up minutes later, once a human took the bag.
+ */
+function bindHouseBotFromSnapshot(
+  machine: PunchMachineRuntime,
+  snapshot: PunchCompetitionSnapshot
+): void {
+  const listed =
+    snapshot.active?.userId === PUNCH_HOUSE_BOT_ID
+      ? snapshot.active.name
+      : snapshot.queue.find((entry) => entry.userId === PUNCH_HOUSE_BOT_ID)?.name
+  const wanted = (listed ?? '').trim().toLowerCase()
+  if (!wanted) return
+  const bots = getTroupeBots()
+  if (!bots.length) return
+  const match = bots
+    .filter((bot) => houseBotNameOf(bot).toLowerCase() === wanted)
+    .sort((a, b) => a.index - b.index)[0]
+  if (match) {
+    machine.houseBotIndex = match.index
+    return
+  }
+  const sorted = [...bots].sort((a, b) => a.index - b.index)
+  let hash = 2166136261
+  for (let i = 0; i < wanted.length; i += 1) {
+    hash = Math.imul(hash ^ wanted.charCodeAt(i), 16777619) >>> 0
+  }
+  const pick = sorted[hash % sorted.length]
+  if (pick) machine.houseBotIndex = pick.index
+}
+
 /** The claimed NPC, resolved by identity every time it is needed. */
 function houseBotBody(machine: PunchMachineRuntime): TroupeBot | null {
   if (machine.houseBotIndex < 0) return null
@@ -7152,6 +7278,7 @@ function updateHouseBotTurn(
   now: number
 ): void {
   const botIsUp = snapshot.active?.userId === PUNCH_HOUSE_BOT_ID
+  if (botIsUp) bindHouseBotFromSnapshot(machine, snapshot)
   // Anyone standing at the bag who should no longer be there goes back to the
   // rail first — the turn passed to a human, or the coordinator has already
   // claimed a different regular for the next round.
@@ -7216,6 +7343,36 @@ function updateHouseBotTurn(
     // The swing owns the body until it has played out. Without this the stance
     // re-trigger lands a beat later and cuts the punch back to the idle.
     suspendBotStance(machine, now, PUNCH_CLIP_MS)
+  }
+}
+
+/**
+ * Scene emotes the puncher fires locally often do not land on a second Explorer
+ * — especially two devices of the same wallet. Replay the swing on every other
+ * avatar that matches that wallet.
+ */
+function updateRemotePunchEmote(
+  machine: PunchMachineRuntime,
+  snapshot: PunchCompetitionSnapshot,
+  now: number
+): void {
+  const userId = snapshot.active?.userId
+  if (!userId || userId === PUNCH_HOUSE_BOT_ID) return
+  if (snapshot.phase !== 'scoring') return
+  if (machine.remotePunchedSerial === snapshot.serial) return
+  const iAmThisClientPuncher = userId === machine.localUserId && machine.queueOptIn
+  if (iAmThisClientPuncher) return
+  machine.remotePunchedSerial = snapshot.serial
+  const wanted = userId.trim().toLowerCase()
+  const src = punchEmoteFor(snapshot.score, machine.config, snapshot.chargeStartedAt)
+  for (const [entity, identity] of engine.getEntitiesWith(PlayerIdentityData)) {
+    if (entity === engine.PlayerEntity) continue
+    if ((identity.address ?? '').trim().toLowerCase() !== wanted) continue
+    try {
+      AvatarEmoteCommand.addValue(entity, { emoteUrn: src, loop: false, timestamp: now })
+    } catch {
+      /* engine-owned on some builds — the local trigger still fired on the puncher */
+    }
   }
 }
 
@@ -7880,6 +8037,27 @@ const STRIKE_MARK_GREEN = Color4.create(0.3, 1, 0.42, 1)
 /** Two blinks a second: urgent enough to catch a player walking the other way. */
 const STRIKE_MARK_BLINK_MS = 500
 
+/**
+ * ‼️DO NOT HIDE AVATARS TO CLEAR A NAMETAG.
+ *
+ * Owner, 2026-09-11, two devices in one world: the phone stopped seeing the
+ * desktop player, and every participant name on the phone was a different
+ * person. A box on `PlayerEntity` with `AMT_HIDE_NAMETAGS` was meant to lift
+ * the puncher's label out of the aim hoop. Mobile Explorer does not ship that
+ * modifier in its inspector — unknown values fall through to hide-avatars —
+ * and `excludeIds` was empty, so anyone standing at the bag vanished and the
+ * nametags that remained were the local house roster, not the live room.
+ *
+ * Helper +1 PUNCH still clears locally while you aim (`clearExtraPunchOverHead`).
+ * The engine nametag stays. Seeing the other body is worth more than a clean hoop.
+ */
+function puncherAimingAtBag(machine: PunchMachineRuntime): boolean {
+  if (!hud.isMyTurn) return false
+  if (machine.missedTurn && !machine.queueOptIn) return false
+  if (hud.phase === 'charging' || hud.phase === 'scoring') return true
+  return hud.phase === 'ready' && (playerAtStrikeSpot(machine) || machine.localCharging)
+}
+
 function updateStrikeMarker(machine: PunchMachineRuntime, now: number, wanted: boolean): void {
   if (!wanted) {
     if (machine.strikeRing) Transform.getMutable(machine.strikeRing).scale = Vector3.Zero()
@@ -8464,9 +8642,8 @@ function punchMachineSystemUnfenced(dt: number): void {
   // movePlayerTo is routinely declined while the world is still booting. One
   // shot was not enough: the first refusal was what left the visitor on the
   // ground looking up, with a manual "float back up" as the only way in.
-  // Join/login still auto-returns: gravity on the island starts before the
-  // deck exists. KEEP FLYING opts out of that capture and must not be undone.
-  // The fall cloud is still offered so they can choose to come back up.
+  // KEEP FLYING opts out of that capture and must not be undone. The fall
+  // cloud is still offered so they can choose to come back up.
   if (
     !arrivalSettled &&
     !spawnCaptureOptedOut() &&
@@ -8540,9 +8717,9 @@ function punchMachineSystemUnfenced(dt: number): void {
     const rescueReview = !!rescue && rescue.skill === 'push'
       && now > rescue.endsAt && now <= rescue.endsAt + PUNCH_PUSH_REVIEW_MS
     const rescueVisible = rescueLive || rescueReview
-    const queuedHere = !!round && (round.active?.userId === machine.localUserId || round.queue.some(row => row.userId === machine.localUserId))
-    const inGameArea = playerNearMachine(machine, 20) || playerInZone(machine.config.audienceZoneId)
-    const eligibleSpectator = !!round?.active && !queuedHere && inGameArea
+    const queuedHere = !!round && machine.queueOptIn && (round.active?.userId === machine.localUserId || round.queue.some(row => row.userId === machine.localUserId))
+    const inGameArea = playerNearMachine(machine, 48) || playerInZone(machine.config.audienceZoneId)
+    const eligibleSpectator = !!round?.active && (!queuedHere || !!rescue?.forced) && inGameArea
     const iJoinedEarly = !!rescueInput?.accepted
       || !!(rescue?.pushAccepted?.includes(machine.localUserId))
     const inviteSpectator = eligibleSpectator && (!punchRescuePromptsMuted() || iJoinedEarly)
@@ -8550,9 +8727,10 @@ function punchMachineSystemUnfenced(dt: number): void {
     // Input dies with the window, never with the panel: a review beat is for
     // reading, and a press landing in it would be scored into a closed claim.
     const liveRescue = rescueLive && !!rescue && inviteSpectator && !preparing && !rescue.winner
-    if (rescueLive && inviteSpectator && rescue && (!rescueInput || rescueInput.at !== rescue.startsAt)) {
-      rescueInput = freshRescueInput(rescue.startsAt)
-      playSfx(machine, SFX_RESCUE_OPEN, 1, 'machine')
+    if (rescueLive && inviteSpectator && rescue) {
+      if (adoptRescueInputWindow(rescue, round?.lastRescueSerial)) {
+        playSfx(machine, SFX_RESCUE_OPEN, 1, 'machine')
+      }
     } else if (!rescueVisible) rescueInput = null
     const fumbler = (rescue?.rescuedName ?? round?.active?.name ?? 'THE PUNCHER').toUpperCase()
     const winner = rescue?.winnerName?.toUpperCase() ?? ''
@@ -8683,7 +8861,8 @@ function punchMachineSystemUnfenced(dt: number): void {
        Local prediction overlays YOUR row so the number climbs with the thumb
        instead of waiting for the next snapshot. */
     const pushRows: Array<{ userId?: string; name: string; gain: number; mine: boolean; quality01?: number }> = (rescue?.pushers ?? []).map(row => ({
-      userId: row.userId, name: row.name, gain: row.gain, mine: row.userId === machine.localUserId,
+      userId: row.userId, name: row.name, gain: row.gain,
+      mine: row.userId === machine.localUserId && !!rescueInput?.accepted,
       quality01: row.quality01 ?? 0,
     }))
     if (rescueInput?.accepted) {
@@ -8714,18 +8893,18 @@ function punchMachineSystemUnfenced(dt: number): void {
        the BODY, not a copy of the full-screen meter. The person whose thumb is
        on the save keeps the instrument. The puncher and anyone who has not
        said yes get a chip, or nothing, so they can look at the people. */
-    const iAmPuncher = !!round?.active && round.active.userId === machine.localUserId
+    const iAmPuncher = !!round?.active && round.active.userId === machine.localUserId && machine.queueOptIn
     const iJoined = !!rescueInput?.accepted
       || pushRows.some(row => row.mine)
       || !!(rescue?.pushAccepted?.includes(machine.localUserId))
     let pushHud: NonNullable<PunchMachineHudState['rescuePushHud']> = 'off'
     if (pushOn && rescueVisible) {
       if (preparing) {
-        if (iAmPuncher) pushHud = 'watch'
-        else if (inviteSpectator) pushHud = 'ask'
+        if (inviteSpectator) pushHud = 'ask'
+        else if (iAmPuncher) pushHud = 'watch'
         else pushHud = 'off'
       }
-      else if (rescueReview || rescue?.settled) pushHud = (iJoined || iAmPuncher) ? 'result' : 'off'
+      else if (rescueReview || rescue?.settled) pushHud = (iJoined || iAmPuncher || eligibleSpectator) ? 'result' : 'off'
       else if (inviteSpectator && iJoined) pushHud = 'play'
       else if (inviteSpectator || iAmPuncher) pushHud = 'watch'
     }
@@ -8735,9 +8914,11 @@ function punchMachineSystemUnfenced(dt: number): void {
     const worldRows: PushSignalMember[] = []
     if (worldLive) {
       const seen = new Set<string>()
+      // Same wallet, two devices: the helper's userId IS the puncher's.
+      // Skipping the active id hid their waves on every other screen.
       for (const row of pushRows) {
         const id = (row.userId ?? '').trim().toLowerCase()
-        if (!id || id === (round?.active?.userId ?? '')) continue
+        if (!id) continue
         seen.add(id)
         worldRows.push({
           userId: id,
@@ -8751,8 +8932,8 @@ function punchMachineSystemUnfenced(dt: number): void {
       }
       for (const id of rescue?.pushAccepted ?? []) {
         const uid = id.trim().toLowerCase()
-        if (!uid || seen.has(uid) || uid === (round?.active?.userId ?? '')) continue
-        const mine = uid === machine.localUserId
+        if (!uid || seen.has(uid)) continue
+        const mine = uid === machine.localUserId && !!rescueInput?.accepted
         worldRows.push({
           userId: uid,
           name: mine ? 'YOU' : 'PLAYER',
@@ -8796,7 +8977,7 @@ function punchMachineSystemUnfenced(dt: number): void {
     if (pushOn && rescueLive && rescueInput?.accepted && !rescue?.winner && !preparing) {
       const quality = hud.rescuePushQuality01 ?? 0
       const inGreen = quality >= 0.999
-      if (now - (machine.rescueEmoteAt ?? 0) >= FOCUS_EMOTE_EVERY_MS) {
+      if (inGreen && now - (machine.rescueEmoteAt ?? 0) >= FOCUS_EMOTE_EVERY_MS) {
         machine.rescueEmoteAt = now
         playFocusEmote()
       }
@@ -9043,7 +9224,7 @@ function punchMachineSystemUnfenced(dt: number): void {
     // Whose turn, and how long they have to step up to the bag.
     hud.activeName = round?.active?.name ?? ''
     hud.activeUserId = round?.active?.userId ?? ''
-    hud.isMyTurn = round ? round.active?.userId === machine.localUserId : true
+    hud.isMyTurn = round ? round.active?.userId === machine.localUserId && machine.queueOptIn : true
     // The panel sits over the middle of the screen and a wind-up needs that
     // space. Held shut for the duration of YOUR charge only - a spectator
     // reading the board while somebody else swings is exactly the moment the
@@ -9069,7 +9250,7 @@ function punchMachineSystemUnfenced(dt: number): void {
     // deliberate ask, so the notice fires on the first no-show of each entry
     // and never again on the machine's own confusion.
     if (round) {
-      const myTurn = round.active?.userId === machine.localUserId
+      const myTurn = round.active?.userId === machine.localUserId && machine.queueOptIn
       // Out by the shot clock, and not asked back in. Nothing about a turn —
       // no sound, no clock, no banner — is allowed to reach this player.
       const sittingOut = machine.missedTurn && !machine.queueOptIn
@@ -9257,7 +9438,7 @@ function punchMachineSystemUnfenced(dt: number): void {
       }
       const inQueue = machine.queueOptIn
       machine.wasInQueue = inQueue
-      const isMyTurn = snapshot.active?.userId === machine.localUserId
+      const isMyTurn = snapshot.active?.userId === machine.localUserId && machine.queueOptIn
       if (snapshot.phase !== 'ready' && snapshot.phase !== 'charging') {
         machine.localCharging = false
         machine.localReleased = false
@@ -9282,7 +9463,9 @@ function punchMachineSystemUnfenced(dt: number): void {
       )
       recordPunchRound(resultsLog, myRoundResult(machine, snapshot, now), now)
       recordMySupport(machine, snapshot, now)
+      setNpcSimMuted(sameWalletSiblingPresent(machine.localUserId) && !machine.queueOptIn)
       updateHouseBotTurn(machine, snapshot, now)
+      updateRemotePunchEmote(machine, snapshot, now)
       if (isMyTurn && (snapshot.phase === 'ready' || snapshot.phase === 'charging')) {
         armBagPointer(machine)
       } else {
@@ -9402,23 +9585,45 @@ function updateIslandSurfaces(
      both allocate and both walk the roster every frame, and a retired mechanic
      should cost zero, not "nearly zero". `clear*` runs on the transition so
      switching the director's box mid-round takes the balloons down with it. */
+  const pushWorld = hud.rescuePushWorld ?? []
+  setFocusWaveTarget(getWorldPosition(engine, machine.root))
   if (activeProfile(machine).focusEnabled) {
     updateFocusBubbles(hud.focusCircle, now)
-    // WHERE THE ENERGY IS AIMED. Refreshed every frame off the live cabinet
-    // rather than captured once: the machine sits on a rocking root and a target
-    // frozen at boot would point the crowd's pulses at where it used to be.
-    setFocusWaveTarget(getWorldPosition(engine, machine.root))
-    updateFocusWaves(hud.focusCircle, now)
     focusWorldDrawn = true
   } else if (focusWorldDrawn) {
     focusWorldDrawn = false
     clearFocusBubbles()
+  }
+  // Push helpers reuse the same rings Focus uses. Focus is off on this island,
+  // so without this the room had no wave at all while people meditated a save.
+  if (pushWorld.length > 0) {
+    const posing = pushWorld
+    updateFocusWaves(
+      posing.map((row) => ({
+        userId: row.userId,
+        name: row.name,
+        quality01: row.quality01,
+        points: row.gain,
+        circleScore: 0,
+        focus: 0,
+        momentum: false,
+        crowd: posing.length,
+        mine: row.mine,
+      })),
+      now,
+    )
+  } else if (activeProfile(machine).focusEnabled) {
+    updateFocusWaves(hud.focusCircle, now)
+  } else {
     clearFocusWaves()
   }
-  // The puncher is looking at the bag. Helper +N / Swiss Mob nametag bars
-  // sit in that hoop; spectators still see them on the bodies.
-  updatePushBars(hud.isMyTurn && !hud.rescueLabel ? [] : (hud.rescuePushWorld ?? []), now)
-  updateExtraPunchOverHead(now)
+  // Helper climb lives on the HUD. A nametag column on YOUR avatar is the
+  // "progress still attached to the body" the phone kept reporting.
+  updatePushBars(pushWorld.filter((row) => !row.mine), now)
+  // +1 PUNCH rides the nametag anchor. Leave it for the room; drop it here
+  // while aiming so it does not sit in the hoop.
+  if (puncherAimingAtBag(machine)) clearExtraPunchOverHead()
+  else updateExtraPunchOverHead(now)
   const spotlightLabel = updateArenaScreen(
     arenaScreen,
     {
@@ -9733,6 +9938,7 @@ function spawnMachine(parent: Entity, id: string, config: PunchMachineAppConfig)
     houseBotStagedAt: 0,
     bagArmed: false,
     housePunchedSerial: -1,
+    remotePunchedSerial: -1,
     botStanceIndex: -1,
     botStanceAt: 0,
     showBotIndex: -1,

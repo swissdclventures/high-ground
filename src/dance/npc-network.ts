@@ -19,8 +19,9 @@ import {
   type NpcNetworkPose,
   type NpcNetworkSnapshot
 } from '@shared/npc-network-contract'
+import { scrapNpcStandY } from '@shared/scrap-ko-ground'
 import type { TroupeBot } from './troupe'
-import { isDanceCoordinator, localUserId } from './runtime'
+import { isDanceCoordinator, isNpcSimAuthority, localUserId } from './runtime'
 import { ensureNpcEmote, npcEmoteTrigger, sceneEmoteUrnFor } from './scene-emotes'
 import { silenceClappingAudioEmote } from '@shared/world-audio-policy'
 
@@ -182,18 +183,19 @@ function followSnapshot(dt: number): void {
     const pose = npcNetworkPoseAt(latestSnapshot, bot.index)
     const transform = Transform.getMutableOrNull(bot.entity)
     if (!pose || !transform) continue
+    const y = scrapNpcStandY({ x: pose.x, z: pose.z, y: pose.y })
     const distance = Math.hypot(
       pose.x - transform.position.x,
-      pose.y - transform.position.y,
+      y - transform.position.y,
       pose.z - transform.position.z
     )
     if (distance > SNAP_DISTANCE) {
-      transform.position = Vector3.create(pose.x, pose.y, pose.z)
+      transform.position = Vector3.create(pose.x, y, pose.z)
       transform.rotation = Quaternion.create(pose.qx, pose.qy, pose.qz, pose.qw)
     } else {
       transform.position = Vector3.create(
         transform.position.x + (pose.x - transform.position.x) * alpha,
-        transform.position.y + (pose.y - transform.position.y) * alpha,
+        transform.position.y + (y - transform.position.y) * alpha,
         transform.position.z + (pose.z - transform.position.z) * alpha
       )
       transform.rotation = nlerpRotation(transform.rotation, pose, alpha)
@@ -201,7 +203,7 @@ function followSnapshot(dt: number): void {
     // Keep takeover targets near the last authoritative pose. If this follower
     // becomes coordinator, the crowd resumes from where everybody saw it.
     bot.tx = pose.x
-    bot.ty = pose.y
+    bot.ty = y
     bot.tz = pose.z
     applyRemoteEmote(bot, latestSnapshot)
   }
@@ -209,7 +211,7 @@ function followSnapshot(dt: number): void {
 
 function npcNetworkSystem(dt: number): void {
   if (!ensureDirector()) return
-  if (isDanceCoordinator()) {
+  if (isNpcSimAuthority()) {
     publishTimer -= dt
     if (publishTimer <= 0) {
       publishTimer = SNAPSHOT_INTERVAL_S

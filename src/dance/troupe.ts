@@ -103,7 +103,8 @@ import {
   scrapKoKnockbackPlan,
   scrapKoPointOffDeck,
   scrapKoReturnPoint,
-  scrapNpcNeedsDeckRescue
+  scrapNpcNeedsDeckRescue,
+  scrapNpcStandY
 } from '@shared/scrap-ko-ground'
 import { scrapHitKnockSpec, type ScrapHitKnockSpec } from '@shared/scrap-hit-physics'
 import { SCRAP_GLOAT_MARKER, SCRAP_GUARD_MARKER } from '@shared/scrap-emotes'
@@ -111,7 +112,7 @@ import { scrapSkillFor } from '@shared/scrap-skill'
 import { scrapEmotePaths, scrapEmoteRef, scrapFightBoutRoles, type ScrapEmoteRole } from '@shared/scrap-emotes'
 import { allSceneEmoteUrns, dedupeUrns, ensureNpcEmote, npcEmoteArmed, npcEmoteTrigger, npcHoldEmoteUrns, NPC_EMOTE_SLOTS, onSceneEmotesResolved, resolveSceneEmotes, sceneEmoteUrn as resolveSceneEmoteUrn, sceneEmoteUrnFor, setNpcEmotesIfChanged } from './scene-emotes'
 import { showNpcSpeech } from './npc-speech'
-import { getDanceConfig, getCrowdControlAt, getCrowdFormation, getCrowdMood, getCrowdSync, isDanceCoordinator, isVenueActivityPaused, localUserId } from './runtime'
+import { getDanceConfig, getCrowdControlAt, getCrowdFormation, getCrowdMood, getCrowdSync, isDanceCoordinator, isNpcSimAuthority, isVenueActivityPaused, localUserId } from './runtime'
 import {
   crowdHostBeatOffsetMs,
   crowdHostEmote,
@@ -956,6 +957,10 @@ function botInKoDrop(bot: TroupeBot): boolean {
   return !!bot.scrapKoStyle && (!!bot.scrapFallAt || bot.scrapDown || !!bot.scrapKoRimAt)
 }
 
+function standYFor(bot: TroupeBot, x: number, z: number, y: number): number {
+  return scrapNpcStandY({ x, z, y, dropping: botInKoDrop(bot) })
+}
+
 function rescueBotsUnderDeck(): void {
   const deck = scrapKoDeck()
   const config = getDanceConfig()
@@ -1018,7 +1023,7 @@ function botMoveSystem(dt: number): void {
   // pacing there until the next walk step — which never comes once they have
   // "arrived" in x/z.
   rescueBotsUnderDeck()
-  if (!isDanceCoordinator()) return
+  if (!isNpcSimAuthority()) return
   if (isVenueActivityPaused()) return
   const nowMs = Date.now()
   const config = getDanceConfig()
@@ -1265,6 +1270,9 @@ function botMoveSystem(dt: number): void {
   for (const bot of bots) {
     const tf = Transform.getMutableOrNull(bot.entity)
     if (!tf) continue
+    if (!botInKoDrop(bot)) {
+      bot.ty = standYFor(bot, bot.tx, bot.tz, bot.ty)
+    }
     const meshDiscs = obstructionDiscsScene(bot.floorIndex)
     const leased = isScrapLeased(bot.index)
     if (bot.stationed && !leased) {
@@ -1325,8 +1333,12 @@ function botMoveSystem(dt: number): void {
       continue
     }
     if (bot.pin && !leased) {
-      tf.position = Vector3.create(bot.pin.x, tf.position.y, bot.pin.z)
+      // Keep the fighter on the mark AND on the stone. Preserving Y left a
+      // body that had already sunk under the deck pacing there forever.
+      const y = standYFor(bot, bot.pin.x, bot.pin.z, tf.position.y)
+      tf.position = Vector3.create(bot.pin.x, y, bot.pin.z)
       bot.tx = bot.pin.x
+      bot.ty = y
       bot.tz = bot.pin.z
       continue
     }
@@ -1621,12 +1633,15 @@ function botMoveSystem(dt: number): void {
       }
     }
 
+    bot.ty = standYFor(bot, bot.tx, bot.tz, bot.ty)
     const dist = Math.hypot(bot.tx - pos.x, bot.tz - pos.z)
     if (dist < 0.18) {
-      // Arrived in x/z. Y is NOT a walk axis, so a body that fell through the
-      // deck while already on its mark would stay under forever without this.
-      if (Math.abs(tf.position.y - bot.ty) > 0.25) {
-        tf.position = Vector3.create(tf.position.x, bot.ty, tf.position.z)
+      // Arrived in x/z. Y is NOT a walk axis — and bot.ty used to be plot 0
+      // on the sky island, which snapped them under the stone after rescue.
+      const standY = standYFor(bot, tf.position.x, tf.position.z, bot.ty)
+      bot.ty = standY
+      if (Math.abs(tf.position.y - standY) > 0.25) {
+        tf.position = Vector3.create(tf.position.x, standY, tf.position.z)
       }
       // Arrived. Ring/centre bots FACE THE DANCE FLOOR (the show); hangout bots
       // face their conversation cluster or the floor per role (facePx/facePz),
@@ -1656,7 +1671,7 @@ function botMoveSystem(dt: number): void {
     movedThisTick.add(bot.index)
     const progress = Math.min(1, Math.hypot(movedX, movedZ) / Math.max(dist, 0.001))
     const nextY = tf.position.y + (bot.ty - tf.position.y) * progress
-    tf.position = Vector3.create(next.x, nextY, next.z)
+    tf.position = Vector3.create(next.x, standYFor(bot, next.x, next.z, nextY), next.z)
     // Face the way they're actually moving while in transit.
     const yawDeg = (Math.atan2(movedX, movedZ) * 180) / Math.PI
     tf.rotation = Quaternion.fromEulerDegrees(0, yawDeg, 0)
@@ -2001,6 +2016,7 @@ function viewerXZ(): { x: number; z: number } {
 
 function botLodPinned(bot: TroupeBot): boolean {
   if (bot.stationed) return true
+  if (bot.pin) return true
   if (bot.atCenter || bot.mode === 'center') return true
   return isScrapLeased(bot.index)
 }
@@ -2865,7 +2881,7 @@ function troupeSystem(dt: number): void {
   for (const bot of bots) {
     if (bot.avatarLive) bindScrapEngage(bot, getDanceConfig())
   }
-  if (!isDanceCoordinator()) return
+  if (!isNpcSimAuthority()) return
   runCrowdDirectorTick(Date.now())
 }
 

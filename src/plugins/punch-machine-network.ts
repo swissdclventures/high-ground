@@ -252,6 +252,12 @@ export interface PunchCompetitionSnapshot {
      */
     lastChance: boolean
     /**
+     * Opened by FORCE RESCUE. A solo admin on a phone is both puncher and
+     * tester — the window still has a player (them), so spectatorPresent is
+     * not required and they may fill the meter themselves.
+     */
+    forced?: boolean
+    /**
      * The best anybody reached, 0…1, and who reached it — for the near-miss
      * tell. Written on every attempt, winning or not, so a window that nobody
      * wins can still say how close the room came.
@@ -268,9 +274,9 @@ export interface PunchCompetitionSnapshot {
      * it scored, `pushTo` the threshold it fell short of -- and where the room
      * has dragged it to so far. See `shared/punch-push.ts`.
      *
-     * NOTE: NO DRIFT PHASE TRAVELS. The band is derived from `now - startsAt`, a
-     * duration every client computes off a number already on this snapshot, so
-     * two explorers agree on where the green is without trusting either clock.
+     * NOTE: THE BAND IS `localNow - startsAt`. startsAt is the host's clock.
+     * Followers shift it on adopt (`alignRemotePunchClocks`) so a fast phone
+     * does not run the green window ahead of the desktop.
      */
     pushFrom?: number
     pushTo?: number
@@ -326,6 +332,8 @@ export interface PunchCompetitionSnapshot {
   profileBoards?: Record<string, PunchLeaderboardEntry[]>
   leaderboard: PunchLeaderboardEntry[]
   chargeStartedAt: number
+  /** Which Explorer of this wallet started the current charge. Sibling devices can still help. */
+  activeSessionId?: string
   phaseEndsAt: number
   score: number
   attempt: PunchAttemptBreakdown | null
@@ -614,6 +622,44 @@ function cloneSnapshot(snapshot: PunchCompetitionSnapshot): PunchCompetitionSnap
   }
 }
 
+function bumpClock(value: number | undefined, delta: number): number {
+  if (!value) return value ?? 0
+  return value + delta
+}
+
+/**
+ * ‼️HOST CLOCK, NOT PHONE CLOCK.
+ *
+ * Every remaining-time on the HUD is `phaseEndsAt - Date.now()`. Those stamps
+ * are written on the host. A phone whose wall clock is thirty seconds fast
+ * thinks the round is already over; one that is slow sits two minutes behind
+ * and then snaps. Owner, 2026-09-11: behind, then caught up, then ahead.
+ *
+ * `sentAt` is the host's Date.now() on that snapshot. Shift every host stamp
+ * onto this device so remaining time matches.
+ */
+export function alignRemotePunchClocks(
+  snapshot: PunchCompetitionSnapshot,
+  hostNow: number,
+  localNow: number,
+): PunchCompetitionSnapshot {
+  const delta = localNow - hostNow
+  if (!Number.isFinite(hostNow) || hostNow <= 0 || !Number.isFinite(delta)) return snapshot
+  if (Math.abs(delta) < 40) return snapshot
+  snapshot.phaseEndsAt = bumpClock(snapshot.phaseEndsAt, delta)
+  snapshot.chargeStartedAt = bumpClock(snapshot.chargeStartedAt, delta)
+  snapshot.roundStartedAt = bumpClock(snapshot.roundStartedAt, delta)
+  snapshot.attemptReadyAt = bumpClock(snapshot.attemptReadyAt, delta)
+  snapshot.scorePhaseStartedAt = bumpClock(snapshot.scorePhaseStartedAt, delta)
+  if (snapshot.rescue) {
+    snapshot.rescue.announcedAt = bumpClock(snapshot.rescue.announcedAt, delta)
+    snapshot.rescue.startsAt = bumpClock(snapshot.rescue.startsAt, delta)
+    snapshot.rescue.endsAt = bumpClock(snapshot.rescue.endsAt, delta)
+    if (snapshot.rescue.completedAt) snapshot.rescue.completedAt = bumpClock(snapshot.rescue.completedAt, delta)
+  }
+  return snapshot
+}
+
 /**
  * THE WIRE, as the coordinator needs it.
  *
@@ -718,7 +764,12 @@ export function startPunchCompetitionNetwork(args: {
   // its payload where this interface is not, so the two never structurally
   // overlap even though MessageBus satisfies every call made through it.
   const bus: PunchCompetitionBus = args.bus ?? (new MessageBus() as unknown as PunchCompetitionBus)
-  const peers = new Map<string, { participant: PunchParticipant; receivedAt: number; startedAt: number }>()
+  const peers = new Map<string, {
+    participant: PunchParticipant
+    receivedAt: number
+    startedAt: number
+    sessions: Map<string, number>
+  }>()
   /**
    * THE PUSH's raw claims, coordinator-local and cleared when a window opens.
    * They are NOT on the snapshot: four people's tap lists would be rebroadcast
@@ -883,10 +934,17 @@ export function startPunchCompetitionNetwork(args: {
     return coordinatorId === me && hosting
   }
 
-  function remember(message: Pick<HelloMessage, 'userId' | 'name'> & { startedAt?: number }, now = clock()): void {
+  function remember(message: Pick<HelloMessage, 'userId' | 'name'> & { startedAt?: number; sessionId?: string }, now = clock()): void {
     const userId = cleanId(message.userId)
     if (!userId) return
-    const previous = peers.get(userId)?.participant
+    const previous = peers.get(userId)
+    const sessions = previous?.sessions ?? new Map<string, number>()
+    if (typeof message.sessionId === 'string' && message.sessionId) {
+      sessions.set(message.sessionId, now)
+    }
+    for (const [sessionId, seenAt] of sessions) {
+      if (now - seenAt > PEER_TIMEOUT_MS) sessions.delete(sessionId)
+    }
     // ‼️THE SERVER SAYS WHO IT CAN HEAR, ONCE PER PEER. `sdk-server-logs` is
     // the only window into a headless host, and until this line it showed
     // "hosting 1 punch machine(s)" and then silence — so on 2026-09-09, with a
@@ -897,13 +955,28 @@ export function startPunchCompetitionNetwork(args: {
       console.log(`[SERVER] hears ${userId} "${message.name.trim() || 'Player'}"`)
     }
     peers.set(userId, {
-      participant: participant(userId, message.name, previous?.joinedAt ?? now),
+      participant: participant(userId, message.name, previous?.participant.joinedAt ?? now),
       receivedAt: now,
       startedAt: Math.min(
-        peers.get(userId)?.startedAt ?? Number.POSITIVE_INFINITY,
+        previous?.startedAt ?? Number.POSITIVE_INFINITY,
         Number.isFinite(message.startedAt) ? Number(message.startedAt) : now
-      )
+      ),
+      sessions
     })
+  }
+
+  function liveSessionCount(userId: string, now = clock()): number {
+    const peer = peers.get(cleanId(userId))
+    if (!peer) return 0
+    let n = 0
+    for (const seenAt of peer.sessions.values()) {
+      if (now - seenAt <= PEER_TIMEOUT_MS) n += 1
+    }
+    return n
+  }
+
+  function siblingWatching(puncherId: string, now = clock()): boolean {
+    return liveSessionCount(puncherId, now) >= 2
   }
 
   function electCoordinator(): string {
@@ -912,7 +985,7 @@ export function startPunchCompetitionNetwork(args: {
     return (
       [
         ...peers.entries(),
-        [me, { participant: participant(me, myName), receivedAt: clock(), startedAt: sessionStartedAt }] as const
+        [me, { participant: participant(me, myName), receivedAt: clock(), startedAt: sessionStartedAt, sessions: new Map() }] as const
       ].sort((a, b) => a[1].startedAt - b[1].startedAt || a[0].localeCompare(b[0]))[0]?.[0] ?? me
     )
   }
@@ -1010,6 +1083,7 @@ export function startPunchCompetitionNetwork(args: {
     boostSpentAt = now
     state.active = state.queue.shift() ?? null
     state.chargeStartedAt = 0
+    state.activeSessionId = ''
     state.score = 0
     state.attempt = null
     state.chargeAccuracy01 = 0
@@ -1245,6 +1319,7 @@ export function startPunchCompetitionNetwork(args: {
     // where that is settled rather than guessed at here.
     const spectatorPresent = [...peers.keys()].some(id => id !== userId && id !== PUNCH_HOUSE_BOT_ID
       && !state.queue.some(row => row.userId === id))
+      || siblingWatching(userId, now)
     const cooldownReady = state.lastRescueSerial === undefined
       || state.serial - state.lastRescueSerial > rules.rescueCooldownAttempts
     // ‼️THE TWO GATES THAT GIVE THE MECHANIC AN ENDING.
@@ -1265,17 +1340,12 @@ export function startPunchCompetitionNetwork(args: {
     const outOfPunches = state.attemptsUsed >= state.attemptsAllowed
     const rescuesLeft = (state.roundRescues ?? 0) < Math.max(0, Math.min(PUNCH_PUSH_MAX_PER_ROUND, rules.rescueMaxPerRound || PUNCH_PUSH_MAX_PER_ROUND))
     // ‼️THE ADMIN ARM IS AN OR, NOT AN EXTRA CONDITION, and it deliberately
-    // bypasses EVERY gate above including the per-round cap and the 900 floor.
-    // The whole complaint it answers is that the five real conditions cannot be
-    // arranged on purpose — an arm that still needed four of them would only
-    // narrow the wait, and the mechanic would go on being shipped unplayed.
-    //
-    // The ONE thing it does not bypass is `spectatorPresent`, because a Rescue
-    // with nobody watching has no player: the window would open, draw for
-    // nobody and expire. Testing alone therefore means standing OUT of the queue
-    // and letting the house bot punch — which is exactly the seat the mechanic
-    // is designed to be seen from.
-    const forced = state.forceRescueNext === true && spectatorPresent
+    // bypasses EVERY gate above including the per-round cap, the 900 floor,
+    // AND spectatorPresent. Owner, 2026-09-11: tapping FORCE RESCUE on a phone
+    // while you are the puncher played a sound and opened nothing — you are
+    // the only human, so the old spectator gate refused the window. A forced
+    // window is a test: the admin fills it themselves.
+    const forced = state.forceRescueNext === true
     const rescueCanOpen = forced || (state.score < 900 && priorStreak > 0 && spectatorPresent
       && cooldownReady && rescuesLeft && outOfPunches
       && punchRescueOpportunity(rules, state.serial))
@@ -1365,6 +1435,7 @@ export function startPunchCompetitionNetwork(args: {
         tried: [], rescuedName: state.active.name, rescuedUserId: state.active.userId,
         skill: rules.rescueSkill, bandTapsRequired: rules.rescueBandTapsRequired,
         band01: rules.rescueBand01, lastChance: outOfPunches,
+        forced,
         ...(isPush
           ? { pushFrom: state.score, pushTo: PUNCH_PUSH_THRESHOLD, pushScore: state.score, pushAccepted: [] }
           : {}) }
@@ -1742,7 +1813,11 @@ export function startPunchCompetitionNetwork(args: {
     // over ten seconds and the same list arrives again each time it grows.
     // Blocking a second message here would make the push a one-pulse game.
     const oncePerPerson = rescue.skill !== 'push'
-    if (userId === state.active?.userId || queued || userId === PUNCH_HOUSE_BOT_ID
+    // The puncher's own Explorer cannot save itself. A second device of the
+    // same wallet is a spectator and must be allowed to help.
+    const puncherSession = !message.sessionId || !state.activeSessionId
+      || message.sessionId === state.activeSessionId
+    if ((userId === state.active?.userId && puncherSession) || queued || userId === PUNCH_HOUSE_BOT_ID
       || (oncePerPerson && rescue.tried.includes(userId))) return
     const name = message.name.trim() || peers.get(userId)?.participant.name || 'Player'
     if (rescue.skill === 'push') { handlePush(message, userId, name, now); return }
@@ -2145,16 +2220,19 @@ export function startPunchCompetitionNetwork(args: {
     }
   }
 
-  /** Keep exactly one house bot in the rotation — never two, never none. */
+  /** Keep a house bot in the rotation when the island would otherwise stall. */
   function ensureHouseBot(now: number): void {
-    const humanInPlay =
-      (state.active && state.active.userId !== PUNCH_HOUSE_BOT_ID) ||
-      state.queue.some((entry) => entry.userId !== PUNCH_HOUSE_BOT_ID)
-    // Spectators — including a second Explorer on the same wallet — are not
-    // players. Pulling the bot because two people are merely IN THE WORLD is
-    // how the island went dead after everybody left the queue: one punch, then
-    // the regular froze at the bag and nobody else ever walked up.
-    if (humanInPlay) {
+    const humanIds = new Set<string>()
+    if (state.active && state.active.userId !== PUNCH_HOUSE_BOT_ID) humanIds.add(state.active.userId)
+    for (const entry of state.queue) {
+      if (entry.userId !== PUNCH_HOUSE_BOT_ID) humanIds.add(entry.userId)
+    }
+    // Two or more humans: they play each other. A lone human who stays in the
+    // queue must still hand the bag to an NPC, or they never get a turn as
+    // spectator and the help mechanic cannot be practised. Zero humans: the
+    // bot keeps the island alive. Pulling the bot for "any human in play" is
+    // how a solo queue became an infinite turn.
+    if (humanIds.size >= 2) {
       const before = state.queue.length
       state.queue = state.queue.filter(entry => entry.userId !== PUNCH_HOUSE_BOT_ID)
       if (state.queue.length !== before) revise()
@@ -2222,6 +2300,12 @@ export function startPunchCompetitionNetwork(args: {
       console.log(`[SERVER] queue ${message.action} ${userId} (${message.intent ?? 'auto'})`)
     }
     if (message.action === 'leave') {
+      // A second Explorer of this wallet sitting out must not eject the puncher
+      // or chop their shot clock to five seconds. That is how a phone watching
+      // the same account kept the island on one person until timeout.
+      if (message.intent !== 'player' && siblingWatching(userId) && liveSessionCount(userId) >= 2) {
+        return
+      }
       state.queue = state.queue.filter((entry) => entry.userId !== userId)
       // Leaving is one decision whichever line you were standing in.
       if (state.ring) state.ring = state.ring.filter((entry) => entry.userId !== userId)
@@ -2299,6 +2383,7 @@ export function startPunchCompetitionNetwork(args: {
     if (message.action === 'start' && state.phase === 'ready') {
       state.phase = 'charging'
       state.chargeStartedAt = now
+      state.activeSessionId = typeof message.sessionId === 'string' ? message.sessionId : ''
       state.chargeAccuracy01 = Math.max(0, Math.min(1, Number(message.accuracy01) || 0))
       // ‼️THE TURN CLOCK, NOT A CHARGE CLOCK. This used to be `idealChargeMs * 2`
       // and the expiry below threw the punch for the player — the auto-punch the
@@ -2343,9 +2428,18 @@ export function startPunchCompetitionNetwork(args: {
   bus.on(ADMIN_EVENT, (message: AdminMessage) => handleAdmin(message))
   bus.on(STATE_EVENT, (message: StateMessage) => {
     if (message?.machineId !== machineId || !message.snapshot) return
-    // Arrival, on OUR clock: a stale snapshot carries a convincing sentAt.
+    remember({ userId: message.coordinatorId, name: message.coordinatorId, startedAt: message.startedAt, sessionId: message.sessionId })
+    const incoming = cleanId(message.coordinatorId)
+    const incomingSession = typeof message.sessionId === 'string' ? message.sessionId : ''
+    const incomingStarted = Number(message.startedAt) || 0
     lastStateSeenAt = clock()
-    remember({ userId: message.coordinatorId, name: message.coordinatorId, startedAt: message.startedAt })
+
+    const takeRemote = (): void => {
+      state = cloneSnapshot(message.snapshot)
+      alignRemotePunchClocks(state, Number(message.sentAt) || 0, clock())
+      notify()
+    }
+
     // ‼️A SERVER THAT SPEAKS LATE STILL WINS. The first person into an empty
     // world is the one who wakes the server, and its cold start can outlast
     // PUNCH_SERVER_ADOPT_MS — so that client gives up, becomes its own
@@ -2356,35 +2450,54 @@ export function startPunchCompetitionNetwork(args: {
     // first → "NO SERVER ANSWERED", phone entered second → "HOUSE · SERVER",
     // same world, same server, two games. An orphan's game is solo by
     // definition, so there is nothing to fork by dropping it.
-    if (builtForServer && degradedToCoordinator && cleanId(message.coordinatorId) === serverId) {
+    if (builtForServer && degradedToCoordinator && incoming === serverId) {
       degradedToCoordinator = false
       authority = 'server'
       coordinatorId = serverId
       hosting = false
       console.log('[punch] Multiplayer Server answered after the adopt window; adopting it.')
-      state = cloneSnapshot(message.snapshot)
-      notify()
+      takeRemote()
       return
     }
-    const incomingSession = typeof message.sessionId === 'string' ? message.sessionId : ''
+    // Younger copy of THIS wallet: the live device already hosts.
+    if (incoming === me && incomingSession && incomingSession !== mySessionId && incomingStarted > sessionStartedAt) {
+      return
+    }
     // Same wallet, two Explorers: the older session hosts. A younger private
     // game — higher revision and all — must not overwrite the live one
     // (HIGHGROUND: phone still in flight after a republish, desktop already in).
-    if (incomingSession && incomingSession !== mySessionId && cleanId(message.coordinatorId) === me) {
-      if (Number(message.startedAt) > sessionStartedAt) return
+    if (incoming === me && incomingSession && incomingSession !== mySessionId) {
       hosting = false
       lastSiblingHostAt = clock()
       coordinatorId = me
+      takeRemote()
+      return
+    }
+    // ‼️SOMEONE ELSE'S LIVE CABINET. Electing ourselves and throwing this
+    // away is how a phone spent two minutes replaying last night, then ran
+    // ahead of the desktop on its own clock. The HTTPS row is the game.
+    // An established host still ignores a LATER device's private copy —
+    // even the first picture, and even one with a huge revision from
+    // replaying the action log. Yield only to someone who was here first.
+    if (incoming && incoming !== me) {
+      if (hosting && incomingStarted >= sessionStartedAt) {
+        return
+      }
+      hosting = false
+      coordinatorId = incoming
+      takeRemote()
+      return
+    }
+    coordinatorId = electCoordinator()
+    if (incoming !== coordinatorId) return
+    if (message.snapshot.revision < state.revision) return
+    hosting = coordinatorId === me && (!incomingSession || incomingSession === mySessionId)
+    if (hosting) {
       state = cloneSnapshot(message.snapshot)
       notify()
       return
     }
-    coordinatorId = electCoordinator()
-    if (cleanId(message.coordinatorId) !== coordinatorId) return
-    if (message.snapshot.revision < state.revision) return
-    state = cloneSnapshot(message.snapshot)
-    hosting = coordinatorId === me && (!incomingSession || incomingSession === mySessionId)
-    notify()
+    takeRemote()
   })
 
   function emit<T extends object>(event: string, payload: T): void {
@@ -2462,7 +2575,7 @@ export function startPunchCompetitionNetwork(args: {
       authority = 'coordinator'
       console.error('[punch] no Multiplayer Server answered; falling back to the serverless coordinator.')
     }
-    remember({ userId: me, name: myName, startedAt: sessionStartedAt }, now)
+    remember({ userId: me, name: myName, startedAt: sessionStartedAt, sessionId: mySessionId }, now)
     if (now - lastHelloAt >= HELLO_HEARTBEAT_MS) {
       lastHelloAt = now
       emit(HELLO_EVENT, hello(now))
@@ -2471,7 +2584,16 @@ export function startPunchCompetitionNetwork(args: {
       if (now - peer.receivedAt > PEER_TIMEOUT_MS) peers.delete(userId)
     }
     const elected = electCoordinator()
-    if (elected === me && (lastSiblingHostAt === 0 || now - lastSiblingHostAt > PEER_TIMEOUT_MS)) {
+    // Do not steal a cabinet we just adopted. Snapshots keep lastStateSeenAt
+    // fresh; once they stop, the oldest remaining peer (often us) may host.
+    if (
+      elected === me &&
+      coordinatorId !== me &&
+      lastStateSeenAt > 0 &&
+      now - lastStateSeenAt < PEER_TIMEOUT_MS
+    ) {
+      // still looking at their game
+    } else if (elected === me && (lastSiblingHostAt === 0 || now - lastSiblingHostAt > PEER_TIMEOUT_MS)) {
       if (!hosting) {
         hosting = true
         coordinatorId = me
@@ -2575,7 +2697,7 @@ export function startPunchCompetitionNetwork(args: {
         state.phaseEndsAt = now + PUNCH_ROUND_SUMMARY_MS
         revise()
       }
-    }     else if (state.phase === 'summary' && now >= state.phaseEndsAt) finishTurn(now)
+    } else if (state.phase === 'summary' && now >= state.phaseEndsAt) finishTurn(now)
 
     // Live quality on each helper has to move between taps — a bar that only
     // updates on a press would freeze gold after they left the green.

@@ -69,12 +69,13 @@ developed and tested, including the synthetic multiplayer harness.
 
 ## Snapshot
 
-This repository is a snapshot of the **live punch island** on
-`HIGHGROUND.dcl.eth` (published 2026-09-10 15:26 UTC, runtime commit
-`91ea5c52`). The docs describe that same game.
+This repository's source matches The Build commit `16143f9e` (2026-09-11
+21:52 UTC): HELP rings show on both screens, and a second Explorer on the
+same wallet follows the punching device so house NPCs stay put.
 
-If the files and the live World later disagree, **the live World is the game**.
-The content server is the authority for the entity id.
+Play it on `HIGHGROUND.dcl.eth`. Explorer runs whatever the last Builder
+publish uploaded. If GitHub and the live World disagree, **the live World is
+what you play**; this repo is what you clone and rebuild.
 
 ---
 

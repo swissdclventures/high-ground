@@ -28,13 +28,7 @@
  * The field is a flat boolean per (col, row), built once per string. Callers
  * cache it; nothing in here is meant to run every frame.
  */
-import {
-  PUNCH_BIG_SCREEN_SCALE,
-  PUNCH_WASH_BOTTOM_M,
-  PUNCH_WASH_ROWS,
-  PUNCH_WASH_SEGMENTS,
-  PUNCH_WASH_TOP_M,
-} from "./punch-machine-layout";
+import { PUNCH_WASH_ROWS, PUNCH_WASH_SEGMENTS } from "./punch-machine-layout";
 
 /** Glyph cell size. See the note above for why these two numbers and no others. */
 export const GLYPH_W = 4;
@@ -43,25 +37,6 @@ export const GLYPH_H = 7;
 export const GLYPH_GAP = 1;
 /** The most characters the arc holds at a legible size. */
 export const GLYPH_MAX_CHARS = 4;
-/**
- * HOW A 7-ROW NUMERAL SITS ON AN 8-ROW BOARD.
- *
- * There is one leftover row, and parking it on either side is what made the
- * count kiss a bezel. `bottom = 1` put the spare under the digits and they
- * touched the header; `bottom = 0` put it above them and they sat on the
- * plinth — the screenshot of 553 riding the bottom rail. Split the leftover
- * in half: the bitmap still stamps on row 0 so it stays aligned to the matrix,
- * and the wash panels lift by this many rows so the same seven cells float in
- * the middle of the face, with equal air above and below.
- */
-export const GLYPH_ROW_SHIFT = (PUNCH_WASH_ROWS - GLYPH_H) / 2;
-
-/** The lift in island metres, matching `punchWashSegment`'s row height. */
-export function punchWashGlyphShiftM(): number {
-  const bottom = PUNCH_WASH_BOTTOM_M * PUNCH_BIG_SCREEN_SCALE;
-  const top = PUNCH_WASH_TOP_M * PUNCH_BIG_SCREEN_SCALE;
-  return ((top - bottom) / PUNCH_WASH_ROWS) * GLYPH_ROW_SHIFT;
-}
 
 /**
  * The font, as art rather than as data.
@@ -203,8 +178,9 @@ export function screenTextField(text: string): boolean[] {
   if (chars.length === 0) return field;
   const width = chars.length * GLYPH_W + (chars.length - 1) * GLYPH_GAP;
   const left = Math.round((PUNCH_WASH_SEGMENTS - width) / 2);
-  // The bitmap parks on row 0. Centering is `GLYPH_ROW_SHIFT` on the wash,
-  // not a second stamp origin — a whole-row `bottom` can only kiss one bezel.
+  // A seven-row glyph in eight rows leaves one spare. It sits ABOVE the
+  // numeral so the count has a clean dark row under the bezel, not a kiss
+  // against the frame with the plinth empty underneath.
   const bottom = 0;
   chars.forEach((char, i) => {
     stamp(field, FONT[char]!, left + i * (GLYPH_W + GLYPH_GAP), bottom);
