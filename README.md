@@ -35,11 +35,23 @@ rather than a desktop layout shrunk down.
 
 ```bash
 npm install
+npm run build
 npm start
 ```
 
-The `bin/` in this clone is the live punch island as of 2026-09-10 15:26 UTC
-(entity on `HIGHGROUND.dcl.eth`). `npm start` boots that artifact.
+High Ground ships with the TypeScript required to build the submitted
+Decentraland scene. `npm run build` compiles `src/` (and `shared/`) into
+`bin/index.js` using the public `@dcl/sdk`. No access to The Build editor or
+any private monorepo is required.
+
+`npm start` boots the compiled scene in the Decentraland preview. The SDK
+preview may temporarily write `authoritativeMultiplayer` into `scene.json`;
+`npm run build` strips that flag so a deploy matches the live World (desktop
+and mobile in one round).
+
+The scene was composed with **The Build**, a separate proprietary editor. That
+tool is not part of this repository and is not needed to build, modify, or
+run the game.
 
 ## Deploy it to a World you own
 
@@ -53,20 +65,25 @@ Set your own destination in `scene.json` first. Deploying signs with your wallet
 
 | Path | What it is |
 |---|---|
+| `src/` | High Ground scene source (punch game, HUD, coordinator, island boot) |
+| `shared/` | contracts and pure game logic the scene imports |
+| `data/asset-metadata.json` | grid/material metadata imported by shared types |
 | `scene.json` | the scene manifest — title, parcels, spawn points |
-| `bin/index.js` | the scene runtime, prebuilt |
+| `bin/index.js` | compiled scene runtime (`npm run build` regenerates this) |
 | `main.crdt` | the authored entities the runtime loads at start |
-| `assets/editor-recipe.json` | the Builder recipe this scene was composed from |
+| `assets/editor-recipe.json` | the recipe the scene was composed from |
 | `models/`, `images/`, `sounds/`, `videos/`, `emotes/` | the media the scene references |
 
 `scene.json` still carries the display title *"Punch Machine Championship"*, the
 name this scene shipped under before it became High Ground.
 
-## About the runtime
+## About the source
 
-`bin/index.js` is prebuilt. It was compiled from a larger monorepo and imports
-shared modules from it, so it does not rebuild in isolation — what is here is the
-artifact that actually runs, which is the thing worth sharing and inspecting.
+This repository is the open-source High Ground scene. Fork it, change scoring
+or THE PUSH in `shared/` / `src/plugins/`, and run `npm run build`.
+
+The Build editor (Swissverse's scene builder) is a separate product and is not
+included here.
 
 Built with **The Build** by [Swissverse](https://swissverse.org).
 

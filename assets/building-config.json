@@ -364,7 +364,7 @@
         "enabled": false
       },
       "vehicles": {
-        "enabled": true,
+        "enabled": false,
         "parked": false,
         "neonGlider": false,
         "accessScope": "world"
@@ -472,9 +472,9 @@
       "border": {
         "version": 2,
         "enabled": false,
-        "autoManaged": true,
-        "managed": true,
-        "atlasApiBase": "https://builder.swissverse.org",
+        "autoManaged": false,
+        "managed": false,
+        "atlasApiBase": "",
         "stripWidthM": 3,
         "landingInsetM": 8,
         "north": {
@@ -1342,7 +1342,7 @@
   "projectId": "10d2dfc4-2e8c-477b-9a44-243898f15dd9",
   "worldDirector": {
     "directorId": "0a455496-7664-4d75-827b-0adea5c9157d",
-    "url": "https://builder.swissverse.org/api/world-director/doc/0a455496-7664-4d75-827b-0adea5c9157d",
+    "url": "",
     "pollSeconds": 15
   },
   "models": []

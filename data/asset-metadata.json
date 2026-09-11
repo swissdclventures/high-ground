@@ -1,0 +1,281 @@
+{
+  "version": "1.0.0",
+  "grid": {
+    "parcelSize": 16,
+    "cellSize": 4,
+    "floorThickness": 0.2,
+    "columnHeight": 3.0,
+    "levelHeight": 3.2,
+    "maxHeight": 20,
+    "rampRise": 3.2
+  },
+  "sharedNegativePrompt": "No people. No furniture. No plants. No terrain. No room scene. No full building. No random props. No text. No logos. No cables. No wires. No complex decoration. No curved organic shapes. No broken geometry. No random holes. No uneven scale. No extra attached objects. No background environment. No dramatic lighting. No fantasy style. No unnecessary ornament.",
+  "globalStyle": "Minimal modern concrete and glass modular building asset. Clean rectangular geometry. Low-poly game-ready style. Designed for Decentraland-style metaverse buildings. Simple PBR materials. No environment. No terrain. No furniture. No people. No plants. No decorative clutter. No text labels. No logos. No background scene. Orthogonal geometry. Straight edges. Flat surfaces. Single modular construction component. Export-ready as GLB.",
+  "materials": {
+    "concrete_main": { "color": "#9a9a9a", "roughness": 0.85, "metalness": 0.0 },
+    "floor_main": { "color": "#9a9a9a", "roughness": 0.85, "metalness": 0.0 },
+    "column_main": { "color": "#9a9a9a", "roughness": 0.85, "metalness": 0.0 },
+    "glass_main": { "color": "#8ba4b8", "roughness": 0.1, "metalness": 0.0, "transparent": true, "opacity": 0.25 },
+    "metal_dark": { "color": "#2a2a2a", "roughness": 0.4, "metalness": 0.8 },
+    "guard_main": { "color": "#7a7a7a", "roughness": 0.8, "metalness": 0.0 },
+    "ramp_main": { "color": "#5a5a5a", "roughness": 0.7, "metalness": 0.2 },
+    "decor_wood": { "color": "#8a6a45", "roughness": 0.7, "metalness": 0.0 },
+    "decor_dark": { "color": "#1d1d22", "roughness": 0.6, "metalness": 0.2 },
+    "decor_accent": { "color": "#f5a623", "roughness": 0.5, "metalness": 0.1 },
+    "decor_plant": { "color": "#3f7d3a", "roughness": 0.9, "metalness": 0.0 }
+  },
+  "pilotModuleIds": [
+    "plate_floor_4x4_0p2",
+    "column_0p3x0p3x3",
+    "wall_4x3_glass",
+    "ramp_core_diagonal_4x4_3p2_A"
+  ],
+  "modules": [
+    {
+      "id": "plate_floor_4x4_0p2",
+      "fileName": "plate_floor_4x4_0p2_v001.glb",
+      "displayName": "Floor Plate",
+      "dimensions": { "w": 4, "d": 4, "h": 0.2 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main"],
+      "collider": { "type": "box", "name": "Plate_Floor_4x4_collider", "size": [4, 4, 0.2] },
+      "pilot": true,
+      "tripo": {
+        "prompt": "Create one simple modular concrete floor plate for a metaverse building kit. The asset must be a clean rectangular slab. Exact intended size is 4 meters wide, 4 meters deep, and 0.2 meters thick. Use a simple neutral concrete material. The top should be flat and walkable. The edges should be straight and clean, with only a very small bevel. Low-poly game-ready geometry. No decoration. No dirt. No cracks. No furniture. No people. No environment. No surrounding floor. No scene. This is a single modular construction asset for a 4m grid. Export as GLB."
+      }
+    },
+    {
+      "id": "column_0p3x0p3x3",
+      "fileName": "column_0p3x0p3x3_v001.glb",
+      "displayName": "Column",
+      "dimensions": { "w": 0.3, "d": 0.3, "h": 3.0 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main"],
+      "collider": { "type": "box", "name": "Column_Main_collider", "size": [0.3, 0.3, 3.0] },
+      "pilot": true,
+      "tripo": {
+        "prompt": "Create one simple square concrete column for a modular metaverse building kit. The asset must be a clean vertical rectangular column. Exact intended size is 0.3 meters wide, 0.3 meters deep, and 3 meters tall. Use a simple neutral concrete material. The column should have straight sides and a flat top and bottom. Low-poly game-ready geometry. No base ornament. No capital ornament. No cracks. No decorative carving. No extra objects. No environment. No scene. This is a single repeatable structural column module. Export as GLB."
+      }
+    },
+    {
+      "id": "wall_4x3_glass",
+      "fileName": "wall_4x3_glass_v001.glb",
+      "displayName": "Glass Wall",
+      "dimensions": { "w": 4, "d": 0.15, "h": 3.0 },
+      "pivot": "center_bottom",
+      "materialSlots": ["glass_main", "metal_dark"],
+      "collider": { "type": "box", "name": "Wall_Glass_Main_collider", "size": [4, 3, 0.15] },
+      "pilot": true,
+      "tripo": {
+        "prompt": "Create one modular glass wall panel for a metaverse building kit. The asset must fit a 4 meter wide by 3 meter high wall bay. Use a thin dark metal frame around a large transparent glass panel. The glass must be transparent and slightly blue-gray tinted. The frame should be simple, rectangular, and modern. The asset should be flat and straight, designed to sit between structural columns. Low-poly game-ready geometry. Simple PBR materials. No room. No floor. No ceiling. No furniture. No people. No environment. No extra props. No logo. No text. This is a single modular wall infill asset for a 4m grid. Export as GLB."
+      }
+    },
+    {
+      "id": "ramp_core_diagonal_4x4_3p2_A",
+      "fileName": "ramp_core_diagonal_4x4_3p2_A_v001.glb",
+      "displayName": "Diagonal Ramp A",
+      "dimensions": { "w": 4, "d": 4, "h": 3.2 },
+      "pivot": "ramp_lower_entry",
+      "materialSlots": ["ramp_main", "metal_dark"],
+      "collider": { "type": "ramp", "name": "Ramp_Core_Main_collider", "footprint": [4, 4], "rise": 3.2 },
+      "pilot": true,
+      "tripo": {
+        "prompt": "Create one simple diagonal ramp core module for a modular metaverse building kit. The asset must fit inside a 4 meter by 4 meter footprint. The ramp must rise 3.2 meters from one finished floor level to the next. The ramp should be a clean diagonal concrete or dark metal ramp surface with simple side guards. Use low-poly game-ready geometry. The ramp should be practical and walkable. No stairs. No individual steps. No spiral form. No decorative ornament. No walls. No room. No furniture. No people. No environment. No scene. This is a single repeatable ramp module for vertical circulation in a modular Decentraland-style building. Export as GLB."
+      }
+    },
+    {
+      "id": "plate_floor_4x4_ramp_opening_0p2",
+      "fileName": "plate_floor_4x4_ramp_opening_0p2_v001.glb",
+      "displayName": "Floor Plate (Ramp Opening)",
+      "dimensions": { "w": 4, "d": 4, "h": 0.2 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main"],
+      "collider": { "type": "split_boxes", "name": "Plate_Floor_RampOpening_collider", "openingSize": [2, 2] },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one modular concrete floor plate with a square opening cutout for a ramp shaft. 4 meters by 4 meters by 0.2 meters thick. The opening is centered, approximately 2m by 2m. Clean rectangular geometry. Low-poly game-ready. Single modular asset. No scene. No furniture."
+      }
+    },
+    {
+      "id": "wall_4x3_solid",
+      "fileName": "wall_4x3_solid_v001.glb",
+      "displayName": "Solid Wall",
+      "dimensions": { "w": 4, "d": 0.2, "h": 3.0 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main"],
+      "collider": { "type": "box", "name": "Wall_Solid_Main_collider", "size": [4, 3, 0.2] },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one solid concrete wall panel for a metaverse building kit. 4 meters wide, 3 meters high, 0.2 meters thick. Clean flat surfaces. Low-poly game-ready. No decoration. No scene."
+      }
+    },
+    {
+      "id": "sliding_glass_entry_opening_4x3",
+      "fileName": "sliding_glass_entry_opening_4x3_v001.glb",
+      "displayName": "Sliding Glass Entry",
+      "dimensions": { "w": 4, "d": 0.15, "h": 3.0 },
+      "pivot": "center_bottom",
+      "materialSlots": ["glass_main", "metal_dark"],
+      "collider": { "type": "frame_only", "name": "Entry_Sliding_Glass_collider", "openingWidth": 2.5, "openingHeight": 2.5 },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one modular sliding glass entry opening for a metaverse building. 4 meter wide by 3 meter high wall bay with a large passable opening and thin metal frame only on sides and top. No hinged door. Transparent glass panels on sides. Low-poly game-ready. No scene."
+      }
+    },
+    {
+      "id": "wall_4x0p75_guard",
+      "fileName": "wall_4x0p75_guard_v001.glb",
+      "displayName": "Guard Wall Solid",
+      "dimensions": { "w": 4, "d": 0.2, "h": 0.75 },
+      "pivot": "center_bottom",
+      "materialSlots": ["guard_main"],
+      "collider": { "type": "box", "name": "Wall_Guard_Solid_collider", "size": [4, 0.75, 0.2] },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one low guard wall segment for a roof terrace. 4 meters wide, 0.75 meters high, 0.2 meters thick. Simple concrete. Low-poly. No scene."
+      }
+    },
+    {
+      "id": "wall_4x0p75_glass_guard",
+      "fileName": "wall_4x0p75_glass_guard_v001.glb",
+      "displayName": "Guard Wall Glass",
+      "dimensions": { "w": 4, "d": 0.1, "h": 0.75 },
+      "pivot": "center_bottom",
+      "materialSlots": ["glass_main", "metal_dark"],
+      "collider": { "type": "box", "name": "Wall_Guard_Glass_collider", "size": [4, 0.75, 0.1] },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one low glass guard rail for a roof terrace. 4 meters wide, 0.75 meters high. Thin metal frame with transparent glass. Low-poly. No scene."
+      }
+    },
+    {
+      "id": "ramp_core_diagonal_4x4_3p2_B",
+      "fileName": "ramp_core_diagonal_4x4_3p2_B_v001.glb",
+      "displayName": "Diagonal Ramp B",
+      "dimensions": { "w": 4, "d": 4, "h": 3.2 },
+      "pivot": "ramp_lower_entry",
+      "materialSlots": ["ramp_main", "metal_dark"],
+      "collider": { "type": "ramp", "name": "Ramp_Core_B_collider", "footprint": [4, 4], "rise": 3.2, "mirror": true },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one diagonal ramp module mirrored from the A variant. 4m by 4m footprint, rises 3.2m. Walkable diagonal ramp surface with side guards. Low-poly. No stairs. No scene."
+      }
+    },
+    {
+      "id": "ramp_guard_4m",
+      "fileName": "ramp_guard_4m_v001.glb",
+      "displayName": "Ramp Guard",
+      "dimensions": { "w": 4, "d": 0.1, "h": 0.75 },
+      "pivot": "center_bottom",
+      "materialSlots": ["metal_dark"],
+      "collider": { "type": "box", "name": "Ramp_Guard_collider", "size": [4, 0.75, 0.1] },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one simple 4 meter long ramp side guard rail. 0.75 meters high. Dark metal. Low-poly. No scene."
+      }
+    },
+    {
+      "id": "entry_step_4x1_0p2",
+      "fileName": "entry_step_4x1_0p2_v001.glb",
+      "displayName": "Entry Step",
+      "dimensions": { "w": 4, "d": 1, "h": 0.2 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main"],
+      "collider": { "type": "box", "name": "Entry_Step_collider", "size": [4, 0.2, 1] },
+      "pilot": false,
+      "tripo": {
+        "prompt": "Create one entry step platform. 4 meters wide, 1 meter deep, 0.2 meters thick. Concrete. Low-poly. No scene."
+      }
+    },
+    {
+      "id": "decor_bar_counter_4x1",
+      "fileName": "decor_bar_counter_4x1_v001.glb",
+      "displayName": "Bar Counter",
+      "dimensions": { "w": 4, "d": 1, "h": 1.1 },
+      "pivot": "center_bottom",
+      "materialSlots": ["decor_dark", "decor_wood", "metal_dark"],
+      "collider": { "type": "box", "name": "Bar_Counter_collider", "size": [4, 1, 1.1] },
+      "pilot": false
+    },
+    {
+      "id": "decor_stage_4x3_0p4",
+      "fileName": "decor_stage_4x3_0p4_v001.glb",
+      "displayName": "Stage Platform",
+      "dimensions": { "w": 4, "d": 3, "h": 0.4 },
+      "pivot": "center_bottom",
+      "materialSlots": ["decor_dark", "metal_dark"],
+      "collider": { "type": "box", "name": "Stage_collider", "size": [4, 3, 0.4] },
+      "pilot": false
+    },
+    {
+      "id": "decor_dj_booth_2x1",
+      "fileName": "decor_dj_booth_2x1_v001.glb",
+      "displayName": "DJ Booth",
+      "dimensions": { "w": 2, "d": 1, "h": 1.2 },
+      "pivot": "center_bottom",
+      "materialSlots": ["decor_dark", "decor_wood", "decor_accent"],
+      "collider": { "type": "box", "name": "DJ_Booth_collider", "size": [2, 1, 1.2] },
+      "pilot": false
+    },
+    {
+      "id": "decor_bench_2x0p5",
+      "fileName": "decor_bench_2x0p5_v001.glb",
+      "displayName": "Bench",
+      "dimensions": { "w": 2, "d": 0.5, "h": 0.45 },
+      "pivot": "center_bottom",
+      "materialSlots": ["decor_wood", "metal_dark"],
+      "collider": { "type": "box", "name": "Bench_collider", "size": [2, 0.5, 0.45] },
+      "pilot": false
+    },
+    {
+      "id": "decor_planter_1x1",
+      "fileName": "decor_planter_1x1_v001.glb",
+      "displayName": "Planter",
+      "dimensions": { "w": 1, "d": 1, "h": 1.0 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main", "decor_dark", "decor_plant"],
+      "collider": { "type": "box", "name": "Planter_collider", "size": [1, 1, 1.0] },
+      "pilot": false
+    },
+    {
+      "id": "decor_speaker_stack_1x1",
+      "fileName": "decor_speaker_stack_1x1_v001.glb",
+      "displayName": "Speaker Stack",
+      "dimensions": { "w": 1, "d": 0.9, "h": 1.6 },
+      "pivot": "center_bottom",
+      "materialSlots": ["decor_dark", "metal_dark"],
+      "collider": { "type": "box", "name": "Speaker_Stack_collider", "size": [1, 0.9, 1.6] },
+      "pilot": false
+    },
+    {
+      "id": "decor_rug_round_6",
+      "fileName": "decor_rug_round_6_v001.glb",
+      "displayName": "Round Rug",
+      "dimensions": { "w": 6, "d": 6, "h": 0.04 },
+      "pivot": "center_bottom",
+      "materialSlots": ["decor_dark", "decor_accent", "decor_wood"],
+      "collider": { "type": "none", "name": "Rug_no_collider", "size": [6, 6, 0.04] },
+      "pilot": false
+    },
+    {
+      "id": "decor_plinth_0p8",
+      "fileName": "decor_plinth_0p8_v001.glb",
+      "displayName": "Display Plinth",
+      "dimensions": { "w": 0.8, "d": 0.8, "h": 1.0 },
+      "pivot": "center_bottom",
+      "materialSlots": ["concrete_main", "decor_dark", "decor_accent"],
+      "collider": { "type": "box", "name": "Plinth_collider", "size": [0.8, 0.8, 1.0] },
+      "pilot": false
+    }
+  ],
+  "testBuilding": {
+    "name": "test_building_v001",
+    "floors": 2,
+    "roofTerrace": true,
+    "rampCell": { "col": 1, "row": 1 },
+    "rampType": "spiral",
+    "defaultWalls": "glass",
+    "entrySide": "south",
+    "entryCell": { "col": 2, "row": 0 }
+  }
+}

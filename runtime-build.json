@@ -1,5 +1,6 @@
 {
-  "sourceHash": "7eecc536fa33a2b6cb526346eb4697aa6684a99f0719d64230d5ef199ad65433",
-  "builtAt": "2026-09-10T15:08:48.000Z",
-  "commit": "91ea5c52db80cc2fdaae9ec6524ecab4c48764e5"
+  "standaloneSource": true,
+  "sdk": "7.27.1-33533530571.commit-451d001",
+  "liveWorldSnapshotAt": "2026-09-10T15:26:30.711Z",
+  "liveWorldRuntimeCommit": "91ea5c52db80cc2fdaae9ec6524ecab4c48764e5"
 }

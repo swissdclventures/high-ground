@@ -6,9 +6,9 @@ evaluate: how the room stays one game across desktop and mobile, how the
 persistent board is wired so it can never take the game down with it, and what
 "mobile-first" actually meant in code.
 
-`bin/index.js` is prebuilt from a private monorepo, so this document is the
-readable form of the parts that matter. Every constant and rule below is the one
-that **ships in the live World** unless marked as snapshot-only.
+The TypeScript for those systems lives in `src/` and `shared/` in this
+repository. Every constant and rule below is the one that **ships in the live
+World** unless marked as snapshot-only.
 
 ---
 
@@ -20,7 +20,8 @@ Live punch island (content server, 2026-09-10 15:26 UTC):
 |---|---|
 | `scene.json` | **49 parcels**, base **`-3,4`**, default spawn on the sky island at about `(56, 80.25, 60.4)`. World name `HIGHGROUND.dcl.eth` |
 | `main.crdt` | the authored entities — island, cabinet, arena arc, clouds — serialised from the Builder that composed the scene |
-| `bin/index.js` | the runtime: the punch machine, the coordinator, the HUD, the show |
+| `src/` `shared/` | the TypeScript that `npm run build` compiles into the runtime |
+| `bin/index.js` | the compiled runtime: the punch machine, the coordinator, the HUD, the show |
 | `assets/editor-recipe.json` | the Builder recipe the scene was composed from |
 | `models/` `images/` `sounds/` `videos/` `emotes/` | the media |
 

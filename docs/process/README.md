@@ -7,26 +7,24 @@ Notes on process rather than architecture. For the systems themselves, see
 
 ## Where the code lives
 
-High Ground is not a standalone scene project. It is one scene produced by a
-larger private tool — a Decentraland scene builder — and `bin/index.js` here is
-the compiled output of that tool's scene runtime, which imports shared modules
-from the monorepo it lives in.
+The High Ground scene source is in this repository: `src/` for the SDK7 scene
+and `shared/` for the contracts and scoring/coordinator logic it imports.
 
-That has one honest consequence: **this repository does not `npm run build`.**
-What it does do is run and deploy. `npm start` boots it in the Decentraland
-preview, and `sdk-commands deploy` puts it on a World you own.
+```bash
+npm install
+npm run build
+npm start
+```
 
-We considered shipping a partial source dump to look more like a normal repo and
-decided against it. A repository that does not build is worse than one that says
-plainly what it is. So the deployed artifact is here in full, and the reasoning
-behind it is written down in `ARCHITECTURE.md` at the level of the actual
-constants.
+The island was composed with The Build, a separate proprietary editor. That
+editor is not required to build or change this game. The reasoning behind the
+systems is in `ARCHITECTURE.md`.
 
 ---
 
 ## Testing
 
-The scene's systems are covered by a vitest suite in the monorepo. The files
+The scene's systems were covered by a vitest suite during development. The files
 specific to this game include:
 
 ```

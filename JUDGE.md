@@ -55,16 +55,15 @@ spoiler fold, and carries the full rules besides.
 
 ## About the source
 
-`bin/index.js` is prebuilt and does not rebuild in isolation. It was compiled
-from a larger private monorepo — a scene builder — and imports shared modules
-from it. We would rather be straight about that than ship a repository that does
-not build. So instead of a partial source dump, `ARCHITECTURE.md` documents the
-systems a judge would want to evaluate at the level of the actual constants and
-the actual rules.
+The scene source is in this repository (`src/` and `shared/`). Clone it, run
+`npm install` and `npm run build`, and you get `bin/index.js` from the TypeScript
+that implements the game. No private builder access is required.
 
-`docs/process/` covers how it was developed and how it is tested, including the
-synthetic multiplayer harness that runs a whole island of clients without a
-second headset.
+The proprietary editor used to compose the island (The Build) is a separate
+product and is not part of this submission.
+
+`ARCHITECTURE.md` explains the systems. `docs/process/` covers how it was
+developed and tested, including the synthetic multiplayer harness.
 
 ---
 
